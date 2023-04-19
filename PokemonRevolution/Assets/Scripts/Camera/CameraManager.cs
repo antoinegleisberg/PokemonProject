@@ -12,14 +12,14 @@ public class CameraManager : MonoBehaviour
         mainCamera.enabled = true;
         battleCamera.enabled = false;
 
-        GameEvents.Current.OnEnterBattle += OnBattleStart;
-        GameEvents.Current.OnExitBattle += OnExitBattle;
+        GameEvents.Instance.OnEnterBattle += OnBattleStart;
+        GameEvents.Instance.OnExitBattle += OnExitBattle;
     }
 
     private void OnDestroy()
     {
-        GameEvents.Current.OnEnterBattle -= OnBattleStart;
-        GameEvents.Current.OnExitBattle -= OnExitBattle;
+        GameEvents.Instance.OnEnterBattle -= OnBattleStart;
+        GameEvents.Instance.OnExitBattle -= OnExitBattle;
     }
 
     private void OnBattleStart(Pokemon p1, Pokemon p2)

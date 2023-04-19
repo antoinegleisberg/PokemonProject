@@ -9,11 +9,16 @@ public class BattleManager : MonoBehaviour
     public Pokemon PlayerPokemon;
     public Pokemon EnemyPokemon;
 
+    public BattleActionInfo NextPlayerAction;
+    public BattleActionInfo NextEnemyAction;
+
     private BattleManagerBaseState currentState;
     public BattleManagerOutOfBattleState OutOfBattleState;
-    public BattleManagerStartState StartState;
-    public BattleManagerPlayerTurnState PlayerTurnState;
-    public BattleManagerEnemyMoveState EnemyMoveState;
+    public BattleManagerStartBattleState StartBattleState;
+    public BattleManagerStartTurnState StartTurnState;
+    public BattleManagerActionSelectionState ActionSelectionState;
+    public BattleManagerPerformMovesState PerformMovesState;
+    public BattleManagerEndTurnState EndTurnState;
     public BattleManagerEndBattleState EndBattleState;
 
     public void SwitchState(BattleManagerBaseState newState)
@@ -30,30 +35,36 @@ public class BattleManager : MonoBehaviour
 
         attackingPokemon.LoseMovePP(move);
 
-        BattleEvents.Current.PokemonAttacks(attackingPokemon, targetPokemon, move, attackInfo);
-        if (targetPokemon.IsFainted) BattleEvents.Current.PokemonFaints(targetPokemon);
+        BattleEvents.Instance.PokemonAttacks(attackingPokemon, targetPokemon, move, attackInfo);
+        if (attackInfo.damage > 0) BattleEvents.Instance.PokemonDamaged(targetPokemon, attackInfo.damage);
+        if (targetPokemon.IsFainted) BattleEvents.Instance.PokemonFaints(targetPokemon);
     }
 
     private void Awake()
     {
         OutOfBattleState = new BattleManagerOutOfBattleState();
-        StartState = new BattleManagerStartState();
-        PlayerTurnState = new BattleManagerPlayerTurnState();
-        EnemyMoveState = new BattleManagerEnemyMoveState();
+        StartBattleState = new BattleManagerStartBattleState();
+        StartTurnState = new BattleManagerStartTurnState();
+        ActionSelectionState = new BattleManagerActionSelectionState();
+        PerformMovesState = new BattleManagerPerformMovesState();
+        EndTurnState = new BattleManagerEndTurnState();
         EndBattleState = new BattleManagerEndBattleState();
     }
 
     private void Start()
     {
         OutOfBattleState.InitState(this);
-        StartState.InitState(this);
-        PlayerTurnState.InitState(this);
-        EnemyMoveState.InitState(this);
+        StartBattleState.InitState(this);
+        StartTurnState.InitState(this);
+        ActionSelectionState.InitState(this);
+        PerformMovesState.InitState(this);
+        EndTurnState.InitState(this);
         EndBattleState.InitState(this);
 
         currentState = OutOfBattleState;
 
-        GameEvents.Current.OnPokemonEncounter += OnPokemonEncounter;
+        GameEvents.Instance.OnPokemonEncounter += OnPokemonEncounter;
+        BattleUIEvents.Instance.OnRunButtonPressed += () => SwitchState(EndBattleState);
     }
 
     private void Update()
@@ -64,21 +75,24 @@ public class BattleManager : MonoBehaviour
     private void OnDestroy()
     {
         OutOfBattleState.OnDestroy();
-        StartState.OnDestroy();
-        PlayerTurnState.OnDestroy();
-        EnemyMoveState.OnDestroy();
+        StartBattleState.OnDestroy();
+        StartTurnState.OnDestroy();
+        ActionSelectionState.OnDestroy();
+        PerformMovesState.OnDestroy();
+        EndTurnState.OnDestroy();
         EndBattleState.OnDestroy();
 
-        GameEvents.Current.OnPokemonEncounter -= OnPokemonEncounter;
+        GameEvents.Instance.OnPokemonEncounter -= OnPokemonEncounter;
+        BattleUIEvents.Instance.OnRunButtonPressed -= () => SwitchState(EndBattleState);
     }
 
     private IEnumerator SwitchStateCoroutine(BattleManagerBaseState newState)
     {
         currentState.ExitState();
         currentState = newState;
-        while (UIManager.Current.IsBusy)
+        while (UIManager.Instance.IsBusy)
         {
-            yield return null;
+            yield return new WaitForSeconds(0.1f);
         }
         currentState.EnterState();
     }
@@ -115,6 +129,6 @@ public class BattleManager : MonoBehaviour
         EnemyParty = enemyParty;
         PlayerPokemon = PlayerParty.GetFirstPokemon();
         EnemyPokemon = EnemyParty.GetFirstPokemon();
-        SwitchState(StartState);
+        SwitchState(StartBattleState);
     }
 }

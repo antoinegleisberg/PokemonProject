@@ -4,7 +4,12 @@ using UnityEngine;
 
 public class MapArea : MonoBehaviour
 {
+    public static MapArea Instance { get; private set; }
+    
     [SerializeField] private List<WildEncounter> wildEncounters;
+    [SerializeField] private int encounterRate = 10;
+
+    public int EncounterRate { get => encounterRate; }
 
     public Pokemon GetRandomWildPokemon()
     {
@@ -27,6 +32,11 @@ public class MapArea : MonoBehaviour
         }
 
         return null;
+    }
+
+    private void Awake()
+    {
+        Instance = this;
     }
 }
 

@@ -33,9 +33,9 @@ public class BattleManagerEndBattleState : BattleManagerBaseState
     {
         yield return new WaitForSeconds(1.0f);
 
-        while (UIManager.Current.IsBusy) yield return null;
+        while (UIManager.Instance.IsBusy) yield return null;
 
-        GameEvents.Current.ExitBattle();
+        GameEvents.Instance.ExitBattle();
         battleManager.SwitchState(battleManager.OutOfBattleState);
     }
 }

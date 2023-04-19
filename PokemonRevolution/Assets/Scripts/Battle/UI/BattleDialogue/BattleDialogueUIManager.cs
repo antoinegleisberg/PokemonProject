@@ -10,21 +10,23 @@ public class BattleDialogueUIManager : MonoBehaviour
 
     private void Start()
     {
-        GameEvents.Current.OnEnterBattle += OnEnterBattle;
-        BattleEvents.Current.OnPokemonAttack += OnPokemonAttack;
-        BattleEvents.Current.OnPokemonSwitched += OnPokemonSwitched;
+        GameEvents.Instance.OnEnterBattle += OnEnterBattle;
+        BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
+        BattleEvents.Instance.OnPokemonSwitchedOut += OnPokemonSwitchedOut;
+        BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
     }
 
     private void OnDestroy()
     {
-        GameEvents.Current.OnEnterBattle -= OnEnterBattle;
-        BattleEvents.Current.OnPokemonAttack -= OnPokemonAttack;
-        BattleEvents.Current.OnPokemonSwitched -= OnPokemonSwitched;
+        GameEvents.Instance.OnEnterBattle -= OnEnterBattle;
+        BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
+        BattleEvents.Instance.OnPokemonSwitchedOut -= OnPokemonSwitchedOut;
+        BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
     }
 
     private void OnEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
     {
-        UIManager.Current.WriteDialogueText(dialogueText, $"A wild {enemyPokemon.Name} appeared!");
+        UIManager.Instance.WriteDialogueText(dialogueText, $"A wild {enemyPokemon.Name} appeared!");
     }
 
     private void OnPokemonAttack(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo)
@@ -43,15 +45,20 @@ public class BattleDialogueUIManager : MonoBehaviour
             messages.Add($"It doesn't affect {defender.Name} ...");
         if (attackInfo.fainted)
             messages.Add($"{defender.Name} fainted!");
-        UIManager.Current.WriteDialogueTexts(dialogueText, messages);
+        UIManager.Instance.WriteDialogueTexts(dialogueText, messages);
     }
 
-    private void OnPokemonSwitched(Pokemon oldPokemon, Pokemon newPokemon)
+    private void OnPokemonSwitchedOut(Pokemon oldPokemon)
+    {
+        if (oldPokemon.Owner != PokemonOwner.Player)
+            return;
+        UIManager.Instance.WriteDialogueText(dialogueText, $"{oldPokemon.Name}, come back!");
+    }
+
+    private void OnPokemonSwitchedIn(Pokemon newPokemon)
     {
         if (newPokemon.Owner != PokemonOwner.Player)
             return;
-        string msg1 = $"{oldPokemon.Name}, come back !";
-        string msg2 = $"Go {newPokemon.Name} !";
-        UIManager.Current.WriteDialogueTexts(dialogueText, new List<string> { msg1, msg2 });
+        UIManager.Instance.WriteDialogueText(dialogueText, $"Go {newPokemon.Name} !");
     }
 }

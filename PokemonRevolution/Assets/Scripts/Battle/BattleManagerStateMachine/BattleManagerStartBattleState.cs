@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleManagerStartState : BattleManagerBaseState
+public class BattleManagerStartBattleState : BattleManagerBaseState
 {
     public override void InitState(BattleManager battleManager)
     {
@@ -11,8 +11,8 @@ public class BattleManagerStartState : BattleManagerBaseState
 
     public override void EnterState()
     {
-        GameEvents.Current.EnterBattle(battleManager.PlayerPokemon, battleManager.EnemyPokemon);
-        battleManager.SwitchState(battleManager.PlayerTurnState);
+        GameEvents.Instance.EnterBattle(battleManager.PlayerPokemon, battleManager.EnemyPokemon);
+        battleManager.SwitchState(battleManager.StartTurnState);
     }
 
     public override void UpdateState()

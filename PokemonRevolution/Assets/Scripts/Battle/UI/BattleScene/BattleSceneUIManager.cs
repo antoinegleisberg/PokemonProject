@@ -1,35 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BattleSystemAnimations : MonoBehaviour
+public class BattleSceneUIManager : MonoBehaviour
 {
+    [SerializeField] private Sprite defaultBattleBackground;
+
+    [SerializeField] private Image battleBackgroundImage;
+
+    [SerializeField] private BattleSceneHUDManager playerHUD;
+    [SerializeField] private BattleSceneHUDManager enemyHUD;
+
     [SerializeField] private Image playerPokemonImage;
     [SerializeField] private Image enemyPokemonImage;
 
-    [SerializeField] private float enterBattleAnimationTime;
-    [SerializeField] private float attackAnimationTime;
-    [SerializeField] private float hitAnimationTime;
-    [SerializeField] private float faintAnimationTime;
-
+    [SerializeField] private float enterBattleAnimationDuration = 1.0f;
+    [SerializeField] private float attackAnimationDuration = 0.1f;
+    [SerializeField] private float hitAnimationDuration = 0.08f;
+    [SerializeField] private float faintAnimationDuration = 0.8f;
+    [SerializeField] private float waitingTimeBeforeFaintAnimation = 1.0f;
+    
     private void Start()
     {
-        BattleEvents.Current.OnPokemonAttack += OnPokemonAttack;
-        BattleEvents.Current.OnPokemonFainted += OnPokemonFainted;
-        GameEvents.Current.OnEnterBattle += OnEnterBattle;
+        GameEvents.Instance.OnEnterBattle += OnEnterBattle;
+
+        BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
+        BattleEvents.Instance.OnPokemonDamaged += OnPokemonDamaged;
+        BattleEvents.Instance.OnPokemonFainted += OnPokemonFainted;
+        BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
     }
 
     private void OnDestroy()
     {
-        BattleEvents.Current.OnPokemonAttack -= OnPokemonAttack;
-        BattleEvents.Current.OnPokemonFainted -= OnPokemonFainted;
-        GameEvents.Current.OnEnterBattle -= OnEnterBattle;
+        GameEvents.Instance.OnEnterBattle -= OnEnterBattle;
+
+        BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
+        BattleEvents.Instance.OnPokemonDamaged -= OnPokemonDamaged;
+        BattleEvents.Instance.OnPokemonFainted -= OnPokemonFainted;
+        BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
     }
-    
+
     private void OnEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
     {
+        battleBackgroundImage.sprite = defaultBattleBackground;
+        
+        playerHUD.UpdateHUD(playerPokemon);
+        enemyHUD.UpdateHUD(enemyPokemon);
+        
         AnimatePokemonEnterBattle(playerPokemon, enemyPokemon);
     }
 
@@ -38,10 +57,23 @@ public class BattleSystemAnimations : MonoBehaviour
         StartCoroutine(AnimatePokemonAttack(attacker));
         StartCoroutine(AnimatePokemonHit(defender));
     }
-    
+
+    private void OnPokemonDamaged(Pokemon pokemon, int damage)
+    {
+        if (pokemon.Owner == PokemonOwner.Player)
+            playerHUD.UpdateHealthBar(pokemon);
+        else
+            enemyHUD.UpdateHealthBar(pokemon);
+    }
+
     private void OnPokemonFainted(Pokemon pokemon)
     {
         StartCoroutine(AnimatePokemonFaints(pokemon));
+    }
+
+    private void OnPokemonSwitchedIn(Pokemon newPokemon)
+    {
+        StartCoroutine(SwitchPokemonIn(newPokemon));
     }
 
     private void AnimatePokemonEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
@@ -51,8 +83,8 @@ public class BattleSystemAnimations : MonoBehaviour
         Vector3 enemyInitPos = enemyPokemonImage.rectTransform.localPosition - playerOffset;
         playerPokemonImage.color = Color.white;
         enemyPokemonImage.color = Color.white;
-        StartCoroutine(MoveImage(playerPokemonImage, playerInitPos, -playerOffset, enterBattleAnimationTime));
-        StartCoroutine(MoveImage(enemyPokemonImage, enemyInitPos, playerOffset, enterBattleAnimationTime));
+        StartCoroutine(MoveImage(playerPokemonImage, playerInitPos, -playerOffset, enterBattleAnimationDuration));
+        StartCoroutine(MoveImage(enemyPokemonImage, enemyInitPos, playerOffset, enterBattleAnimationDuration));
     }
 
     private IEnumerator AnimatePokemonAttack(Pokemon attacker)
@@ -63,25 +95,26 @@ public class BattleSystemAnimations : MonoBehaviour
         Vector3 offset =
             attacker.Owner == PokemonOwner.Player ? new Vector3(40, 0, 0) : new Vector3(-40, 0, 0);
 
-        yield return MoveImage(image, originalPosition, offset, attackAnimationTime);
-        yield return MoveImage(image, originalPosition + offset, -offset, attackAnimationTime);
+        yield return MoveImage(image, originalPosition, offset, attackAnimationDuration);
+        yield return MoveImage(image, originalPosition + offset, -offset, attackAnimationDuration);
     }
 
     private IEnumerator AnimatePokemonHit(Pokemon defender)
     {
-        yield return new WaitForSeconds(attackAnimationTime);
+        yield return new WaitForSeconds(attackAnimationDuration);
 
         Image image =
             defender.Owner == PokemonOwner.Player ? playerPokemonImage : enemyPokemonImage;
         Color hitColor = Color.grey;
 
-        yield return ColorImage(image, hitColor, hitAnimationTime);
-        yield return ColorImage(image, Color.white, hitAnimationTime);
+        yield return ColorImage(image, hitColor, hitAnimationDuration);
+        yield return ColorImage(image, Color.white, hitAnimationDuration);
     }
 
     private IEnumerator AnimatePokemonFaints(Pokemon pokemon)
     {
-        yield return new WaitForSeconds(1.0f);
+        // Wait for the HP Bar decreasing animation to finish
+        yield return new WaitForSeconds(waitingTimeBeforeFaintAnimation);
 
         Image image =
             pokemon.Owner == PokemonOwner.Player ? playerPokemonImage : enemyPokemonImage;
@@ -89,14 +122,29 @@ public class BattleSystemAnimations : MonoBehaviour
         Vector3 offset = new Vector3(0, -150, 0);
         Color targetColor = new Color(0.5f, 0.5f, 0.5f, 0.0f);
 
-        Coroutine moveAnimation = StartCoroutine(MoveImage(image, originalPosition, offset, faintAnimationTime));
-        Coroutine fadeAnimation = StartCoroutine(ColorImage(image, targetColor, faintAnimationTime));
+        Coroutine moveAnimation = StartCoroutine(MoveImage(image, originalPosition, offset, faintAnimationDuration));
+        Coroutine fadeAnimation = StartCoroutine(ColorImage(image, targetColor, faintAnimationDuration));
 
         yield return moveAnimation;
         yield return fadeAnimation;
 
         image.rectTransform.localPosition = originalPosition;
         image.color = new Color(1, 1, 1, 0);
+    }
+
+    private IEnumerator SwitchPokemonIn(Pokemon newPokemon)
+    {
+        yield return new WaitForSeconds(waitingTimeBeforeFaintAnimation + faintAnimationDuration + 0.1f);
+
+        if (newPokemon.Owner == PokemonOwner.Player)
+        {
+            playerPokemonImage.color = Color.white;
+            playerHUD.UpdateHUD(newPokemon);
+        }
+        else if (newPokemon.Owner == PokemonOwner.EnemyTrainer)
+        {
+            enemyHUD.UpdateHUD(newPokemon);
+        }
     }
 
     private IEnumerator MoveImage(Image image, Vector3 initialPos, Vector3 offset, float animationTime)
@@ -111,7 +159,7 @@ public class BattleSystemAnimations : MonoBehaviour
             image.rectTransform.localPosition = Vector3.MoveTowards(image.rectTransform.localPosition, targetPos, speed * Time.deltaTime);
             yield return new WaitForEndOfFrame();
         }
-        
+
         image.rectTransform.localPosition = targetPos;
     }
 

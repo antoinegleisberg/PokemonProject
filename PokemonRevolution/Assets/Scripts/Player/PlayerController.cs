@@ -4,20 +4,17 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private Transform playerTransform;
     [SerializeField] private float baseMoveSpeed;
     [SerializeField] private float runningMoveSpeedMultiplier = 1.75f;
     [SerializeField] private Animator animator;
     [SerializeField] private LayerMask solidObjectsCollidersLayer;
     [SerializeField] private LayerMask tallGrassLayer;
-    [SerializeField] private int encouterRate = 10; // Has to go to MapArea
-    [SerializeField] private PokemonParty playerParty;
+    [SerializeField] private PokemonPartyManager playerPartyManager;
+    
     private float moveSpeed;
     private Vector2Int lastInput;
     private bool isMoving;
-
-    // testing : has to go at some point : to GameManager / MapArea
-    [SerializeField] private PokemonParty enemyParty;
-    [SerializeField] private MapArea mapArea;
 
     private void Start()
     {
@@ -42,7 +39,7 @@ public class PlayerController : MonoBehaviour
                 animator.SetFloat("moveX", lastInput.x);
                 animator.SetFloat("moveY", lastInput.y);
 
-                Vector3 targetPosition = transform.position;
+                Vector3 targetPosition = playerTransform.position;
                 targetPosition.x += lastInput.x;
                 targetPosition.y += lastInput.y;
 
@@ -63,13 +60,13 @@ public class PlayerController : MonoBehaviour
     {
         isMoving = true;
 
-        while ((targetPosition - transform.position).sqrMagnitude > Mathf.Epsilon)
+        while ((targetPosition - playerTransform.position).sqrMagnitude > Mathf.Epsilon)
         {
-            transform.position = Vector3.MoveTowards(transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            playerTransform.position = Vector3.MoveTowards(playerTransform.position, targetPosition, moveSpeed * Time.deltaTime);
             yield return null;
         }
 
-        transform.position = targetPosition;
+        playerTransform.position = targetPosition;
         isMoving = false;
         CheckForEncounters();
     }
@@ -85,14 +82,13 @@ public class PlayerController : MonoBehaviour
 
     private void CheckForEncounters()
     {
-        if (Physics2D.OverlapCircle(transform.position, 0.2f, tallGrassLayer) != null)
+        if (Physics2D.OverlapCircle(playerTransform.position, 0.2f, tallGrassLayer) != null)
         {
-            if (Random.Range(0, 100) < encouterRate)
+            if (Random.Range(0, 100) < MapArea.Instance.EncounterRate)
             {
-                Pokemon enemyPokemon = mapArea.GetRandomWildPokemon();
-                enemyParty.Pokemons.Clear();
-                enemyParty.Pokemons.Add(enemyPokemon);
-                GameEvents.Current.EncounterPokemon(playerParty, enemyParty);
+                Pokemon enemyPokemon = MapArea.Instance.GetRandomWildPokemon();
+                PokemonParty enemyParty = new PokemonParty(new List<Pokemon>() { enemyPokemon });
+                GameEvents.Instance.EncounterPokemon(playerPartyManager.PokemonParty, enemyParty);
             }
         }
     }

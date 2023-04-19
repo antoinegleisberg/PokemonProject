@@ -5,12 +5,9 @@ using UnityEngine;
 
 public class BattleUIEvents : MonoBehaviour
 {
-    public static BattleUIEvents Current;
+    public static BattleUIEvents Instance;
 
-    private void Awake()
-    {
-        Current = this;
-    }
+    private void Awake() => Instance = this;
 
     // Action selector events
     public event Action OnAttackButtonPressed;
@@ -33,6 +30,10 @@ public class BattleUIEvents : MonoBehaviour
     public event Action<int> OnMedicineButtonPressed;
     public event Action<int> OnStatusHealerButtonPressed;
 
+    // SwitchPokemonEvents
+    public event Action<int> OnSwitchPokemonSelected;
+    public event Action OnCancelSwitchPokemonSelection;
+
     public void AttackButtonPressed() => OnAttackButtonPressed?.Invoke();
     public void SwitchPokemonButtonPressed() => OnSwitchPokemonButtonPressed?.Invoke();
     public void BagButtonPressed() => OnBagButtonPressed?.Invoke();
@@ -49,4 +50,7 @@ public class BattleUIEvents : MonoBehaviour
     public void PokeballButtonPressed(int pokeballIndex) => OnPokeballButtonPressed?.Invoke(pokeballIndex);
     public void MedicineButtonPressed(int medicineIndex) => OnMedicineButtonPressed?.Invoke(medicineIndex);
     public void StatusHealerButtonPressed(int statusHealerIndex) => OnStatusHealerButtonPressed?.Invoke(statusHealerIndex);
+
+    public void SwitchPokemonSelected(int pokemonIndex) => OnSwitchPokemonSelected?.Invoke(pokemonIndex);
+    public void CancelSwitchPokemonSelection() => OnCancelSwitchPokemonSelection?.Invoke();
 }

@@ -21,7 +21,7 @@ MonoBehaviour:
   weight: 9
   frontSprite: {fileID: 21300000, guid: 90b64ab601c95d5489c1305d9110dea5, type: 3}
   backSprite: {fileID: 21300000, guid: d36927e02f2984442949b7e4aaf23852, type: 3}
-  iconSprite: {fileID: 0}
+  iconSprite: {fileID: 21300000, guid: f646dd4af171fbe43879af85bcf963b1, type: 3}
   type1: 3
   type2: 0
   baseHealthPoints: 44

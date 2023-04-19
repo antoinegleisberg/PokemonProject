@@ -5,23 +5,23 @@ using UnityEngine;
 
 public class BattleEvents : MonoBehaviour
 {
-    public static BattleEvents Current;
+    public static BattleEvents Instance;
 
-    private void Awake() { Current = this; }
+    private void Awake() => Instance = this;
 
-    public event Action OnEnterPlayerTurn;
-    public event Action OnEnterEnemyTurn;
+    public event Action OnEnterActionSelection;
 
     public event Action<Pokemon, int> OnPokemonDamaged;
     public event Action<Pokemon, Pokemon, Move, AttackInfo> OnPokemonAttack;
     public event Action<Pokemon> OnPokemonFainted;
-    public event Action<Pokemon, Pokemon> OnPokemonSwitched;
+    public event Action<Pokemon> OnPokemonSwitchedOut;
+    public event Action<Pokemon> OnPokemonSwitchedIn;
 
-    public void EnterPlayerTurn() => OnEnterPlayerTurn?.Invoke();
-    public void EnterEnemyTurn() => OnEnterEnemyTurn?.Invoke();
+    public void EnterActionSelectionState() => OnEnterActionSelection?.Invoke();
     
     public void PokemonDamaged(Pokemon pokemon, int damage) => OnPokemonDamaged?.Invoke(pokemon, damage);
     public void PokemonAttacks(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo) => OnPokemonAttack?.Invoke(attacker, defender, move, attackInfo);
     public void PokemonFaints(Pokemon pokemon) => OnPokemonFainted?.Invoke(pokemon);
-    public void PokemonSwitched(Pokemon oldPokemon, Pokemon newPokemon) => OnPokemonSwitched?.Invoke(oldPokemon, newPokemon);
+    public void PokemonSwitchedOut(Pokemon pokemon) => OnPokemonSwitchedOut?.Invoke(pokemon);
+    public void PokemonSwitchedIn(Pokemon pokemon) => OnPokemonSwitchedIn?.Invoke(pokemon);
 }

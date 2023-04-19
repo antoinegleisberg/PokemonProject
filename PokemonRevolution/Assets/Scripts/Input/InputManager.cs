@@ -27,8 +27,8 @@ public class InputManager : MonoBehaviour
         MovementInput = Vector2Int.zero;
         IsRunning = false;
 
-        GameEvents.Current.OnEnterBattle += OnEnterBattle;
-        GameEvents.Current.OnExitBattle += OnExitBattle;
+        GameEvents.Instance.OnEnterBattle += OnEnterBattle;
+        GameEvents.Instance.OnExitBattle += OnExitBattle;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -67,7 +67,7 @@ public class InputManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameEvents.Current.OnEnterBattle -= OnEnterBattle;
-        GameEvents.Current.OnExitBattle -= OnExitBattle;
+        GameEvents.Instance.OnEnterBattle -= OnEnterBattle;
+        GameEvents.Instance.OnExitBattle -= OnExitBattle;
     }
 }

@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class GameEvents : MonoBehaviour
 {
-    public static GameEvents Current;
+    public static GameEvents Instance;
 
-    private void Awake() => Current = this;
+    private void Awake() => Instance = this;
 
     public event Action<PokemonParty, PokemonParty> OnPokemonEncounter;
     public event Action<Pokemon, Pokemon> OnEnterBattle;

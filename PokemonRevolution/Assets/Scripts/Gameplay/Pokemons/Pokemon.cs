@@ -52,7 +52,6 @@ public class Pokemon
     {
         CurrentHP -= damage;
         if (CurrentHP < 0) CurrentHP = 0;
-        BattleEvents.Current.PokemonDamaged(this, damage);
     }
 
     public void LoseMovePP(Move move)
