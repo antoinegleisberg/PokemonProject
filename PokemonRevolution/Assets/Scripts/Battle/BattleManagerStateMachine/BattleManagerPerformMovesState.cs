@@ -28,8 +28,6 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
         switch (battleActionInfo.BattleAction)
         {
             case BattleAction.Attack:
-                Debug.Log("Performing attack move");
-                Debug.Log($"Battle action info : source pokemon = {battleActionInfo.SourcePokemon.Name}, target pokemon = {battleActionInfo.TargetPokemon.Name}, move index = {battleActionInfo.ActionParameter}");
                 int moveIndex = battleActionInfo.ActionParameter;
                 Move move = battleActionInfo.SourcePokemon.Moves[moveIndex];
                 battleManager.PerformMove(battleActionInfo.SourcePokemon, battleActionInfo.TargetPokemon, move);

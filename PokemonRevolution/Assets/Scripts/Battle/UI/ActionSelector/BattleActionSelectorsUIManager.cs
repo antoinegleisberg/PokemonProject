@@ -70,7 +70,6 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
     private void SetActiveSelector(GameObject selector)
     {
-        Debug.Log($"Setting active selector to {selector?.name ?? "null"}");
         foreach (GameObject s in selectors)
         {
             s.SetActive(false);

@@ -36,8 +36,7 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
             battleManager.EnemyPokemon = nextPokemon;
             BattleEvents.Instance.PokemonSwitchedIn(nextPokemon);
         }
-
-        Debug.Log("Going back to start turn state");
+        
         battleManager.SwitchState(battleManager.StartTurnState);
     }
 
