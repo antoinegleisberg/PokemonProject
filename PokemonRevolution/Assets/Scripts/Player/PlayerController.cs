@@ -9,24 +9,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private LayerMask solidObjectsCollidersLayer;
     [SerializeField] private LayerMask tallGrassLayer;
-    [SerializeField] private int encouterRate = 10;
+    [SerializeField] private int encouterRate = 10; // Has to go to MapArea
+    [SerializeField] private PokemonParty playerParty;
     private float moveSpeed;
     private Vector2Int lastInput;
     private bool isMoving;
 
-    private void Awake()
-    {
-    }
+    // testing : has to go at some point : to GameManager / MapArea
+    [SerializeField] private PokemonParty enemyParty;
+    [SerializeField] private MapArea mapArea;
 
-    // Start is called before the first frame update
     private void Start()
     {
         lastInput = InputManager.Instance.MovementInput;
         isMoving = false;
         moveSpeed = baseMoveSpeed;
     }
-
-    // Update is called once per frame
+    
     private void Update()
     {
         Move();
@@ -88,7 +87,13 @@ public class PlayerController : MonoBehaviour
     {
         if (Physics2D.OverlapCircle(transform.position, 0.2f, tallGrassLayer) != null)
         {
-            if (Random.Range(0, 100) < encouterRate) Debug.Log("Encounter!");
+            if (Random.Range(0, 100) < encouterRate)
+            {
+                Pokemon enemyPokemon = mapArea.GetRandomWildPokemon();
+                enemyParty.Pokemons.Clear();
+                enemyParty.Pokemons.Add(enemyPokemon);
+                GameEvents.Current.EncounterPokemon(playerParty, enemyParty);
+            }
         }
     }
 }

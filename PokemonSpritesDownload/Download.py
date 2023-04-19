@@ -1,63 +1,109 @@
 import requests
 import os
 from bs4 import BeautifulSoup
-import pprint
 
-# Set the URL to download from
-url = "https://pokemondb.net/sprites"
+
+download_types = ["pokemon-sprites", "items"]  # The possibilities of downloads
+downloads = ["items"]  # The downloads to perform
 
 # Set the path to save the images
-path = "pokemon-sprites"
-
+path = "pokemon-downloads"
 # Set the generation and versions to download
 version = "black-white"
 
 # Create the necessary directories
-os.makedirs(f"{path}/{version}/shiny/front", exist_ok=True)
-os.makedirs(f"{path}/{version}/shiny/back", exist_ok=True)
-os.makedirs(f"{path}/{version}/normal/front", exist_ok=True)
-os.makedirs(f"{path}/{version}/normal/back", exist_ok=True)
-os.makedirs(f"{path}/icons", exist_ok=True)
+# For the pokemon sprites
+os.makedirs(f"{path}/pokemon-sprites/{version}/unanimated/shiny/front", exist_ok=True)
+os.makedirs(f"{path}/pokemon-sprites/{version}/unanimated/shiny/back", exist_ok=True)
+os.makedirs(f"{path}/pokemon-sprites/{version}/unanimated/normal/front", exist_ok=True)
+os.makedirs(f"{path}/pokemon-sprites/{version}/unanimated/normal/back", exist_ok=True)
+os.makedirs(f"{path}/pokemon-sprites/{version}/animated/shiny/front", exist_ok=True)
+os.makedirs(f"{path}/pokemon-sprites/{version}/animated/shiny/back", exist_ok=True)
+os.makedirs(f"{path}/pokemon-sprites/{version}/animated/normal/front", exist_ok=True)
+os.makedirs(f"{path}/pokemon-sprites/{version}/animated/normal/back", exist_ok=True)
+os.makedirs(f"{path}/pokemon-sprites/icons", exist_ok=True)
 
-# Fetch the webpage and parse it using BeautifulSoup
-response = requests.get(url)
-soup = BeautifulSoup(response.text, "html.parser")
+# For the items
+os.makedirs(f"{path}/items", exist_ok=True)
 
-# Find all the image tags on the page
-img_tags = soup.find_all("img")
+if "pokemon-sprites" in downloads:
+    # Fetch the webpage and parse it using BeautifulSoup
+    url = "https://pokemondb.net/sprites"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "html.parser")
 
-# Loop through all the image tags
-for i, img in enumerate(img_tags[1:]):
-    # Get the source URL for the icon
-    src = img["src"]
+    # Find all the image tags on the page
+    img_tags = soup.find_all("img")
 
-    # Get the name of the Pokemon from the URL
-    name = src.split("/")[-1].split(".")[0]
-    # Get the National Pokedex number for the Pokemon
-    num = i + 1
+    # Loop through all the image tags
+    for i, img in enumerate(img_tags[1:]):
+        # Get the source URL for the icon
+        src = img["src"]
 
-    # Download the icon
-    r = requests.get(src)
-    with open(f"{path}/icons/{num}.png", "wb") as f:
-        f.write(r.content)
+        # Get the name of the Pokemon from the URL
+        name = src.split("/")[-1].split(".")[0]
 
-    # Download the shiny front sprite
-    r = requests.get(f"https://img.pokemondb.net/sprites/{version}/shiny/{name}.png")
-    with open(f"{path}/{version}/shiny/front/{num}.png", "wb") as f:
-        f.write(r.content)
-    # Download the shiny back sprite
-    r = requests.get(
-        f"https://img.pokemondb.net/sprites/{version}/back-shiny/{name}.png"
-    )
-    with open(f"{path}/{version}/shiny/back/{num}.png", "wb") as f:
-        f.write(r.content)
-    # Download the non-shiny front sprite
-    r = requests.get(f"https://img.pokemondb.net/sprites/{version}/normal/{name}.png")
-    with open(f"{path}/{version}/normal/front/{num}.png", "wb") as f:
-        f.write(r.content)
-    # Download the non-shiny back sprite
-    r = requests.get(
-        f"https://img.pokemondb.net/sprites/{version}/back-normal/{name}.png"
-    )
-    with open(f"{path}/{version}/normal/back/{num}.png", "wb") as f:
-        f.write(r.content)
+        # Get the National Pokedex number for the Pokemon
+        num = i + 1
+
+        sprite_urls = [
+            src,
+            f"https://img.pokemondb.net/sprites/{version}/shiny/{name}.png",
+            f"https://img.pokemondb.net/sprites/{version}/back-shiny/{name}.png",
+            f"https://img.pokemondb.net/sprites/{version}/normal/{name}.png",
+            f"https://img.pokemondb.net/sprites/{version}/back-normal/{name}.png",
+            f"https://img.pokemondb.net/sprites/{version}/anim/shiny/{name}.gif",
+            f"https://img.pokemondb.net/sprites/{version}/anim/back-shiny/{name}.gif",
+            f"https://img.pokemondb.net/sprites/{version}/anim/normal/{name}.gif",
+            f"https://img.pokemondb.net/sprites/{version}/anim/back-normal/{name}.gif",
+        ]
+
+        sprite_file_names = [
+            f"{path}/pokemon-sprites/icons/{num}.png",
+            f"{path}/pokemon-sprites/{version}/unanimated/shiny/front/{num}.png",
+            f"{path}/pokemon-sprites/{version}/unanimated/shiny/back/{num}.png",
+            f"{path}/pokemon-sprites/{version}/unanimated/normal/front/{num}.png",
+            f"{path}/pokemon-sprites/{version}/unanimated/normal/back/{num}.png",
+            f"{path}/pokemon-sprites/{version}/animated/shiny/front/{num}.gif",
+            f"{path}/pokemon-sprites/{version}/animated/shiny/back/{num}.gif",
+            f"{path}/pokemon-sprites/{version}/animated/normal/front/{num}.gif",
+            f"{path}/pokemon-sprites/{version}/animated/normal/back/{num}.gif",
+        ]
+
+        for url, fname in zip(sprite_urls, sprite_file_names):
+            r = requests.get(url)
+            if not r.ok:
+                continue
+            with open(fname, "wb") as f:
+                f.write(r.content)
+
+if "items" in downloads:
+    url = "https://pokemondb.net/item/all"
+    response = requests.get(url)
+
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    # Find all the image tags on the page
+    img_tags = soup.find_all("img")
+
+    # Loop through all the image tags
+    for img in img_tags:
+        src = img["src"]
+        item_name = src.split("/")[-1].split(".")[0]
+
+        # Remove the items that do not have sprites
+        if item_name == "s":
+            continue
+
+        # Get the URL for the item sprite
+        item_url = f"https://img.pokemondb.net/sprites/items/{item_name}.png"
+
+        # Get the file name for the item sprite
+        item_file_name = f"{path}/items/{item_name}.png"
+
+        # Download the item sprite
+        r = requests.get(item_url)
+        if not r.ok:
+            continue
+        with open(item_file_name, "wb") as f:
+            f.write(r.content)

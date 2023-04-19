@@ -241,7 +241,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 856738448}
+      - m_Target: {fileID: 729778270}
         m_TargetAssemblyTypeName: BattleUIEvents, Assembly-CSharp
         m_MethodName: MoveSelected
         m_Mode: 3
@@ -266,7 +266,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 0.8098858, b: 0.66415095, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -322,7 +322,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 247090902}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &108545535
 Animator:
@@ -786,6 +786,7 @@ GameObject:
   m_Component:
   - component: {fileID: 232899253}
   - component: {fileID: 232899254}
+  - component: {fileID: 232899255}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -823,6 +824,31 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!114 &232899255
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 232899252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6278a617da323f4b86f40c7330299d7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wildEncounters:
+  - pokemon: {fileID: 11400000, guid: 1ac035d07a2074043b8cf1e03f0b7fb0, type: 2}
+    minLevel: 3
+    maxLevel: 3
+    probability: 30
+  - pokemon: {fileID: 11400000, guid: 733a767d247b01d438f5d167a866eae7, type: 2}
+    minLevel: 4
+    maxLevel: 5
+    probability: 40
+  - pokemon: {fileID: 11400000, guid: 188d7911fdecf0043b9c2f985a49825d, type: 2}
+    minLevel: 6
+    maxLevel: 6
+    probability: 30
 --- !u!1 &247090900
 GameObject:
   m_ObjectHideFlags: 0
@@ -852,7 +878,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 519420032}
   - {fileID: 108545534}
+  - {fileID: 656966533}
   m_Father: {fileID: 1493637086}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -878,6 +906,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   encouterRate: 10
+  playerParty: {fileID: 656966534}
+  enemyParty: {fileID: 278167723}
+  mapArea: {fileID: 232899255}
 --- !u!1 &270314976
 GameObject:
   m_ObjectHideFlags: 0
@@ -954,6 +985,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 270314976}
   m_CullTransparentMesh: 1
+--- !u!1 &278167721
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 278167722}
+  - component: {fileID: 278167723}
+  m_Layer: 0
+  m_Name: WildPokemon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &278167722
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278167721}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1493637086}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &278167723
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 278167721}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6868f27d7857b6a4b8252d093199fbdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &281887350
 GameObject:
   m_ObjectHideFlags: 0
@@ -1069,6 +1144,108 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 322277587}
   m_CullTransparentMesh: 1
+--- !u!1 &329977424
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 329977425}
+  - component: {fileID: 329977428}
+  - component: {fileID: 329977427}
+  - component: {fileID: 329977426}
+  m_Layer: 0
+  m_Name: BattleUIManagers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &329977425
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329977424}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1489933338}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &329977426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329977424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e98e038e5dcd5844849576e04fbc39c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  actionSelector: {fileID: 1464497843}
+  moveSelector: {fileID: 940968456}
+  move0Button: {fileID: 86224202}
+  move1Button: {fileID: 1337216273}
+  move2Button: {fileID: 1177103342}
+  move3Button: {fileID: 438309956}
+  move0Name: {fileID: 827635230}
+  move1Name: {fileID: 1078818991}
+  move2Name: {fileID: 1546753562}
+  move3Name: {fileID: 225489744}
+  move0Image: {fileID: 322277589}
+  move1Image: {fileID: 270314978}
+  move2Image: {fileID: 1423160593}
+  move3Image: {fileID: 1377252711}
+  move0PPText: {fileID: 1723028042}
+  move1PPText: {fileID: 1504575513}
+  move2PPText: {fileID: 1057231769}
+  move3PPText: {fileID: 1772717316}
+--- !u!114 &329977427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329977424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91ce08d873c98e84e96e670198fd6233, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dialogueBox: {fileID: 2032808369}
+  dialogueText: {fileID: 545968361}
+--- !u!114 &329977428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329977424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6f9d6ecd79a09f44a400efcf322db4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultBattleBackground: {fileID: 4422032505096542742, guid: 5e92e4381a92d5649bd2246f7decdb7b, type: 3}
+  battleBackgroundImage: {fileID: 1881828873}
+  playerUnitImage: {fileID: 459326044}
+  enemyUnitImage: {fileID: 464945585}
+  playerPokemonName: {fileID: 1577483107}
+  enemyPokemonName: {fileID: 1642175171}
+  playerLevelText: {fileID: 563282039}
+  enemyLevelText: {fileID: 470903165}
+  playerHealthBar: {fileID: 1200033203}
+  enemyHealthBar: {fileID: 1671681477}
+  playerHealthText: {fileID: 976428968}
+  enemyHealthText: {fileID: 1822503474}
 --- !u!1 &337158357
 GameObject:
   m_ObjectHideFlags: 0
@@ -1113,7 +1290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5b64c0f2ae5b504fbb82513d5b0ba30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textSpeed: 30
+  textSpeed: 300
 --- !u!1 &363219157
 GameObject:
   m_ObjectHideFlags: 0
@@ -1544,7 +1721,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 856738448}
+      - m_Target: {fileID: 729778270}
         m_TargetAssemblyTypeName: BattleUIEvents, Assembly-CSharp
         m_MethodName: BagButtonPressed
         m_Mode: 1
@@ -10942,6 +11119,52 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
+--- !u!1 &425018769
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 425018770}
+  - component: {fileID: 425018771}
+  m_Layer: 0
+  m_Name: CameraManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &425018770
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425018769}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 831710454}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &425018771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 425018769}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44f2d4d1a170fdc47b661ed0d63a9f9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 519420031}
+  battleCamera: {fileID: 532440468}
 --- !u!1 &438309956
 GameObject:
   m_ObjectHideFlags: 0
@@ -11028,7 +11251,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 856738448}
+      - m_Target: {fileID: 729778270}
         m_TargetAssemblyTypeName: BattleUIEvents, Assembly-CSharp
         m_MethodName: MoveSelected
         m_Mode: 3
@@ -11053,7 +11276,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.9607844, g: 0.7803922, b: 0.63529414, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11166,7 +11389,7 @@ GameObject:
   - component: {fileID: 464945586}
   - component: {fileID: 464945585}
   m_Layer: 0
-  m_Name: EnnemyUnit
+  m_Name: EnemyUnit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11474,11 +11697,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: -0.5, y: 0.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 863717543}
+  m_Father: {fileID: 247090902}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &532440465
@@ -11870,6 +12093,50 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &656966532
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 656966533}
+  - component: {fileID: 656966534}
+  m_Layer: 0
+  m_Name: PlayerPokemonParty
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &656966533
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656966532}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 247090902}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &656966534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 656966532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6868f27d7857b6a4b8252d093199fbdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &694078669
 GameObject:
   m_ObjectHideFlags: 0
@@ -12085,6 +12352,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 729512446}
   m_CullTransparentMesh: 1
+--- !u!1 &729778268
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 729778269}
+  - component: {fileID: 729778271}
+  - component: {fileID: 729778270}
+  m_Layer: 0
+  m_Name: BattleEvents
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &729778269
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 729778268}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1489933338}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &729778270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 729778268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18daedd49d209f94ab1243669c58b657, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &729778271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 729778268}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1818bbabd8d4374e92da0b58de20bc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &827635228
 GameObject:
   m_ObjectHideFlags: 0
@@ -12252,6 +12576,8 @@ Transform:
   - {fileID: 1096783729}
   - {fileID: 1827398408}
   - {fileID: 337158358}
+  - {fileID: 1782204593}
+  - {fileID: 425018770}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12425,7 +12751,7 @@ RectTransform:
   - {fileID: 2032808370}
   - {fileID: 281887351}
   m_Father: {fileID: 1489933338}
-  m_RootOrder: 2
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -12503,12 +12829,8 @@ GameObject:
   m_Component:
   - component: {fileID: 856738443}
   - component: {fileID: 856738444}
-  - component: {fileID: 856738448}
-  - component: {fileID: 856738447}
-  - component: {fileID: 856738446}
-  - component: {fileID: 856738445}
   m_Layer: 0
-  m_Name: BattleManagers
+  m_Name: BattleManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12541,72 +12863,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d1fa376ddd66e644a95b5297d18f01f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerPokemonScriptable: {fileID: 11400000, guid: 1ac035d07a2074043b8cf1e03f0b7fb0, type: 2}
-  enemyPokemonScriptable: {fileID: 11400000, guid: 1ac035d07a2074043b8cf1e03f0b7fb0, type: 2}
---- !u!114 &856738445
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 856738442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e98e038e5dcd5844849576e04fbc39c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  actionSelector: {fileID: 1464497843}
-  moveSelector: {fileID: 940968456}
---- !u!114 &856738446
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 856738442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91ce08d873c98e84e96e670198fd6233, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dialogueBox: {fileID: 2032808369}
-  dialogueText: {fileID: 545968361}
---- !u!114 &856738447
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 856738442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6f9d6ecd79a09f44a400efcf322db4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  defaultBattleBackground: {fileID: 4422032505096542742, guid: 5e92e4381a92d5649bd2246f7decdb7b, type: 3}
-  battleBackgroundImage: {fileID: 1881828873}
-  playerUnitImage: {fileID: 459326044}
-  enemyUnitImage: {fileID: 464945585}
-  playerPokemonName: {fileID: 1577483107}
-  enemyPokemonName: {fileID: 1642175171}
-  playerLevelText: {fileID: 563282039}
-  enemyLevelText: {fileID: 470903165}
-  playerHealthBar: {fileID: 1200033203}
-  enemyHealthBar: {fileID: 1671681477}
-  playerHealthText: {fileID: 976428968}
-  enemyHealthText: {fileID: 1822503474}
---- !u!114 &856738448
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 856738442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18daedd49d209f94ab1243669c58b657, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  PlayerParty: {fileID: 0}
+  EnemyParty: {fileID: 0}
 --- !u!1 &863717542
 GameObject:
   m_ObjectHideFlags: 0
@@ -12634,8 +12892,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 519420032}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13324,7 +13581,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 856738448}
+      - m_Target: {fileID: 729778270}
         m_TargetAssemblyTypeName: BattleUIEvents, Assembly-CSharp
         m_MethodName: RunButtonPressed
         m_Mode: 1
@@ -13460,7 +13717,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 856738448}
+      - m_Target: {fileID: 729778270}
         m_TargetAssemblyTypeName: BattleUIEvents, Assembly-CSharp
         m_MethodName: MoveSelected
         m_Mode: 3
@@ -13485,7 +13742,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.9607844, g: 0.7803922, b: 0.63529414, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -13596,6 +13853,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1271513807}
   - component: {fileID: 1271513808}
+  - component: {fileID: 1271513810}
   - component: {fileID: 1271513809}
   m_Layer: 0
   m_Name: InputManager
@@ -13631,6 +13889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2721e9e2d78e78e488224db89eaf91c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inputActions: {fileID: -944628639613478452, guid: 456a76c4213d02e4da74d3d8a2b9968d, type: 3}
 --- !u!114 &1271513809
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13673,15 +13932,19 @@ MonoBehaviour:
     m_ActionId: e738f26f-9346-4be2-af12-2cac40feb5dd
     m_ActionName: Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
   - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: aa788cc7-596d-4f0a-8609-130245b3609e
-    m_ActionName: Player/Look[/Mouse/delta,/Pen/delta]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 1933fa6c-a093-4085-ad01-0c437b576878
-    m_ActionName: Player/Fire[/Mouse/leftButton]
-  - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1271513808}
+        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
+        m_MethodName: OnUINavigate
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: d80155da-e831-4c3a-a7b2-1401f3b49813
     m_ActionName: UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
   - m_PersistentCalls:
@@ -13697,19 +13960,7 @@ MonoBehaviour:
     m_ActionId: cae9e1b4-1df8-4f4d-a224-bc8e4febf8c2
     m_ActionName: UI/Point[/Mouse/position,/Pen/position]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1271513808}
-        m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
-        m_MethodName: OnClick
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_ActionId: a659ce12-1fd3-4b62-ab1b-e97fd3b3a2eb
     m_ActionName: UI/Click[/Mouse/leftButton,/Pen/tip]
   - m_PersistentCalls:
@@ -13726,21 +13977,13 @@ MonoBehaviour:
     m_ActionName: UI/RightClick[/Mouse/rightButton]
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 76a787a9-6cfc-45dc-a854-241c169acd89
-    m_ActionName: UI/TrackedDevicePosition
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 3d50f217-4d13-425e-b888-92ca3f3c0958
-    m_ActionName: UI/TrackedDeviceOrientation
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: fc78bdb3-87ef-4eb3-835e-054649e8041b
     m_ActionName: Player/Interact[/Keyboard/enter]
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1271513808}
         m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
-        m_MethodName: OnRunOrCancel
+        m_MethodName: OnRun
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13765,6 +14008,18 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1271513810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271513806}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bae3e3dff8e691d40b5a60678c8537e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1287481484
 GameObject:
   m_ObjectHideFlags: 0
@@ -13849,7 +14104,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 856738448}
+      - m_Target: {fileID: 729778270}
         m_TargetAssemblyTypeName: BattleUIEvents, Assembly-CSharp
         m_MethodName: AttackButtonPressed
         m_Mode: 1
@@ -14092,7 +14347,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 856738448}
+      - m_Target: {fileID: 729778270}
         m_TargetAssemblyTypeName: BattleUIEvents, Assembly-CSharp
         m_MethodName: MoveSelected
         m_Mode: 3
@@ -14117,7 +14372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.9607844, g: 0.7803922, b: 0.63529414, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -14226,7 +14481,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 856738448}
+      - m_Target: {fileID: 729778270}
         m_TargetAssemblyTypeName: BattleUIEvents, Assembly-CSharp
         m_MethodName: SwitchPokemonButtonPressed
         m_Mode: 1
@@ -15010,7 +15265,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1464497844
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15144,6 +15399,9 @@ Transform:
   m_Children:
   - {fileID: 532440466}
   - {fileID: 856738443}
+  - {fileID: 329977425}
+  - {fileID: 729778269}
+  - {fileID: 1790828232}
   - {fileID: 855641095}
   m_Father: {fileID: 10679392}
   m_RootOrder: 0
@@ -15177,6 +15435,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 247090902}
+  - {fileID: 278167722}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -16266,6 +16525,104 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1772717314}
   m_CullTransparentMesh: 1
+--- !u!1 &1782204592
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1782204593}
+  - component: {fileID: 1782204594}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1782204593
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782204592}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 831710454}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1782204594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782204592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6aa733778083c5c4ca090150621b52b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerParty: {fileID: 656966534}
+  bulbasaurPrefab: {fileID: 11400000, guid: 1ac035d07a2074043b8cf1e03f0b7fb0, type: 2}
+  charmanderPrefab: {fileID: 11400000, guid: 733a767d247b01d438f5d167a866eae7, type: 2}
+  squirtlePrefab: {fileID: 11400000, guid: 188d7911fdecf0043b9c2f985a49825d, type: 2}
+--- !u!1 &1790828231
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1790828232}
+  - component: {fileID: 1790828233}
+  m_Layer: 0
+  m_Name: BattleAnimations
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1790828232
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790828231}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1489933338}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1790828233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790828231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 739bee638fc4b7d4082e819382ad40c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerPokemonImage: {fileID: 459326044}
+  enemyPokemonImage: {fileID: 464945585}
+  enterBattleAnimationTime: 1
+  attackAnimationTime: 0.1
+  hitAnimationTime: 0.08
+  faintAnimationTime: 0.8
 --- !u!1 &1822503472
 GameObject:
   m_ObjectHideFlags: 0
@@ -17559,7 +17916,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 856738448}
+      - m_Target: {fileID: 729778270}
         m_TargetAssemblyTypeName: BattleUIEvents, Assembly-CSharp
         m_MethodName: CancelMoveSelection
         m_Mode: 1
