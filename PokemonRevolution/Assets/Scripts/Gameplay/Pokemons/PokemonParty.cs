@@ -4,17 +4,15 @@ using UnityEngine;
 
 public class PokemonParty
 {
-    private List<Pokemon> pokemons;
+    public List<Pokemon> Pokemons { get; private set; }
 
-    public List<Pokemon> Pokemons { get => pokemons; }
+    public PokemonParty() { Pokemons = new List<Pokemon>();}
 
-    public PokemonParty() { pokemons = new List<Pokemon>();}
-
-    public PokemonParty(List<Pokemon> pokemons) { this.pokemons = pokemons; }
+    public PokemonParty(List<Pokemon> pokemons) { Pokemons = pokemons; }
 
     public Pokemon GetFirstPokemon()
     {
-        foreach (Pokemon pokemon in pokemons)
+        foreach (Pokemon pokemon in Pokemons)
         {
             if (!pokemon.IsFainted)
                 return pokemon;

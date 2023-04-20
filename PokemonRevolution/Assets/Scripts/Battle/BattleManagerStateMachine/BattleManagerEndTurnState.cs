@@ -52,8 +52,7 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
     {
         Debug.Log("Replacing selected pokemon !");
         Pokemon nextPokemon = battleManager.PlayerParty.Pokemons[pokemonIndex];
-        battleManager.PlayerPokemon = nextPokemon;
-        BattleEvents.Instance.PokemonSwitchedIn(nextPokemon);
+        battleManager.SwitchPokemon(battleManager.PlayerPokemon, nextPokemon);
 
         ReplaceEnemyFaintedPokemon();
     }
@@ -68,8 +67,7 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
                 battleManager.SwitchState(battleManager.EndBattleState);
                 return;
             }
-            battleManager.EnemyPokemon = nextPokemon;
-            BattleEvents.Instance.PokemonSwitchedIn(nextPokemon);
+            battleManager.SwitchPokemon(battleManager.EnemyPokemon, nextPokemon);
         }
         battleManager.SwitchState(battleManager.StartTurnState);
     }

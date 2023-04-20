@@ -6,7 +6,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Transform playerTransform;
     [SerializeField] private float baseMoveSpeed;
-    [SerializeField] private float runningMoveSpeedMultiplier = 1.75f;
+    [SerializeField] private float runningMoveSpeed;
     [SerializeField] private Animator animator;
     [SerializeField] private LayerMask solidObjectsCollidersLayer;
     [SerializeField] private LayerMask tallGrassLayer;
@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
         }
 
         bool isRunning = InputManager.Instance.IsRunning;
-        if (isRunning) moveSpeed = baseMoveSpeed * runningMoveSpeedMultiplier;
+        if (isRunning) moveSpeed = runningMoveSpeed;
         else moveSpeed = baseMoveSpeed;
         animator.SetBool("isMoving", isMoving && !isRunning);
         animator.SetBool("isRunning", isMoving && isRunning);

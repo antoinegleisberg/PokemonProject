@@ -20,3 +20,8 @@ MonoBehaviour:
   power: 40
   accuracy: 100
   pp: 25
+  moveEffects:
+    statBoosts: []
+    appliedvolatileStatusEffects: []
+    appliedNonVolatileStatusEffects: []
+  moveTargets: 03000000

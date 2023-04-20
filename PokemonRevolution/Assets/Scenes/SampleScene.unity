@@ -4200,11 +4200,10 @@ MonoBehaviour:
   enemyHUD: {fileID: 1482921842}
   playerPokemonImage: {fileID: 459326044}
   enemyPokemonImage: {fileID: 464945585}
-  enterBattleAnimationDuration: 1
+  switchInAnimationDuration: 1
   attackAnimationDuration: 0.1
   hitAnimationDuration: 0.08
   faintAnimationDuration: 0.8
-  waitingTimeBeforeFaintAnimation: 1
 --- !u!1 &337158357
 GameObject:
   m_ObjectHideFlags: 0
@@ -4250,6 +4249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textSpeed: 300
+  timeBetweenAnimations: 0.25
 --- !u!1 &353525278
 GameObject:
   m_ObjectHideFlags: 0
@@ -24467,7 +24467,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTransform: {fileID: 247090902}
   baseMoveSpeed: 5
-  runningMoveSpeedMultiplier: 1.75
+  runningMoveSpeed: 8
   animator: {fileID: 108545535}
   solidObjectsCollidersLayer:
     serializedVersion: 2

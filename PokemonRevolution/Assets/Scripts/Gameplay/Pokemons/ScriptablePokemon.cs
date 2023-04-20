@@ -23,7 +23,7 @@ public class ScriptablePokemon : ScriptableObject
     [SerializeField] private PokemonType type1;
     [SerializeField] private PokemonType type2;
 
-    [SerializeField] private int baseHealthPoints;
+    [SerializeField] private int baseHP;
     [SerializeField] private int baseAttack;
     [SerializeField] private int baseDefense;
     [SerializeField] private int baseSpecialAttack;
@@ -65,7 +65,7 @@ public class ScriptablePokemon : ScriptableObject
     public Sprite IconSprite { get => iconSprite; }
     public PokemonType Type1 { get => type1; }
     public PokemonType Type2 { get => type2; }
-    public int BaseHealthPoints { get => baseHealthPoints; }
+    public int BaseHP { get => baseHP; }
     public int BaseAttack { get => baseAttack; }
     public int BaseDefense { get => baseDefense; }
     public int BaseSpecialAttack { get => baseSpecialAttack; }
@@ -81,4 +81,11 @@ public class ScriptablePokemon : ScriptableObject
     public int SpecialDefenseEVYield { get => specialDefenseEVYield; }
     public int SpeedEVYield { get => speedEVYield; }
     public List<LearnableMove> LearnableMoves { get => learnableMoves; }
+    public List<ScriptableMove> EggMoves { get => eggMoves; }
+    public List<ScriptableMove> TmMoves { get => tmMoves; }
+    public ScriptableAbility Ability1 { get => ability1; }
+    public ScriptableAbility Ability2 { get => ability2; }
+    public ScriptableAbility HiddenAbility { get => hiddenAbility; }
+    public int EggCycles { get => eggCycles; }
+    public float MalePercentage { get => malePercentage; }
 }

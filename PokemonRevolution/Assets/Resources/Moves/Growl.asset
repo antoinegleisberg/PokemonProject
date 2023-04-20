@@ -20,3 +20,12 @@ MonoBehaviour:
   power: 0
   accuracy: 100
   pp: 40
+  moveEffects:
+    statBoosts:
+    - probability: 100
+      stat: 1
+      boostValue: -1
+      statBoostTarget: 03000000
+    appliedvolatileStatusEffects: []
+    appliedNonVolatileStatusEffects: []
+  moveTargets: 03000000

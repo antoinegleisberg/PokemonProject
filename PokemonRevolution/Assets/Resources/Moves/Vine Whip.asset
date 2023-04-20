@@ -19,3 +19,6 @@ MonoBehaviour:
   power: 45
   accuracy: 100
   pp: 25
+  moveEffects:
+    statBoosts: []
+  moveTargets: 03000000

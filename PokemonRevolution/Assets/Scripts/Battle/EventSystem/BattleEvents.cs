@@ -11,17 +11,17 @@ public class BattleEvents : MonoBehaviour
 
     public event Action OnEnterActionSelection;
 
-    public event Action<Pokemon, int> OnPokemonDamaged;
     public event Action<Pokemon, Pokemon, Move, AttackInfo> OnPokemonAttack;
+    public event Action<Pokemon, int> OnPokemonDamaged;
     public event Action<Pokemon> OnPokemonFainted;
     public event Action OnReplaceFaintedPokemon;
     public event Action<Pokemon> OnPokemonSwitchedOut;
     public event Action<Pokemon> OnPokemonSwitchedIn;
 
     public void EnterActionSelectionState() => OnEnterActionSelection?.Invoke();
-    
-    public void PokemonDamaged(Pokemon pokemon, int damage) => OnPokemonDamaged?.Invoke(pokemon, damage);
+
     public void PokemonAttacks(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo) => OnPokemonAttack?.Invoke(attacker, defender, move, attackInfo);
+    public void PokemonDamaged(Pokemon pokemon, int damage) => OnPokemonDamaged?.Invoke(pokemon, damage);
     public void PokemonFaints(Pokemon pokemon) => OnPokemonFainted?.Invoke(pokemon);
     public void ReplaceFaintedPokemon() => OnReplaceFaintedPokemon?.Invoke();
     public void PokemonSwitchedOut(Pokemon pokemon) => OnPokemonSwitchedOut?.Invoke(pokemon);

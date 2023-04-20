@@ -25,18 +25,18 @@ public class BattleSceneHUDManager : MonoBehaviour
         pokemonLevelText.text = $"Lv {pokemon.Level}";
 
 
-        float fillAmount = (float)pokemon.CurrentHP / (float)pokemon.MaxHealthPoints;
+        float fillAmount = (float)pokemon.CurrentHP / (float)pokemon.MaxHP;
         healthBar.transform.localScale = new Vector3(fillAmount, 1, 1);
-        healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHealthPoints}";
+        healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHP}";
     }
 
     public IEnumerator UpdateHPBarSmooth(Pokemon pokemon)
     {
-        float pokemonCurrentHP = (float)pokemon.CurrentHP / pokemon.MaxHealthPoints;
+        float pokemonCurrentHP = (float)pokemon.CurrentHP / pokemon.MaxHP;
         float currentHpDisplayed = healthBar.transform.localScale.x;
         float changeAmount = currentHpDisplayed - pokemonCurrentHP;
 
-        float hpLost = currentHpDisplayed * pokemon.MaxHealthPoints - pokemon.CurrentHP;
+        float hpLost = currentHpDisplayed * pokemon.MaxHP - pokemon.CurrentHP;
         int maxHPLostPerSecond = 50;
         float animationTime = Mathf.Max(hpLost / maxHPLostPerSecond, 0.5f);
 
@@ -46,24 +46,12 @@ public class BattleSceneHUDManager : MonoBehaviour
             currentHpDisplayed = pokemonCurrentHP + (1 - normalizedTime) * changeAmount;
 
             healthBar.transform.localScale = new Vector3(currentHpDisplayed, 1, 1);
-            healthText.text = $"{Mathf.Round(currentHpDisplayed * pokemon.MaxHealthPoints)} / {pokemon.MaxHealthPoints}";
+            healthText.text = $"{Mathf.Round(currentHpDisplayed * pokemon.MaxHP)} / {pokemon.MaxHP}";
 
             yield return null;
         }
-
-        /*
-        while (currentHpDisplayed - pokemonCurrentHP > Mathf.Epsilon)
-        {
-            currentHpDisplayed -= changeAmount * Time.deltaTime;
-
-            healthBar.transform.localScale = new Vector3(currentHpDisplayed, 1, 1);
-            healthText.text = $"{Mathf.Round(currentHpDisplayed * pokemon.MaxHealthPoints)} / {pokemon.MaxHealthPoints}";
-
-            yield return null;
-        }
-        */
 
         healthBar.transform.localScale = new Vector3(pokemonCurrentHP, 1, 1);
-        healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHealthPoints}";
+        healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHP}";
     }
 }

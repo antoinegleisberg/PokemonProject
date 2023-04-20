@@ -53,9 +53,7 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
             case BattleAction.SwitchPokemon:
                 int pokemonIndex = battleActionInfo.ActionParameter;
                 Pokemon newPokemon = battleManager.PlayerParty.Pokemons[pokemonIndex];
-                BattleEvents.Instance.PokemonSwitchedOut(battleManager.PlayerPokemon);
-                battleManager.PlayerPokemon = newPokemon;
-                BattleEvents.Instance.PokemonSwitchedIn(battleManager.PlayerPokemon);
+                battleManager.SwitchPokemon(battleManager.PlayerPokemon, newPokemon);
                 break;
 
             case BattleAction.Run:

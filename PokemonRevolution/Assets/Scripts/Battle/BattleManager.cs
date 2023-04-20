@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
-    public PokemonParty PlayerParty;
-    public PokemonParty EnemyParty;
-    public Pokemon PlayerPokemon;
-    public Pokemon EnemyPokemon;
+    public PokemonParty PlayerParty { get; private set; }
+    public PokemonParty EnemyParty { get; private set; }
+    public Pokemon PlayerPokemon { get; private set; }
+    public Pokemon EnemyPokemon { get; private set; }
 
-    public BattleActionInfo NextPlayerAction;
-    public BattleActionInfo NextEnemyAction;
+    public BattleActionInfo NextPlayerAction { get; set; }
+    public BattleActionInfo NextEnemyAction { get; set; }
 
     private BattleManagerBaseState currentState;
     public BattleManagerOutOfBattleState OutOfBattleState;
@@ -25,6 +25,17 @@ public class BattleManager : MonoBehaviour
     {
         // Debug.Log("Entering state: " + newState.GetType().Name);
         StartCoroutine(SwitchStateCoroutine(newState));
+    }
+
+    public void SwitchPokemon(Pokemon oldPokemon, Pokemon newPokemon)
+    {
+        if (!oldPokemon.IsFainted)
+            BattleEvents.Instance.PokemonSwitchedOut(oldPokemon);
+        if (newPokemon.Owner == PokemonOwner.Player)
+            PlayerPokemon = newPokemon;
+        else if (newPokemon.Owner == PokemonOwner.EnemyTrainer)
+            EnemyPokemon = newPokemon;
+        BattleEvents.Instance.PokemonSwitchedIn(newPokemon);
     }
 
     public void PerformMove(Pokemon attackingPokemon, Pokemon targetPokemon, Move move)

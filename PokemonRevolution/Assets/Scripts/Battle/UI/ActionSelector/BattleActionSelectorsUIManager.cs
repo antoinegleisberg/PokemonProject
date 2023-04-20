@@ -35,14 +35,14 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
         GameEvents.Instance.OnPokemonEncounter += (playerParty, enemyParty) => playerPokemonParty = playerParty;
         GameEvents.Instance.OnEnterBattle += OnEnterBattle;
 
-        BattleUIEvents.Instance.OnAttackButtonPressed += OnAttackButtonPressed;
+        BattleUIEvents.Instance.OnAttackButtonPressed += SetActiveSelectorToMoveSelector;
         BattleUIEvents.Instance.OnSwitchPokemonButtonPressed += OnSwitchPokemonButtonPressed;
         BattleUIEvents.Instance.OnBagButtonPressed += OnBagButtonPressed;
 
-        BattleUIEvents.Instance.OnMoveSelected += OnMoveSelected;
+        BattleUIEvents.Instance.OnMoveSelected += DeactivateAllSelectors;
         BattleUIEvents.Instance.OnCancelMoveSelection += SetActiveSelectorToActionSelector;
 
-        BattleUIEvents.Instance.OnSwitchPokemonSelected += OnSwitchPokemonSelected;
+        BattleUIEvents.Instance.OnSwitchPokemonSelected += DeactivateAllSelectors;
         BattleUIEvents.Instance.OnCancelSwitchPokemonSelection += SetActiveSelectorToActionSelector;
 
         BattleEvents.Instance.OnEnterActionSelection += SetActiveSelectorToActionSelector;
@@ -56,14 +56,14 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
         GameEvents.Instance.OnPokemonEncounter -= (playerParty, enemyParty) => playerPokemonParty = playerParty;
         GameEvents.Instance.OnEnterBattle -= OnEnterBattle;
 
-        BattleUIEvents.Instance.OnAttackButtonPressed -= OnAttackButtonPressed;
+        BattleUIEvents.Instance.OnAttackButtonPressed -= SetActiveSelectorToMoveSelector;
         BattleUIEvents.Instance.OnSwitchPokemonButtonPressed -= OnSwitchPokemonButtonPressed;
         BattleUIEvents.Instance.OnBagButtonPressed -= OnBagButtonPressed;
 
-        BattleUIEvents.Instance.OnMoveSelected -= OnMoveSelected;
+        BattleUIEvents.Instance.OnMoveSelected -= DeactivateAllSelectors;
         BattleUIEvents.Instance.OnCancelMoveSelection -= SetActiveSelectorToActionSelector;
 
-        BattleUIEvents.Instance.OnSwitchPokemonSelected -= OnSwitchPokemonSelected;
+        BattleUIEvents.Instance.OnSwitchPokemonSelected -= DeactivateAllSelectors;
         BattleUIEvents.Instance.OnCancelSwitchPokemonSelection -= SetActiveSelectorToActionSelector;
 
         BattleEvents.Instance.OnEnterActionSelection -= SetActiveSelectorToActionSelector;
@@ -81,17 +81,16 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
         selector?.SetActive(true);
     }
 
+    private void DeactivateAllSelectors(int _) => SetActiveSelector(null);
+
+    private void SetActiveSelectorToActionSelector() => SetActiveSelector(actionSelector);
+
+    private void SetActiveSelectorToMoveSelector() => SetActiveSelector(moveSelector);
+
     private void OnEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
     {
         moveSelectorUIManager.UpdateMovesUI(playerPokemon);
         SetActiveSelector(null);
-    }
-
-    private void SetActiveSelectorToActionSelector() => SetActiveSelector(actionSelector);
-    
-    private void OnAttackButtonPressed()
-    {
-        SetActiveSelector(moveSelector);
     }
 
     private void OnSwitchPokemonButtonPressed()
@@ -103,13 +102,6 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
     private void OnBagButtonPressed()
     {
         // TODO
-    }
-
-    private void OnMoveSelected(int moveIndex) => SetActiveSelector(null);
-
-    private void OnSwitchPokemonSelected(int pokemonIndex)
-    {
-        Debug.Log("Switch to pokemon " + pokemonIndex);
     }
 
     private void OnPokemonAttack(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo)

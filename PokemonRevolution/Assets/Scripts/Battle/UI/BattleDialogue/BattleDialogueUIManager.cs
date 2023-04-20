@@ -11,6 +11,7 @@ public class BattleDialogueUIManager : MonoBehaviour
     private void Start()
     {
         GameEvents.Instance.OnEnterBattle += OnEnterBattle;
+        BattleEvents.Instance.OnEnterActionSelection += OnEnterActionSelection;
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
         BattleEvents.Instance.OnPokemonSwitchedOut += OnPokemonSwitchedOut;
         BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
@@ -19,6 +20,7 @@ public class BattleDialogueUIManager : MonoBehaviour
     private void OnDestroy()
     {
         GameEvents.Instance.OnEnterBattle -= OnEnterBattle;
+        BattleEvents.Instance.OnEnterActionSelection -= OnEnterActionSelection;
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
         BattleEvents.Instance.OnPokemonSwitchedOut -= OnPokemonSwitchedOut;
         BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
@@ -27,6 +29,11 @@ public class BattleDialogueUIManager : MonoBehaviour
     private void OnEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
     {
         UIManager.Instance.WriteDialogueText(dialogueText, $"A wild {enemyPokemon.Name} appeared!");
+    }
+
+    private void OnEnterActionSelection()
+    {
+        UIManager.Instance.WriteDialogueText(dialogueText, $"What will you do?");
     }
 
     private void OnPokemonAttack(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo)

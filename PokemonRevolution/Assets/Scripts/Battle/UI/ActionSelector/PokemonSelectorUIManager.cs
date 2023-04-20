@@ -35,8 +35,8 @@ public class PokemonSelectorUIManager : MonoBehaviour
                 pokemonButtons[i].transform.Find("PokemonName").GetComponent<TextMeshProUGUI>().text = playerParty.Pokemons[i].Name;
                 pokemonButtons[i].transform.Find("LevelText").GetComponent<TextMeshProUGUI>().text = $"Lv. {playerParty.Pokemons[i].Level}";
                 pokemonButtons[i].transform.Find("PokemonIcon").GetComponent<Image>().sprite = playerParty.Pokemons[i].ScriptablePokemon.IconSprite;
-                pokemonButtons[i].transform.Find("HealthBar").Find("HealthText").GetComponent<TextMeshProUGUI>().text = $"{playerParty.Pokemons[i].CurrentHP}/{playerParty.Pokemons[i].MaxHealthPoints}";
-                float healthPercentage = (float)playerParty.Pokemons[i].CurrentHP / (float)playerParty.Pokemons[i].MaxHealthPoints;
+                pokemonButtons[i].transform.Find("HealthBar").Find("HealthText").GetComponent<TextMeshProUGUI>().text = $"{playerParty.Pokemons[i].CurrentHP}/{playerParty.Pokemons[i].MaxHP}";
+                float healthPercentage = (float)playerParty.Pokemons[i].CurrentHP / (float)playerParty.Pokemons[i].MaxHP;
                 pokemonButtons[i].transform.Find("HealthBar").Find("HealthBarForeground").localScale = new Vector3(healthPercentage, 1, 1);
             
                 if (playerParty.Pokemons[i].IsFainted)

@@ -47,9 +47,6 @@ public class BattleSceneUIManager : MonoBehaviour
     {
         battleBackgroundImage.sprite = defaultBattleBackground;
         
-        playerHUD.UpdateHUD(playerPokemon);
-        enemyHUD.UpdateHUD(enemyPokemon);
-        
         UIManager.Instance.EnqueueAnimation(AnimatePokemonEnterBattle(playerPokemon, enemyPokemon));
     }
 
