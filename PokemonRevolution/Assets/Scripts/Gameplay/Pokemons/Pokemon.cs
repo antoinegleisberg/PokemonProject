@@ -44,7 +44,7 @@ public class Pokemon
     public int SpecialAttack { get { return Mathf.FloorToInt((ScriptablePokemon.BaseSpecialAttack * Level) / 100.0f) + 5; } }
     public int SpecialDefense { get { return Mathf.FloorToInt((ScriptablePokemon.BaseSpecialDefense * Level) / 100.0f) + 5; } }
     public int Speed { get { return Mathf.FloorToInt((ScriptablePokemon.BaseSpeed * Level) / 100.0f) + 5; } }
-    public int MaxHealthPoints { get { return Mathf.FloorToInt((ScriptablePokemon.BaseHealthPoints * Level) / 100.0f) + 10; } }
+    public int MaxHealthPoints { get { return Mathf.FloorToInt((ScriptablePokemon.BaseHealthPoints * Level) / 100.0f) + Level + 10; } }
 
     public bool IsFainted { get { return CurrentHP <= 0; } }
 

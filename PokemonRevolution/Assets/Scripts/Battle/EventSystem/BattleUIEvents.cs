@@ -33,6 +33,7 @@ public class BattleUIEvents : MonoBehaviour
     // SwitchPokemonEvents
     public event Action<int> OnSwitchPokemonSelected;
     public event Action OnCancelSwitchPokemonSelection;
+    public event Action<int> OnReplacePokemonSelected;
 
     public void AttackButtonPressed() => OnAttackButtonPressed?.Invoke();
     public void SwitchPokemonButtonPressed() => OnSwitchPokemonButtonPressed?.Invoke();
@@ -53,4 +54,5 @@ public class BattleUIEvents : MonoBehaviour
 
     public void SwitchPokemonSelected(int pokemonIndex) => OnSwitchPokemonSelected?.Invoke(pokemonIndex);
     public void CancelSwitchPokemonSelection() => OnCancelSwitchPokemonSelection?.Invoke();
+    public void ReplacePokemonSelected(int pokemonIndex) => OnReplacePokemonSelected?.Invoke(pokemonIndex);
 }

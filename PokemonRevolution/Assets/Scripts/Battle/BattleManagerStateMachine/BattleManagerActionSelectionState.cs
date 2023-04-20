@@ -30,7 +30,7 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
     public override void ExitState()
     {
         int randomEnemyMove = Random.Range(0, battleManager.EnemyPokemon.Moves.Count);
-        battleManager.NextEnemyAction = new BattleActionInfo(BattleAction.Attack, randomEnemyMove, battleManager.EnemyPokemon, battleManager.PlayerPokemon);
+        battleManager.NextEnemyAction = new BattleActionInfo(BattleAction.Attack, randomEnemyMove, battleManager.EnemyPokemon, 0);
     }
 
     public override void OnDestroy()
@@ -45,19 +45,19 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
 
     private void OnRunSelected()
     {
-        battleManager.NextPlayerAction = new BattleActionInfo(BattleAction.Run, 0);
+        battleManager.NextPlayerAction = new BattleActionInfo(BattleAction.Run);
         battleManager.SwitchState(battleManager.PerformMovesState);
     }
 
     private void OnMoveSelected(int moveIndex)
     {
-        battleManager.NextPlayerAction = new BattleActionInfo(BattleAction.Attack, moveIndex, battleManager.PlayerPokemon, battleManager.EnemyPokemon);
+        battleManager.NextPlayerAction = new BattleActionInfo(BattleAction.Attack, moveIndex, battleManager.PlayerPokemon, 1);
         battleManager.SwitchState(battleManager.PerformMovesState);
     }
 
     private void OnSwitchPokemonSelected(int pokemonIndex)
     {
-        battleManager.NextPlayerAction = new BattleActionInfo(BattleAction.SwitchPokemon, pokemonIndex, battleManager.PlayerPokemon);
+        battleManager.NextPlayerAction = new BattleActionInfo(BattleAction.SwitchPokemon, pokemonIndex);
         battleManager.SwitchState(battleManager.PerformMovesState);
     }
 

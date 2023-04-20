@@ -9,16 +9,18 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
     [SerializeField] private GameObject actionSelector;
     [SerializeField] private GameObject moveSelector;
     [SerializeField] private GameObject switchPokemonSelector;
+    [SerializeField] private GameObject replacePokemonSelector;
     private List<GameObject> selectors;
 
     [SerializeField] private MoveSelectorUIManager moveSelectorUIManager;
     [SerializeField] private PokemonSelectorUIManager pokemonSelectorUIManager;
+    [SerializeField] private PokemonSelectorUIManager pokemonReplacementUIManager;
 
     private PokemonParty playerPokemonParty;
 
     private void Start()
     {
-        selectors = new List<GameObject> { actionSelector, moveSelector, switchPokemonSelector };
+        selectors = new List<GameObject> { actionSelector, moveSelector, switchPokemonSelector, replacePokemonSelector };
 
         SubscribeToEvents();
     }
@@ -46,6 +48,7 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
         BattleEvents.Instance.OnEnterActionSelection += SetActiveSelectorToActionSelector;
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
         BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
+        BattleEvents.Instance.OnReplaceFaintedPokemon += OnReplaceFaintedPokemon;
     }
 
     private void UnsubscribeToEvents()
@@ -66,6 +69,7 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
         BattleEvents.Instance.OnEnterActionSelection -= SetActiveSelectorToActionSelector;
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
         BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
+        BattleEvents.Instance.OnReplaceFaintedPokemon -= OnReplaceFaintedPokemon;
     }
 
     private void SetActiveSelector(GameObject selector)
@@ -116,5 +120,11 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
     private void OnPokemonSwitchedIn(Pokemon newPokemon)
     {
         moveSelectorUIManager.UpdateMovesUI(newPokemon);
+    }
+
+    private void OnReplaceFaintedPokemon()
+    {
+        pokemonReplacementUIManager.UpdatePokemonButtons(playerPokemonParty);
+        SetActiveSelector(replacePokemonSelector);
     }
 }

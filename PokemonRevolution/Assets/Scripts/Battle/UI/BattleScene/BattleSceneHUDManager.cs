@@ -30,18 +30,28 @@ public class BattleSceneHUDManager : MonoBehaviour
         healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHealthPoints}";
     }
 
-    public void UpdateHealthBar(Pokemon pokemon)
-    {
-        StartCoroutine(SetHPBarSmooth(pokemon));
-    }
-
-    private IEnumerator SetHPBarSmooth(Pokemon pokemon)
+    public IEnumerator UpdateHPBarSmooth(Pokemon pokemon)
     {
         float pokemonCurrentHP = (float)pokemon.CurrentHP / pokemon.MaxHealthPoints;
-
         float currentHpDisplayed = healthBar.transform.localScale.x;
         float changeAmount = currentHpDisplayed - pokemonCurrentHP;
 
+        float hpLost = currentHpDisplayed * pokemon.MaxHealthPoints - pokemon.CurrentHP;
+        int maxHPLostPerSecond = 50;
+        float animationTime = Mathf.Max(hpLost / maxHPLostPerSecond, 0.5f);
+
+        for (float t=0; t < animationTime; t += Time.deltaTime)
+        {
+            float normalizedTime = t / animationTime;
+            currentHpDisplayed = pokemonCurrentHP + (1 - normalizedTime) * changeAmount;
+
+            healthBar.transform.localScale = new Vector3(currentHpDisplayed, 1, 1);
+            healthText.text = $"{Mathf.Round(currentHpDisplayed * pokemon.MaxHealthPoints)} / {pokemon.MaxHealthPoints}";
+
+            yield return null;
+        }
+
+        /*
         while (currentHpDisplayed - pokemonCurrentHP > Mathf.Epsilon)
         {
             currentHpDisplayed -= changeAmount * Time.deltaTime;
@@ -51,6 +61,7 @@ public class BattleSceneHUDManager : MonoBehaviour
 
             yield return null;
         }
+        */
 
         healthBar.transform.localScale = new Vector3(pokemonCurrentHP, 1, 1);
         healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHealthPoints}";

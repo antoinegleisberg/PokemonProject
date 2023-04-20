@@ -16,11 +16,10 @@ public class BattleSceneUIManager : MonoBehaviour
     [SerializeField] private Image playerPokemonImage;
     [SerializeField] private Image enemyPokemonImage;
 
-    [SerializeField] private float enterBattleAnimationDuration = 1.0f;
+    [SerializeField] private float switchInAnimationDuration = 1.0f;
     [SerializeField] private float attackAnimationDuration = 0.1f;
     [SerializeField] private float hitAnimationDuration = 0.08f;
     [SerializeField] private float faintAnimationDuration = 0.8f;
-    [SerializeField] private float waitingTimeBeforeFaintAnimation = 1.0f;
     
     private void Start()
     {
@@ -29,6 +28,7 @@ public class BattleSceneUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
         BattleEvents.Instance.OnPokemonDamaged += OnPokemonDamaged;
         BattleEvents.Instance.OnPokemonFainted += OnPokemonFainted;
+        BattleEvents.Instance.OnPokemonSwitchedOut += OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
     }
 
@@ -39,6 +39,7 @@ public class BattleSceneUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
         BattleEvents.Instance.OnPokemonDamaged -= OnPokemonDamaged;
         BattleEvents.Instance.OnPokemonFainted -= OnPokemonFainted;
+        BattleEvents.Instance.OnPokemonSwitchedOut -= OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
     }
 
@@ -49,42 +50,46 @@ public class BattleSceneUIManager : MonoBehaviour
         playerHUD.UpdateHUD(playerPokemon);
         enemyHUD.UpdateHUD(enemyPokemon);
         
-        AnimatePokemonEnterBattle(playerPokemon, enemyPokemon);
+        UIManager.Instance.EnqueueAnimation(AnimatePokemonEnterBattle(playerPokemon, enemyPokemon));
     }
 
     private void OnPokemonAttack(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo)
     {
-        StartCoroutine(AnimatePokemonAttack(attacker));
-        StartCoroutine(AnimatePokemonHit(defender));
+        UIManager.Instance.EnqueueAnimation(AnimatePokemonAttackAndHit(attacker, defender));
     }
 
     private void OnPokemonDamaged(Pokemon pokemon, int damage)
     {
         if (pokemon.Owner == PokemonOwner.Player)
-            playerHUD.UpdateHealthBar(pokemon);
+            UIManager.Instance.EnqueueAnimation(playerHUD.UpdateHPBarSmooth(pokemon));
         else
-            enemyHUD.UpdateHealthBar(pokemon);
+            UIManager.Instance.EnqueueAnimation(enemyHUD.UpdateHPBarSmooth(pokemon));
     }
 
     private void OnPokemonFainted(Pokemon pokemon)
     {
-        StartCoroutine(AnimatePokemonFaints(pokemon));
+        UIManager.Instance.EnqueueAnimation(AnimatePokemonFaints(pokemon));
     }
 
     private void OnPokemonSwitchedIn(Pokemon newPokemon)
     {
-        StartCoroutine(SwitchPokemonIn(newPokemon));
+        UIManager.Instance.EnqueueAnimation(SwitchPokemonIn(newPokemon));
     }
 
-    private void AnimatePokemonEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
+    private IEnumerator AnimatePokemonEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
     {
-        Vector3 playerOffset = new Vector3(-300, 0, 0);
-        Vector3 playerInitPos = playerPokemonImage.rectTransform.localPosition + playerOffset;
-        Vector3 enemyInitPos = enemyPokemonImage.rectTransform.localPosition - playerOffset;
-        playerPokemonImage.color = Color.white;
-        enemyPokemonImage.color = Color.white;
-        StartCoroutine(MoveImage(playerPokemonImage, playerInitPos, -playerOffset, enterBattleAnimationDuration));
-        StartCoroutine(MoveImage(enemyPokemonImage, enemyInitPos, playerOffset, enterBattleAnimationDuration));
+        Coroutine playerAnim = StartCoroutine(SwitchPokemonIn(playerPokemon));
+        Coroutine enemyAnim = StartCoroutine(SwitchPokemonIn(enemyPokemon));
+        yield return playerAnim;
+        yield return enemyAnim;
+    }
+
+    private IEnumerator AnimatePokemonAttackAndHit(Pokemon attacker, Pokemon defender)
+    {
+        Coroutine attackAnim = StartCoroutine(AnimatePokemonAttack(attacker));
+        Coroutine hitAnim = StartCoroutine(AnimatePokemonHit(defender));
+        yield return attackAnim;
+        yield return hitAnim;
     }
 
     private IEnumerator AnimatePokemonAttack(Pokemon attacker)
@@ -113,9 +118,6 @@ public class BattleSceneUIManager : MonoBehaviour
 
     private IEnumerator AnimatePokemonFaints(Pokemon pokemon)
     {
-        // Wait for the HP Bar decreasing animation to finish
-        yield return new WaitForSeconds(waitingTimeBeforeFaintAnimation);
-
         Image image =
             pokemon.Owner == PokemonOwner.Player ? playerPokemonImage : enemyPokemonImage;
         Vector3 originalPosition = image.rectTransform.localPosition;
@@ -134,16 +136,23 @@ public class BattleSceneUIManager : MonoBehaviour
 
     private IEnumerator SwitchPokemonIn(Pokemon newPokemon)
     {
-        yield return new WaitForSeconds(waitingTimeBeforeFaintAnimation + faintAnimationDuration + 0.1f);
+        Vector3 playerOffset = new Vector3(-300, 0, 0);
 
-        if (newPokemon.Owner == PokemonOwner.Player)
+        if (newPokemon.Owner == PokemonOwner.Player || newPokemon.Owner == PokemonOwner.AllyTrainer)
         {
+            Vector3 playerInitPos = playerPokemonImage.rectTransform.localPosition + playerOffset;
             playerPokemonImage.color = Color.white;
             playerHUD.UpdateHUD(newPokemon);
+            Coroutine playerAnim = StartCoroutine(MoveImage(playerPokemonImage, playerInitPos, -playerOffset, switchInAnimationDuration));
+            yield return playerAnim;
         }
-        else if (newPokemon.Owner == PokemonOwner.EnemyTrainer)
+        else if (newPokemon.Owner == PokemonOwner.EnemyTrainer || newPokemon.Owner == PokemonOwner.Wild)
         {
+            Vector3 enemyInitPos = enemyPokemonImage.rectTransform.localPosition - playerOffset;
+            enemyPokemonImage.color = Color.white;
             enemyHUD.UpdateHUD(newPokemon);
+            Coroutine enemyAnim = StartCoroutine(MoveImage(enemyPokemonImage, enemyInitPos, playerOffset, switchInAnimationDuration));
+            yield return enemyAnim;
         }
     }
 

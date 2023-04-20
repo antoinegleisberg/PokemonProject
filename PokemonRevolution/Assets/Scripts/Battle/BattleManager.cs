@@ -23,7 +23,7 @@ public class BattleManager : MonoBehaviour
 
     public void SwitchState(BattleManagerBaseState newState)
     {
-        Debug.Log("Entering state: " + newState.GetType().Name);
+        // Debug.Log("Entering state: " + newState.GetType().Name);
         StartCoroutine(SwitchStateCoroutine(newState));
     }
 
@@ -64,7 +64,6 @@ public class BattleManager : MonoBehaviour
         currentState = OutOfBattleState;
 
         GameEvents.Instance.OnPokemonEncounter += OnPokemonEncounter;
-        BattleUIEvents.Instance.OnRunButtonPressed += () => SwitchState(EndBattleState);
     }
 
     private void Update()
@@ -83,7 +82,6 @@ public class BattleManager : MonoBehaviour
         EndBattleState.OnDestroy();
 
         GameEvents.Instance.OnPokemonEncounter -= OnPokemonEncounter;
-        BattleUIEvents.Instance.OnRunButtonPressed -= () => SwitchState(EndBattleState);
     }
 
     private IEnumerator SwitchStateCoroutine(BattleManagerBaseState newState)
