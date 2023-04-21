@@ -1,3 +1,16 @@
+public enum StatusCondition
+{
+    None,
+
+    Burn,
+    Freeze,
+    Paralysis,
+    Poison,
+    BadPoison,
+    Sleep,
+}
+
+/*
 public enum NonVolatileStatus
 {
     None,
@@ -8,7 +21,9 @@ public enum NonVolatileStatus
     BadPoison,
     Sleep,
 }
+*/
 
+/*
 public enum VolatileStatus
 {
     None,
@@ -53,6 +68,8 @@ public enum VolatileStatus
     TakingAim,
     Transformed,
 }
+*/
+
 
 // TODO
 // Ability change

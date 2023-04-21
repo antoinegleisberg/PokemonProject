@@ -10,31 +10,31 @@ public class BattleDialogueUIManager : MonoBehaviour
     private void Start()
     {
         GameEvents.Instance.OnEnterBattle += OnEnterBattle;
+        
         BattleEvents.Instance.OnEnterActionSelection += OnEnterActionSelection;
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
+        BattleEvents.Instance.OnPokemonFainted += OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedOut += OnPokemonSwitchedOut;
         BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
 
         BattleEvents.Instance.OnPokemonStatBoosted += OnPokemonStatBoosted;
-        BattleEvents.Instance.OnPokemonNonVolatileStatusAdded += OnPokemonNonVolatileStatusAdded;
-        BattleEvents.Instance.OnPokemonNonVolatileStatusRemoved += OnPokemonNonVolatileStatusRemoved;
-        BattleEvents.Instance.OnPokemonVolatileStatusAdded += OnPokemonVolatileStatusAdded;
-        BattleEvents.Instance.OnPokemonVolatileStatusRemoved += OnPokemonVolatileStatusRemoved;
+        BattleEvents.Instance.OnStatusConditionApplied += OnStatusConditionApplied;
+        BattleEvents.Instance.OnStatusConditionRemoved += OnStatusConditionRemoved;
     }
 
     private void OnDestroy()
     {
         GameEvents.Instance.OnEnterBattle -= OnEnterBattle;
+        
         BattleEvents.Instance.OnEnterActionSelection -= OnEnterActionSelection;
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
+        BattleEvents.Instance.OnPokemonFainted -= OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedOut -= OnPokemonSwitchedOut;
         BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
 
         BattleEvents.Instance.OnPokemonStatBoosted -= OnPokemonStatBoosted;
-        BattleEvents.Instance.OnPokemonNonVolatileStatusAdded -= OnPokemonNonVolatileStatusAdded;
-        BattleEvents.Instance.OnPokemonNonVolatileStatusRemoved -= OnPokemonNonVolatileStatusRemoved;
-        BattleEvents.Instance.OnPokemonVolatileStatusAdded -= OnPokemonVolatileStatusAdded;
-        BattleEvents.Instance.OnPokemonVolatileStatusRemoved -= OnPokemonVolatileStatusRemoved;
+        BattleEvents.Instance.OnStatusConditionApplied -= OnStatusConditionApplied;
+        BattleEvents.Instance.OnStatusConditionRemoved -= OnStatusConditionRemoved;
     }
 
     private void OnEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
@@ -61,9 +61,12 @@ public class BattleDialogueUIManager : MonoBehaviour
             messages.Add("It's super effective!");
         else if (Mathf.Abs(attackInfo.typeEffectiveness) < Mathf.Epsilon)
             messages.Add($"It doesn't affect {defender.Name} ...");
-        if (attackInfo.fainted)
-            messages.Add($"{defender.Name} fainted!");
         UIManager.Instance.WriteDialogueTexts(dialogueText, messages);
+    }
+
+    private void OnPokemonFainted(Pokemon pokemon)
+    {
+        UIManager.Instance.WriteDialogueText(dialogueText, $"{pokemon.Name} fainted!");
     }
 
     private void OnPokemonSwitchedOut(Pokemon oldPokemon)
@@ -106,25 +109,16 @@ public class BattleDialogueUIManager : MonoBehaviour
         }
         UIManager.Instance.WriteDialogueText(dialogueText, msg);
     }
-    
-    private void OnPokemonNonVolatileStatusAdded(NonVolatileStatus nonVolatileStatus, Pokemon pokemon)
+
+    private void OnStatusConditionApplied(StatusCondition statusCondition, Pokemon pokemon)
     {
-        UIManager.Instance.WriteDialogueText(dialogueText, $"{pokemon.Name} got {nonVolatileStatus} !");
+        string msg = $"{pokemon.Name} {ConditionsDB.Conditions[statusCondition].StartMessage}";
+        UIManager.Instance.WriteDialogueText(dialogueText, msg);
     }
-    
-    private void OnPokemonNonVolatileStatusRemoved(NonVolatileStatus nonVolatileStatus, Pokemon pokemon)
+
+    private void OnStatusConditionRemoved(StatusCondition statusCondition, Pokemon pokemon)
     {
-        UIManager.Instance.WriteDialogueText(dialogueText, $"{pokemon.Name} is no longer {nonVolatileStatus} !");
+        string msg = $"{pokemon.Name} {ConditionsDB.Conditions[statusCondition].EndMessage}";
+        UIManager.Instance.WriteDialogueText(dialogueText, msg);
     }
-    
-    private void OnPokemonVolatileStatusAdded(VolatileStatus volatileStatus, Pokemon pokemon)
-    {
-        UIManager.Instance.WriteDialogueText(dialogueText, $"{pokemon.Name} got {volatileStatus} !");
-    }
-    
-    private void OnPokemonVolatileStatusRemoved(VolatileStatus volatileStatus, Pokemon pokemon)
-    {
-        UIManager.Instance.WriteDialogueText(dialogueText, $"{pokemon.Name} is no longer {volatileStatus} !");
-    }
-    
 }

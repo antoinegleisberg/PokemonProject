@@ -4,20 +4,15 @@ using UnityEngine;
 [System.Serializable]
 public class MoveEffects
 {
-    [SerializeField] List<StatBoost> statBoosts;
-    [SerializeField] List<AppliedVolatileStatusEffect> appliedvolatileStatusEffects;
-    [SerializeField] List<AppliedNonVolatileStatusEffect> appliedNonVolatileStatusEffects;
+    [SerializeField] private List<StatBoost> statBoosts;
+    [SerializeField] private List<MoveStatusConditionEffect> conditionEffects;
 
     public List<StatBoost> StatBoosts { get => statBoosts; }
-    public List<AppliedVolatileStatusEffect> AppliedVolatileStatusEffects { get => appliedvolatileStatusEffects; }
-    public List<AppliedNonVolatileStatusEffect> AppliedNonVolatileStatusEffects
-    {
-        get => appliedNonVolatileStatusEffects;
-    }
-
+    public List<MoveStatusConditionEffect> ConditionEffects { get => conditionEffects; }
+    
     public void ApplyEffects(Pokemon attackingPokemon, Pokemon defendingPokemon)
     {
-        foreach (StatBoost statBoost in statBoosts)
+        foreach (StatBoost statBoost in StatBoosts)
         {
             if (Random.Range(0, 100) >= statBoost.probability)
                 continue;
@@ -32,52 +27,29 @@ public class MoveEffects
                 target.ApplyBoost(statBoost);
         }
         
-        foreach (AppliedNonVolatileStatusEffect effect in AppliedNonVolatileStatusEffects)
+        foreach (MoveStatusConditionEffect statusEffect in ConditionEffects)
         {
-            if (Random.Range(0, 100) >= effect.probability)
+            if (Random.Range(0, 100) >= statusEffect.probability)
                 continue;
 
             List<Pokemon> targetPokemons = new List<Pokemon>();
-            if (effect.statusEffectTargets.Contains(MoveTarget.Self))
+            if (statusEffect.statusEffectTargets.Contains(MoveTarget.Self))
                 targetPokemons.Add(attackingPokemon);
-            if (effect.statusEffectTargets.Contains(MoveTarget.Enemy))
+            if (statusEffect.statusEffectTargets.Contains(MoveTarget.Enemy))
                 targetPokemons.Add(defendingPokemon);
 
             foreach (Pokemon target in targetPokemons)
-                target.ApplyNonVolatileStatus(effect.nonVolatileStatus);
-        }
-        
-        foreach (AppliedVolatileStatusEffect effect in AppliedVolatileStatusEffects)
-        {
-            if (Random.Range(0, 100) >= effect.probability)
-                continue;
-
-            List<Pokemon> targetPokemons = new List<Pokemon>();
-            if (effect.statusEffectTargets.Contains(MoveTarget.Self))
-                targetPokemons.Add(attackingPokemon);
-            if (effect.statusEffectTargets.Contains(MoveTarget.Enemy))
-                targetPokemons.Add(defendingPokemon);
-
-            foreach (Pokemon target in targetPokemons)
-                target.ApplyVolatileStatus(effect.volatileStatus);
+                target.ApplyStatus(statusEffect.statusCondition);
         }
     }
 }
 
 
 [System.Serializable]
-public struct AppliedNonVolatileStatusEffect
+public struct MoveStatusConditionEffect
 {
     public int probability;
-    public NonVolatileStatus nonVolatileStatus;
-    public List<MoveTarget> statusEffectTargets;
-}
-
-[System.Serializable]
-public struct AppliedVolatileStatusEffect
-{
-    public int probability;
-    public VolatileStatus volatileStatus;
+    public StatusCondition statusCondition;
     public List<MoveTarget> statusEffectTargets;
 }
 

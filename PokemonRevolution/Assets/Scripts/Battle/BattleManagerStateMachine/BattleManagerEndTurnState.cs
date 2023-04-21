@@ -11,6 +11,9 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
 
     public override void EnterState()
     {
+        battleManager.PlayerPokemon.OnBattleTurnEnd();
+        battleManager.EnemyPokemon.OnBattleTurnEnd();
+
         CheckFaintedPokemons();
     }
 

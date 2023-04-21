@@ -10,8 +10,6 @@ public class BattleManagerEndBattleState : BattleManagerBaseState
 
     public override void EnterState()
     {
-        battleManager.PlayerPokemon.OnExitBattle();
-        battleManager.EnemyPokemon.OnExitBattle();
         battleManager.StartCoroutine(EndBattleCoroutine());
     }
     
@@ -32,6 +30,9 @@ public class BattleManagerEndBattleState : BattleManagerBaseState
 
     private IEnumerator EndBattleCoroutine()
     {
+        battleManager.PlayerPokemon.OnExitBattle();
+        battleManager.EnemyPokemon.OnExitBattle();
+
         yield return UIManager.Instance.WaitWhileBusy();
 
         GameEvents.Instance.ExitBattle();

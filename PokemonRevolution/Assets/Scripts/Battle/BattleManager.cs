@@ -45,17 +45,12 @@ public class BattleManager : MonoBehaviour
         
         // Apply damage
         AttackInfo attackInfo = CalculateMoveDamage(attackingPokemon, targetPokemon, move);
-        targetPokemon.TakeDamage(attackInfo.damage);
-        if (targetPokemon.IsFainted)
-            attackInfo.fainted = true;
         BattleEvents.Instance.PokemonAttacks(attackingPokemon, targetPokemon, move, attackInfo);
-        if (attackInfo.damage > 0) BattleEvents.Instance.PokemonDamaged(targetPokemon, attackInfo.damage);
+        targetPokemon.TakeDamage(attackInfo.damage);
 
         // Apply effects
         if (move.ScriptableMove.MoveEffects != null)
             move.ScriptableMove.MoveEffects.ApplyEffects(attackingPokemon, targetPokemon);
-
-        if (targetPokemon.IsFainted) BattleEvents.Instance.PokemonFaints(targetPokemon);
     }
 
     private void Awake()
@@ -115,7 +110,7 @@ public class BattleManager : MonoBehaviour
     private AttackInfo CalculateMoveDamage(Pokemon attackingPokemon, Pokemon targetPokemon, Move move)
     {
         if (move.ScriptableMove.Category == MoveCategory.Status) 
-            return new AttackInfo(false, 0, 1.0f, false);
+            return new AttackInfo(false, 0, 1.0f);
 
         int level = attackingPokemon.Level;
         int attack = (move.ScriptableMove.Category == MoveCategory.Special) ? attackingPokemon.SpecialAttack : attackingPokemon.Attack;
@@ -134,7 +129,7 @@ public class BattleManager : MonoBehaviour
         float damage = baseDamage * criticalHitModifier * stabModifier * typeModifier * randomModifier;
         int roundedDamage = Mathf.Max(1, Mathf.RoundToInt(damage));
 
-        AttackInfo attackInfo = new AttackInfo(criticalHit, roundedDamage, typeModifier, false);
+        AttackInfo attackInfo = new AttackInfo(criticalHit, roundedDamage, typeModifier);
         
         return attackInfo;
     }

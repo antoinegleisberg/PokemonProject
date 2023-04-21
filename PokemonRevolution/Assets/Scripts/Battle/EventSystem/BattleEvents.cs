@@ -15,10 +15,8 @@ public class BattleEvents : MonoBehaviour
     public event Action<Pokemon> OnPokemonFainted;
 
     public event Action<Stat, int, Pokemon> OnPokemonStatBoosted;
-    public event Action<NonVolatileStatus, Pokemon> OnPokemonNonVolatileStatusAdded;
-    public event Action<NonVolatileStatus, Pokemon> OnPokemonNonVolatileStatusRemoved;
-    public event Action<VolatileStatus, Pokemon> OnPokemonVolatileStatusAdded;
-    public event Action<VolatileStatus, Pokemon> OnPokemonVolatileStatusRemoved;
+    public event Action<StatusCondition, Pokemon> OnStatusConditionApplied;
+    public event Action<StatusCondition, Pokemon> OnStatusConditionRemoved;
     
     public event Action OnReplaceFaintedPokemon;
     public event Action<Pokemon> OnPokemonSwitchedOut;
@@ -32,11 +30,9 @@ public class BattleEvents : MonoBehaviour
     public void PokemonFaints(Pokemon pokemon) => OnPokemonFainted?.Invoke(pokemon);
 
     public void BoostedPokemonStat(Stat stat, int boost, Pokemon pokemon) => OnPokemonStatBoosted?.Invoke(stat, boost, pokemon);
-    public void AddedPokemonNonVolatileStatus(NonVolatileStatus status, Pokemon pokemon) => OnPokemonNonVolatileStatusAdded?.Invoke(status, pokemon);
-    public void RemovedPokemonNonVolatileStatus(NonVolatileStatus status, Pokemon pokemon) => OnPokemonNonVolatileStatusRemoved?.Invoke(status, pokemon);
-    public void AddedPokemonVolatileStatus(VolatileStatus status, Pokemon pokemon) => OnPokemonVolatileStatusAdded?.Invoke(status, pokemon);
-    public void RemovedPokemonVolatileStatus(VolatileStatus status, Pokemon pokemon) => OnPokemonVolatileStatusRemoved?.Invoke(status, pokemon);
-
+    public void AppliedStatusCondition(StatusCondition status, Pokemon pokemon) => OnStatusConditionApplied?.Invoke(status, pokemon);
+    public void RemovedStatusCondition(StatusCondition status, Pokemon pokemon) => OnStatusConditionRemoved?.Invoke(status, pokemon);
+    
     public void ReplaceFaintedPokemon() => OnReplaceFaintedPokemon?.Invoke();
     public void PokemonSwitchedOut(Pokemon pokemon) => OnPokemonSwitchedOut?.Invoke(pokemon);
     public void PokemonSwitchedIn(Pokemon pokemon) => OnPokemonSwitchedIn?.Invoke(pokemon);

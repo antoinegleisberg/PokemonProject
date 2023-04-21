@@ -43,13 +43,14 @@ public class Pokemon
     public PokemonOwner Owner { get; private set; }
     public Gender Gender { get; private set; }
     public Dictionary<Stat, int> Stats { get; private set; }
-    public Dictionary<Stat, int> IVs { get; private set; } // Not implemented yet
+    public Dictionary<Stat, int> IVs { get; private set; }
     public Dictionary<Stat, int> EVs { get; private set; } // Not implemented yet
     public Dictionary<Stat, int> StatBoosts { get; private set; }
     public List<Move> Moves { get; private set; }
-    public NonVolatileStatus NonVolatileStatus { get; private set; }
-    public List<VolatileStatus> VolatileStatuses { get; private set; }
+    public StatusCondition StatusCondition { get; private set; }
+    public List<StatusCondition> VolatileStatusConditions { get; private set; }
 
+    
     public int MaxHP { get { return GetStat(Stat.MaxHP); } }
     public int Attack { get { return GetStat(Stat.Attack); } }
     public int Defense { get { return GetStat(Stat.Defense); } }
@@ -61,6 +62,7 @@ public class Pokemon
 
     public bool IsFainted { get { return CurrentHP <= 0; } }
 
+    
     public Pokemon(ScriptablePokemon scriptablePokemon, int level, PokemonOwner owner) : this(scriptablePokemon, level, owner, "") { }
 
     public Pokemon(ScriptablePokemon scriptablePokemon, int level, PokemonOwner owner, string name)
@@ -79,8 +81,20 @@ public class Pokemon
         SetInitialMoves();
 
         CurrentHP = MaxHP;
-        NonVolatileStatus = NonVolatileStatus.None;
-        VolatileStatuses = new List<VolatileStatus>();
+        StatusCondition = StatusCondition.None;
+        VolatileStatusConditions = new List<StatusCondition>();
+    }
+    
+    
+    public void OnPokemonSwitchedOut()
+    {
+        ResetStatBoosts();
+        ClearVolatileStatusConditions();
+    }
+
+    public void OnBattleTurnEnd()
+    {
+        ConditionsDB.Conditions[StatusCondition].OnBattleTurnEnd?.Invoke(this);
     }
 
     public void OnExitBattle()
@@ -88,16 +102,12 @@ public class Pokemon
         OnPokemonSwitchedOut();
     }
 
-    public void OnPokemonSwitchedOut()
-    {
-        ResetStatBoosts();
-        ResetVolatileStatusEffects();
-    }
-
     public void TakeDamage(int damage)
     {
         CurrentHP -= damage;
         if (CurrentHP < 0) CurrentHP = 0;
+        if (damage > 0) BattleEvents.Instance.PokemonDamaged(this, damage);
+        if (IsFainted) BattleEvents.Instance.PokemonFaints(this);
     }
 
     public void LoseMovePP(Move move)
@@ -119,21 +129,21 @@ public class Pokemon
         BattleEvents.Instance.BoostedPokemonStat(stat, newBoostValue - oldBoostValue, this);
     }
 
-    public void ApplyNonVolatileStatus(NonVolatileStatus status)
+    public void ApplyStatus(StatusCondition status)
     {
-        if (NonVolatileStatus != NonVolatileStatus.None)
+        if (status == StatusCondition.None)
             return;
 
-        NonVolatileStatus = status;
-
-        BattleEvents.Instance.AddedPokemonNonVolatileStatus(status, this);
-    }
-
-    public void ApplyVolatileStatus(VolatileStatus status)
-    {
-        VolatileStatuses.Add(status);
-
-        BattleEvents.Instance.AddedPokemonVolatileStatus(status, this);
+        if (ConditionsDB.Conditions[status].IsVolatile)
+        {
+            VolatileStatusConditions.Add(status);
+            BattleEvents.Instance.AppliedStatusCondition(status, this);
+        }
+        else if (StatusCondition == StatusCondition.None)
+        {
+            StatusCondition = status;
+            BattleEvents.Instance.AppliedStatusCondition(status, this);
+        }
     }
 
     private void CalculateStats()
@@ -172,9 +182,9 @@ public class Pokemon
         };
     }
 
-    private void ResetVolatileStatusEffects()
+    private void ClearVolatileStatusConditions()
     {
-        VolatileStatuses.Clear();
+        VolatileStatusConditions.Clear();
     }
 
     private void SetInitialMoves()
