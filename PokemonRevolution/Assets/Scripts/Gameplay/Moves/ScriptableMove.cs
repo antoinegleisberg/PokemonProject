@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,12 +17,12 @@ public class ScriptableMove : ScriptableObject
     [SerializeField] int power;
     [SerializeField] int accuracy;
     [SerializeField] int pp;
-
-    [SerializeField] MoveEffects moveEffects;
+    
+    [SerializeField] bool makesContact;
 
     [SerializeField] List<MoveTarget> moveTargets;
-
-    [SerializeField] bool makesContact;
+    
+    [SerializeField] MoveEffects moveEffects;
 
     public string Name { get => name; }
     public string Description { get => description; }
@@ -32,9 +31,9 @@ public class ScriptableMove : ScriptableObject
     public int Power { get => power; }
     public int Accuracy { get => accuracy; }
     public int PP { get => pp; }
-    public MoveEffects MoveEffects { get => moveEffects; }
-    public List<MoveTarget> MoveTargets { get => moveTargets; }
     public bool MakesContact { get => makesContact; }
+    public List<MoveTarget> MoveTargets { get => moveTargets; }
+    public MoveEffects MoveEffects { get => moveEffects; }
 }
 
 public enum MoveTarget {

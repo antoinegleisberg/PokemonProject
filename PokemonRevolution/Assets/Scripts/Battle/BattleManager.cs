@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -29,6 +28,8 @@ public class BattleManager : MonoBehaviour
 
     public void SwitchPokemon(Pokemon oldPokemon, Pokemon newPokemon)
     {
+        oldPokemon.ResetStatBoosts();
+        oldPokemon.ResetVolatileStatusEffects();
         if (!oldPokemon.IsFainted)
             BattleEvents.Instance.PokemonSwitchedOut(oldPokemon);
         if (newPokemon.Owner == PokemonOwner.Player)
@@ -40,14 +41,21 @@ public class BattleManager : MonoBehaviour
 
     public void PerformMove(Pokemon attackingPokemon, Pokemon targetPokemon, Move move)
     {
+        // Apply PP loss
+        attackingPokemon.LoseMovePP(move);
+        
+        // Apply damage
         AttackInfo attackInfo = CalculateMoveDamage(attackingPokemon, targetPokemon, move);
         targetPokemon.TakeDamage(attackInfo.damage);
-        if (targetPokemon.IsFainted) attackInfo.fainted = true;
-
-        attackingPokemon.LoseMovePP(move);
-
+        if (targetPokemon.IsFainted)
+            attackInfo.fainted = true;
         BattleEvents.Instance.PokemonAttacks(attackingPokemon, targetPokemon, move, attackInfo);
         if (attackInfo.damage > 0) BattleEvents.Instance.PokemonDamaged(targetPokemon, attackInfo.damage);
+
+        // Apply effects
+        if (move.ScriptableMove.MoveEffects != null)
+            move.ScriptableMove.MoveEffects.ApplyEffects(attackingPokemon, targetPokemon);
+
         if (targetPokemon.IsFainted) BattleEvents.Instance.PokemonFaints(targetPokemon);
     }
 
@@ -124,7 +132,8 @@ public class BattleManager : MonoBehaviour
         float typeModifier = TypeUtils.TypeModifier(move.ScriptableMove, targetPokemon.ScriptablePokemon);
         float randomModifier = Random.Range(0.85f, 1.0f);
 
-        float damage = (((2 * level / 5 + 2) * attack * power / defense / 50) + 2) * criticalHitModifier * stabModifier * typeModifier * randomModifier;
+        float baseDamage = (((2 * level / 5 + 2) * attack * power / defense / 50) + 2);
+        float damage = baseDamage * criticalHitModifier * stabModifier * typeModifier * randomModifier;
         int roundedDamage = Mathf.Max(1, Mathf.RoundToInt(damage));
 
         AttackInfo attackInfo = new AttackInfo(criticalHit, roundedDamage, typeModifier, false);

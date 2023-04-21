@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class BattleManagerOutOfBattleState : BattleManagerBaseState
 {
     public override void InitState(BattleManager battleManager)

@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         // testing
-        Pokemon playerPokemon1 = new Pokemon(bulbasaurPrefab, 10, PokemonOwner.Player, "Bulb");
+        Pokemon playerPokemon1 = new Pokemon(bulbasaurPrefab, 5, PokemonOwner.Player, "Bulb");
         Pokemon playerPokemon2 = new Pokemon(charmanderPrefab, 2, PokemonOwner.Player, "Char");
         Pokemon playerPokemon3 = new Pokemon(squirtlePrefab, 2, PokemonOwner.Player, "Squirt");
         playerPartyManager.PokemonParty.Pokemons.Add(playerPokemon1);

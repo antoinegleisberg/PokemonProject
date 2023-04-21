@@ -8,7 +8,7 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
 
     public override void EnterState()
     {
-        battleManager.StartCoroutine(PerformTurnActions());
+        PerformTurnActions();
     }
 
     public override void UpdateState() { }
@@ -17,26 +17,82 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
 
     public override void OnDestroy() { }
 
-    private IEnumerator PerformTurnActions()
+    private void PerformTurnActions()
     {
-        PerformAction(battleManager.NextPlayerAction);
+        Queue<BattleActionInfo> actions = new Queue<BattleActionInfo>();
 
-        yield return new WaitForEndOfFrame();
-
-        while (UIManager.Instance.IsBusy)
+        // Check for action priorities
+        if (battleManager.NextPlayerAction.BattleAction != BattleAction.Attack)
         {
-            yield return new WaitForSeconds(0.1f);
-        }
-
-        if (battleManager.NextPlayerAction.BattleAction != BattleAction.Run)
-        {
-            if (!battleManager.NextEnemyAction.SourcePokemon.IsFainted)
+            actions.Enqueue(battleManager.NextPlayerAction);
+            if (battleManager.NextPlayerAction.BattleAction != BattleAction.Run)
             {
-                PerformAction(battleManager.NextEnemyAction);
+                actions.Enqueue(battleManager.NextEnemyAction);
+            }
+        }
+        else if (battleManager.NextEnemyAction.BattleAction != BattleAction.Attack)
+        {
+            actions.Enqueue(battleManager.NextEnemyAction);
+            actions.Enqueue(battleManager.NextPlayerAction);
+        }
+        // None of the teams used priority action; check for pokemon speed
+        else
+        {
+            int playerSpeed = battleManager.NextPlayerAction.SourcePokemon.Speed;
+            int enemySpeed = battleManager.NextEnemyAction.SourcePokemon.Speed;
+            if (playerSpeed > enemySpeed)
+            {
+                actions.Enqueue(battleManager.NextPlayerAction);
+                actions.Enqueue(battleManager.NextEnemyAction);
+            }
+            else if (playerSpeed < enemySpeed)
+            {
+                actions.Enqueue(battleManager.NextEnemyAction);
+                actions.Enqueue(battleManager.NextPlayerAction);
+            }
+            else
+            {
+                // it's a tie
+                if (Random.Range(0,2) == 0)
+                {
+                    actions.Enqueue(battleManager.NextPlayerAction);
+                    actions.Enqueue(battleManager.NextEnemyAction);
+                }
+                else
+                {
+                    actions.Enqueue(battleManager.NextEnemyAction);
+                    actions.Enqueue(battleManager.NextPlayerAction);
+                }
+            }
+        }
+        
+
+        battleManager.StartCoroutine(PerformTurnActions(actions));
+    }
+
+    private IEnumerator PerformTurnActions(Queue<BattleActionInfo> actions)
+    {
+        while (actions.Count > 0)
+        {
+            BattleActionInfo nextAction = actions.Dequeue();
+
+            if (nextAction.BattleAction == BattleAction.Attack &&
+                nextAction.SourcePokemon.IsFainted)
+            {
+                // The attack faild because attacker is fainted
+                continue;
             }
 
-            battleManager.SwitchState(battleManager.EndTurnState);
+            PerformAction(nextAction);
+
+            yield return new WaitForEndOfFrame();
+            while (UIManager.Instance.IsBusy)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
         }
+
+        battleManager.SwitchState(battleManager.EndTurnState);
     }
 
     private void PerformAction(BattleActionInfo battleActionInfo)

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -15,6 +14,12 @@ public class BattleDialogueUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
         BattleEvents.Instance.OnPokemonSwitchedOut += OnPokemonSwitchedOut;
         BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
+
+        BattleEvents.Instance.OnPokemonStatBoosted += OnPokemonStatBoosted;
+        BattleEvents.Instance.OnPokemonNonVolatileStatusAdded += OnPokemonNonVolatileStatusAdded;
+        BattleEvents.Instance.OnPokemonNonVolatileStatusRemoved += OnPokemonNonVolatileStatusRemoved;
+        BattleEvents.Instance.OnPokemonVolatileStatusAdded += OnPokemonVolatileStatusAdded;
+        BattleEvents.Instance.OnPokemonVolatileStatusRemoved += OnPokemonVolatileStatusRemoved;
     }
 
     private void OnDestroy()
@@ -24,6 +29,12 @@ public class BattleDialogueUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
         BattleEvents.Instance.OnPokemonSwitchedOut -= OnPokemonSwitchedOut;
         BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
+
+        BattleEvents.Instance.OnPokemonStatBoosted -= OnPokemonStatBoosted;
+        BattleEvents.Instance.OnPokemonNonVolatileStatusAdded -= OnPokemonNonVolatileStatusAdded;
+        BattleEvents.Instance.OnPokemonNonVolatileStatusRemoved -= OnPokemonNonVolatileStatusRemoved;
+        BattleEvents.Instance.OnPokemonVolatileStatusAdded -= OnPokemonVolatileStatusAdded;
+        BattleEvents.Instance.OnPokemonVolatileStatusRemoved -= OnPokemonVolatileStatusRemoved;
     }
 
     private void OnEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
@@ -68,4 +79,52 @@ public class BattleDialogueUIManager : MonoBehaviour
             return;
         UIManager.Instance.WriteDialogueText(dialogueText, $"Go {newPokemon.Name} !");
     }
+
+    private void OnPokemonStatBoosted(Stat stat, int boost, Pokemon pokemon) 
+    {
+        string msg;
+        switch (boost)
+        {
+            case -2:
+                msg = $"{pokemon.Name}'s {stat} sharply fell !";
+                break;
+            case -1:
+                msg = $"{pokemon.Name}'s {stat} fell !";
+                break;
+            case 0:
+                msg = $"It had no effect !";
+                break;
+            case 1:
+                msg = $"{pokemon.Name}'s {stat} rose !";
+                break;
+            case 2:
+                msg = $"{pokemon.Name}'s {stat} sharply rose ! ";
+                break;
+            default:
+                msg = "I have no idea how the hell this happened !";
+                break;
+        }
+        UIManager.Instance.WriteDialogueText(dialogueText, msg);
+    }
+    
+    private void OnPokemonNonVolatileStatusAdded(NonVolatileStatus nonVolatileStatus, Pokemon pokemon)
+    {
+        UIManager.Instance.WriteDialogueText(dialogueText, $"{pokemon.Name} got {nonVolatileStatus} !");
+    }
+    
+    private void OnPokemonNonVolatileStatusRemoved(NonVolatileStatus nonVolatileStatus, Pokemon pokemon)
+    {
+        UIManager.Instance.WriteDialogueText(dialogueText, $"{pokemon.Name} is no longer {nonVolatileStatus} !");
+    }
+    
+    private void OnPokemonVolatileStatusAdded(VolatileStatus volatileStatus, Pokemon pokemon)
+    {
+        UIManager.Instance.WriteDialogueText(dialogueText, $"{pokemon.Name} got {volatileStatus} !");
+    }
+    
+    private void OnPokemonVolatileStatusRemoved(VolatileStatus volatileStatus, Pokemon pokemon)
+    {
+        UIManager.Instance.WriteDialogueText(dialogueText, $"{pokemon.Name} is no longer {volatileStatus} !");
+    }
+    
 }

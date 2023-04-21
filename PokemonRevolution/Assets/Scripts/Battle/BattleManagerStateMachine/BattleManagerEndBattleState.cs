@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleManagerEndBattleState : BattleManagerBaseState
@@ -11,6 +10,10 @@ public class BattleManagerEndBattleState : BattleManagerBaseState
 
     public override void EnterState()
     {
+        battleManager.PlayerPokemon.ResetStatBoosts();
+        battleManager.EnemyPokemon.ResetStatBoosts();
+        battleManager.PlayerPokemon.ResetVolatileStatusEffects();
+        battleManager.EnemyPokemon.ResetVolatileStatusEffects();
         battleManager.StartCoroutine(EndBattleCoroutine());
     }
     

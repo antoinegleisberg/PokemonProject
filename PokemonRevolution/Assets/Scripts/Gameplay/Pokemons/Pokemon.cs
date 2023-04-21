@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -72,13 +70,17 @@ public class Pokemon
         if (Name == "") Name = scriptablePokemon.Name;
         Level = level;
         Owner = owner;
-        Gender = (UnityEngine.Random.Range(0, 100) < scriptablePokemon.MalePercentage) ? Gender.Male : Gender.Female;
+        Gender = (Random.Range(0, 100) < scriptablePokemon.MalePercentage) ? Gender.Male : Gender.Female;
 
-        CalculateStats();
+        InitIVs();
+        InitEVs();
         ResetStatBoosts();
+        CalculateStats();
         SetInitialMoves();
 
         CurrentHP = MaxHP;
+        NonVolatileStatus = NonVolatileStatus.None;
+        VolatileStatuses = new List<VolatileStatus>();
     }
 
     public void ResetStatBoosts()
@@ -92,6 +94,11 @@ public class Pokemon
             { Stat.Accuracy, 0 },
             { Stat.Evasion, 0 }
         };
+    }
+
+    public void ResetVolatileStatusEffects()
+    {
+        VolatileStatuses.Clear();
     }
 
     public void TakeDamage(int damage)
@@ -108,27 +115,54 @@ public class Pokemon
         }
     }
 
-    public void ApplyBoosts(List<StatBoost> statBoosts)
+    public void ApplyBoost(StatBoost statBoost)
     {
-        foreach (StatBoost statBoost in statBoosts)
-        {
-            Stat stat = statBoost.stat;
-            int boostValue = statBoost.boostValue;
-            StatBoosts[stat] = Mathf.Clamp(StatBoosts[stat] + boostValue, -6, 6);
-        }
+        Stat stat = statBoost.stat;
+        int boostValue = statBoost.boostValue;
+        int oldBoostValue = StatBoosts[stat];
+        StatBoosts[stat] = Mathf.Clamp(StatBoosts[stat] + boostValue, -6, 6);
+        int newBoostValue = StatBoosts[stat];
+        
+        BattleEvents.Instance.BoostedPokemonStat(stat, newBoostValue - oldBoostValue, this);
+    }
+
+    public void ApplyNonVolatileStatus(NonVolatileStatus status)
+    {
+        if (NonVolatileStatus != NonVolatileStatus.None)
+            return;
+
+        NonVolatileStatus = status;
+
+        BattleEvents.Instance.AddedPokemonNonVolatileStatus(status, this);
+    }
+
+    public void ApplyVolatileStatus(VolatileStatus status)
+    {
+        VolatileStatuses.Add(status);
+
+        BattleEvents.Instance.AddedPokemonVolatileStatus(status, this);
     }
 
     private void CalculateStats()
     {
+        int HP = Mathf.FloorToInt((2 * ScriptablePokemon.BaseHP + IVs[Stat.MaxHP] + Mathf.FloorToInt(EVs[Stat.MaxHP] / 4.0f)) * Level / 100) + Level + 10;
+        int Attack = Mathf.FloorToInt((2 * ScriptablePokemon.BaseAttack + IVs[Stat.Attack] + Mathf.FloorToInt(EVs[Stat.Attack] / 4.0f)) * Level / 100) + 5;
+        int Defense = Mathf.FloorToInt((2 * ScriptablePokemon.BaseDefense + IVs[Stat.Defense] + Mathf.FloorToInt(EVs[Stat.Defense] / 4.0f)) * Level / 100) + 5;
+        int SpecialAttack = Mathf.FloorToInt((2 * ScriptablePokemon.BaseSpecialAttack + IVs[Stat.SpecialAttack] + Mathf.FloorToInt(EVs[Stat.SpecialAttack] / 4.0f)) * Level / 100) + 5;
+        int SpecialDefense = Mathf.FloorToInt((2 * ScriptablePokemon.BaseSpecialDefense + IVs[Stat.SpecialDefense] + Mathf.FloorToInt(EVs[Stat.SpecialDefense] / 4.0f)) * Level / 100) + 5;
+        int Speed = Mathf.FloorToInt((2 * ScriptablePokemon.BaseSpeed + IVs[Stat.Speed] + Mathf.FloorToInt(EVs[Stat.Speed] / 4.0f)) * Level / 100) + 5;
+        int Accuracy = 100;
+        int Evasion = 100;
+
         Stats = new Dictionary<Stat, int> {
-            { Stat.MaxHP, Mathf.FloorToInt((ScriptablePokemon.BaseHP * Level) / 100.0f) + Level + 10 },
-            { Stat.Attack, Mathf.FloorToInt((ScriptablePokemon.BaseAttack * Level) / 100.0f) + 5 },
-            { Stat.Defense, Mathf.FloorToInt((ScriptablePokemon.BaseDefense * Level) / 100.0f) + 5 },
-            { Stat.SpecialAttack, Mathf.FloorToInt((ScriptablePokemon.BaseSpecialAttack * Level) / 100.0f) + 5 },
-            { Stat.SpecialDefense, Mathf.FloorToInt((ScriptablePokemon.BaseSpecialDefense * Level) / 100.0f) + 5 },
-            { Stat.Speed, Mathf.FloorToInt((ScriptablePokemon.BaseSpeed * Level) / 100.0f) + 5 },
-            { Stat.Accuracy, 100 },
-            { Stat.Evasion, 100 }
+            { Stat.MaxHP, HP },
+            { Stat.Attack, Attack },
+            { Stat.Defense, Defense },
+            { Stat.SpecialAttack, SpecialAttack },
+            { Stat.SpecialDefense, SpecialDefense },
+            { Stat.Speed, Speed },
+            { Stat.Accuracy, Accuracy },
+            { Stat.Evasion, Evasion }
         };
     }
 
@@ -148,15 +182,42 @@ public class Pokemon
         }
     }
 
+    private void InitIVs()
+    {
+        IVs = new Dictionary<Stat, int>() {
+            {Stat.MaxHP, Random.Range(0, 32) },
+            {Stat.Attack, Random.Range(0, 32) },
+            {Stat.Defense, Random.Range(0, 32) },
+            {Stat.SpecialAttack, Random.Range(0, 32) },
+            {Stat.SpecialDefense, Random.Range(0, 32) },
+            {Stat.Speed, Random.Range(0, 32) },
+        };
+    }
+
+    private void InitEVs()
+    {
+        EVs = new Dictionary<Stat, int>() {
+            {Stat.MaxHP, 0 },
+            {Stat.Attack, 0 },
+            {Stat.Defense, 0 },
+            {Stat.SpecialAttack, 0 },
+            {Stat.SpecialDefense, 0 },
+            {Stat.Speed, 0 },
+        };
+    }
+
     private int GetStat(Stat stat)
     {
         int statValue = Stats[stat];
 
         // Apply stat boosting
-        int boost = StatBoosts[stat];
-        bool isCombatStat = (stat == Stat.Accuracy || stat == Stat.Evasion);
-        Dictionary<int, float> boostValues = (isCombatStat) ? combatStatsBoostValues : baseStatsBoostValues;
-        statValue = Mathf.FloorToInt(statValue * boostValues[boost]);
+        if (stat != Stat.MaxHP)
+        {
+            int boost = StatBoosts[stat];
+            bool isCombatStat = (stat == Stat.Accuracy || stat == Stat.Evasion);
+            Dictionary<int, float> boostValues = (isCombatStat) ? combatStatsBoostValues : baseStatsBoostValues;
+            statValue = Mathf.FloorToInt(statValue * boostValues[boost]);
+        }
         
         return statValue;
     }
