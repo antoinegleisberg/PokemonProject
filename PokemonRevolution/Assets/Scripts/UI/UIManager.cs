@@ -21,19 +21,14 @@ public class UIManager : MonoBehaviour
     private bool isWriting;
     private bool isRunningAnimations;
 
-    private void Awake()
-    {
-        Instance = this;
-        messagesQueue = new Queue<string>();
-        animationsQueue = new Queue<IEnumerator>();
-        StartCoroutine(DialogueManager());
-        StartCoroutine(AnimationManager());
-    }
 
-    private void OnDestroy()
+    public IEnumerator WaitWhileBusy()
     {
-        StopCoroutine("AnimationManager");
-        StopCoroutine("DialogueManager");
+        yield return new WaitForEndOfFrame();
+        while (IsBusy)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
     public void WriteDialogueText(TextMeshProUGUI TMPText, string text)
@@ -50,6 +45,11 @@ public class UIManager : MonoBehaviour
             messagesQueue.Enqueue(msg);
         }
         
+    }
+    
+    public void EnqueueAnimation(IEnumerator animation)
+    {
+        animationsQueue.Enqueue(animation);
     }
 
     private IEnumerator DialogueManager()
@@ -77,11 +77,6 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void EnqueueAnimation(IEnumerator animation)
-    {
-        animationsQueue.Enqueue(animation);
-    }
-
     private IEnumerator AnimationManager()
     {
         while (true)
@@ -99,5 +94,20 @@ public class UIManager : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    private void Awake()
+    {
+        Instance = this;
+        messagesQueue = new Queue<string>();
+        animationsQueue = new Queue<IEnumerator>();
+        StartCoroutine(DialogueManager());
+        StartCoroutine(AnimationManager());
+    }
+
+    private void OnDestroy()
+    {
+        StopCoroutine("AnimationManager");
+        StopCoroutine("DialogueManager");
     }
 }

@@ -40,29 +40,38 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
         {
             int playerSpeed = battleManager.NextPlayerAction.SourcePokemon.Speed;
             int enemySpeed = battleManager.NextEnemyAction.SourcePokemon.Speed;
-            if (playerSpeed > enemySpeed)
+            
+            int playerMoveIndex = battleManager.NextPlayerAction.ActionParameter;
+            Move playerMove = battleManager.NextPlayerAction.SourcePokemon.Moves[playerMoveIndex];
+            int playerPriority = playerMove.ScriptableMove.Priority;
+
+            int enemyMoveIndex = battleManager.NextEnemyAction.ActionParameter;
+            Move enemyMove = battleManager.NextEnemyAction.SourcePokemon.Moves[enemyMoveIndex];
+            int enemyPriority = enemyMove.ScriptableMove.Priority;
+
+            bool playerGoesFirst;
+            if (enemyPriority > playerPriority)
+                playerGoesFirst = false;
+            else if (enemyPriority < playerPriority)
+                playerGoesFirst = true;
+            else if (enemySpeed < playerSpeed)
+                playerGoesFirst = true;
+            else if (enemySpeed > playerSpeed)
+                playerGoesFirst = false;
+            else if (Random.Range(0,2) == 0)
+                playerGoesFirst = true;
+            else
+                playerGoesFirst = false;
+
+            if (playerGoesFirst)
             {
                 actions.Enqueue(battleManager.NextPlayerAction);
                 actions.Enqueue(battleManager.NextEnemyAction);
-            }
-            else if (playerSpeed < enemySpeed)
-            {
-                actions.Enqueue(battleManager.NextEnemyAction);
-                actions.Enqueue(battleManager.NextPlayerAction);
             }
             else
             {
-                // it's a tie
-                if (Random.Range(0,2) == 0)
-                {
-                    actions.Enqueue(battleManager.NextPlayerAction);
-                    actions.Enqueue(battleManager.NextEnemyAction);
-                }
-                else
-                {
-                    actions.Enqueue(battleManager.NextEnemyAction);
-                    actions.Enqueue(battleManager.NextPlayerAction);
-                }
+                actions.Enqueue(battleManager.NextEnemyAction);
+                actions.Enqueue(battleManager.NextPlayerAction);
             }
         }
         
@@ -85,14 +94,11 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
 
             PerformAction(nextAction);
 
-            yield return new WaitForEndOfFrame();
-            while (UIManager.Instance.IsBusy)
-            {
-                yield return new WaitForSeconds(0.1f);
-            }
+            yield return UIManager.Instance.WaitWhileBusy();
         }
 
-        battleManager.SwitchState(battleManager.EndTurnState);
+        if (battleManager.NextPlayerAction.BattleAction != BattleAction.Run)
+            battleManager.SwitchState(battleManager.EndTurnState);
     }
 
     private void PerformAction(BattleActionInfo battleActionInfo)
@@ -117,7 +123,7 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
                 break;
                 
             default:
-                Debug.Log("Used something else than an attack move : not implemented yet");
+                Debug.Log("Used something else than attack, switch or run : not implemented yet");
                 break;
         }
         

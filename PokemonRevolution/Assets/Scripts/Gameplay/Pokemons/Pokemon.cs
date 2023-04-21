@@ -83,22 +83,15 @@ public class Pokemon
         VolatileStatuses = new List<VolatileStatus>();
     }
 
-    public void ResetStatBoosts()
+    public void OnExitBattle()
     {
-        StatBoosts = new Dictionary<Stat, int> {
-            { Stat.Attack, 0 },
-            { Stat.Defense, 0 },
-            { Stat.SpecialAttack, 0 },
-            { Stat.SpecialDefense, 0 },
-            { Stat.Speed, 0 },
-            { Stat.Accuracy, 0 },
-            { Stat.Evasion, 0 }
-        };
+        OnPokemonSwitchedOut();
     }
 
-    public void ResetVolatileStatusEffects()
+    public void OnPokemonSwitchedOut()
     {
-        VolatileStatuses.Clear();
+        ResetStatBoosts();
+        ResetVolatileStatusEffects();
     }
 
     public void TakeDamage(int damage)
@@ -164,6 +157,24 @@ public class Pokemon
             { Stat.Accuracy, Accuracy },
             { Stat.Evasion, Evasion }
         };
+    }
+    
+    private void ResetStatBoosts()
+    {
+        StatBoosts = new Dictionary<Stat, int> {
+            { Stat.Attack, 0 },
+            { Stat.Defense, 0 },
+            { Stat.SpecialAttack, 0 },
+            { Stat.SpecialDefense, 0 },
+            { Stat.Speed, 0 },
+            { Stat.Accuracy, 0 },
+            { Stat.Evasion, 0 }
+        };
+    }
+
+    private void ResetVolatileStatusEffects()
+    {
+        VolatileStatuses.Clear();
     }
 
     private void SetInitialMoves()

@@ -28,8 +28,7 @@ public class BattleManager : MonoBehaviour
 
     public void SwitchPokemon(Pokemon oldPokemon, Pokemon newPokemon)
     {
-        oldPokemon.ResetStatBoosts();
-        oldPokemon.ResetVolatileStatusEffects();
+        oldPokemon.OnPokemonSwitchedOut();
         if (!oldPokemon.IsFainted)
             BattleEvents.Instance.PokemonSwitchedOut(oldPokemon);
         if (newPokemon.Owner == PokemonOwner.Player)
@@ -107,10 +106,9 @@ public class BattleManager : MonoBehaviour
     {
         currentState.ExitState();
         currentState = newState;
-        while (UIManager.Instance.IsBusy)
-        {
-            yield return new WaitForSeconds(0.1f);
-        }
+
+        yield return UIManager.Instance.WaitWhileBusy();
+
         currentState.EnterState();
     }
 

@@ -61,7 +61,6 @@ public class MoveEffects
             foreach (Pokemon target in targetPokemons)
                 target.ApplyVolatileStatus(effect.volatileStatus);
         }
-            
     }
 }
 

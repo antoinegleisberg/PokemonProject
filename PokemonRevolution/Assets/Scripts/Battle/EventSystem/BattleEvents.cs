@@ -8,6 +8,7 @@ public class BattleEvents : MonoBehaviour
     private void Awake() => Instance = this;
 
     public event Action OnEnterActionSelection;
+    public event Action OnExitActionSelection;
     
     public event Action<Pokemon, Pokemon, Move, AttackInfo> OnPokemonAttack;
     public event Action<Pokemon, int> OnPokemonDamaged;
@@ -24,6 +25,7 @@ public class BattleEvents : MonoBehaviour
     public event Action<Pokemon> OnPokemonSwitchedIn;
 
     public void EnterActionSelectionState() => OnEnterActionSelection?.Invoke();
+    public void ExitActionSelectionState() => OnExitActionSelection?.Invoke();
 
     public void PokemonAttacks(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo) => OnPokemonAttack?.Invoke(attacker, defender, move, attackInfo);
     public void PokemonDamaged(Pokemon pokemon, int damage) => OnPokemonDamaged?.Invoke(pokemon, damage);

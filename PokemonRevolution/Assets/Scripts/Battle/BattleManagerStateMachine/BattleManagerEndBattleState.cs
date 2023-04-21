@@ -10,10 +10,8 @@ public class BattleManagerEndBattleState : BattleManagerBaseState
 
     public override void EnterState()
     {
-        battleManager.PlayerPokemon.ResetStatBoosts();
-        battleManager.EnemyPokemon.ResetStatBoosts();
-        battleManager.PlayerPokemon.ResetVolatileStatusEffects();
-        battleManager.EnemyPokemon.ResetVolatileStatusEffects();
+        battleManager.PlayerPokemon.OnExitBattle();
+        battleManager.EnemyPokemon.OnExitBattle();
         battleManager.StartCoroutine(EndBattleCoroutine());
     }
     
@@ -34,10 +32,7 @@ public class BattleManagerEndBattleState : BattleManagerBaseState
 
     private IEnumerator EndBattleCoroutine()
     {
-        yield return new WaitForSeconds(1.0f);
-
-        while (UIManager.Instance.IsBusy)
-            yield return null;
+        yield return UIManager.Instance.WaitWhileBusy();
 
         GameEvents.Instance.ExitBattle();
         battleManager.SwitchState(battleManager.OutOfBattleState);

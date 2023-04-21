@@ -29,6 +29,8 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
     {
         int randomEnemyMove = Random.Range(0, battleManager.EnemyPokemon.Moves.Count);
         battleManager.NextEnemyAction = new BattleActionInfo(BattleAction.Attack, randomEnemyMove, battleManager.EnemyPokemon, 0);
+
+        BattleEvents.Instance.ExitActionSelectionState();
     }
 
     public override void OnDestroy()

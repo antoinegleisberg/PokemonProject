@@ -17,7 +17,8 @@ public class ScriptableMove : ScriptableObject
     [SerializeField] int power;
     [SerializeField] int accuracy;
     [SerializeField] int pp;
-    
+    [SerializeField] int priority;
+
     [SerializeField] bool makesContact;
 
     [SerializeField] List<MoveTarget> moveTargets;
@@ -31,15 +32,8 @@ public class ScriptableMove : ScriptableObject
     public int Power { get => power; }
     public int Accuracy { get => accuracy; }
     public int PP { get => pp; }
+    public int Priority { get => priority; }
     public bool MakesContact { get => makesContact; }
     public List<MoveTarget> MoveTargets { get => moveTargets; }
     public MoveEffects MoveEffects { get => moveEffects; }
-}
-
-public enum MoveTarget {
-    Self,
-    Ally,
-    Allies,
-    Enemy,
-    Enemies,
 }
