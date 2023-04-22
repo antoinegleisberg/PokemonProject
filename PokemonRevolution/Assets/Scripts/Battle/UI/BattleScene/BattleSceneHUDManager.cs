@@ -13,7 +13,10 @@ public class BattleSceneHUDManager : MonoBehaviour
 
     [SerializeField] private GameObject healthBar;
     [SerializeField] private TextMeshProUGUI healthText;
-    
+
+    [SerializeField] private Image statusImage;
+    [SerializeField] private TextMeshProUGUI statusText;
+
     public void UpdateHUD(Pokemon pokemon)
     {
         Sprite sprite = (pokemon.Owner == PokemonOwner.Player) ? 
@@ -23,10 +26,11 @@ public class BattleSceneHUDManager : MonoBehaviour
         pokemonName.text = $"{pokemon.Name}";
         pokemonLevelText.text = $"Lv {pokemon.Level}";
 
-
         float fillAmount = (float)pokemon.CurrentHP / (float)pokemon.MaxHP;
         healthBar.transform.localScale = new Vector3(fillAmount, 1, 1);
         healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHP}";
+
+        UpdateStatusCondition(pokemon);
     }
 
     public IEnumerator UpdateHPBarSmooth(Pokemon pokemon)
@@ -52,5 +56,20 @@ public class BattleSceneHUDManager : MonoBehaviour
 
         healthBar.transform.localScale = new Vector3(pokemonCurrentHP, 1, 1);
         healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHP}";
+    }
+
+    public void UpdateStatusCondition(Pokemon pokemon)
+    {
+        if (pokemon.StatusCondition == StatusCondition.None)
+        {
+            statusImage.gameObject.SetActive(false);
+            return;
+        }
+
+        StatusConditionData conditionData = ConditionsDB.Conditions[pokemon.StatusCondition];
+
+        statusImage.gameObject.SetActive(true);
+        statusImage.color = conditionData.HUDColor;
+        statusText.text = conditionData.HUDName;
     }
 }

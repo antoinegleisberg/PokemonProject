@@ -28,6 +28,8 @@ public class BattleSceneUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonFainted += OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedOut += OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
+        BattleEvents.Instance.OnStatusConditionApplied += OnStatusConditionApplied;
+        BattleEvents.Instance.OnStatusConditionRemoved += OnStatusConditionRemoved;
     }
 
     private void OnDestroy()
@@ -39,6 +41,8 @@ public class BattleSceneUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonFainted -= OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedOut -= OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
+        BattleEvents.Instance.OnStatusConditionApplied -= OnStatusConditionApplied;
+        BattleEvents.Instance.OnStatusConditionRemoved -= OnStatusConditionRemoved;
     }
 
     private void OnEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
@@ -50,7 +54,10 @@ public class BattleSceneUIManager : MonoBehaviour
 
     private void OnPokemonAttack(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo)
     {
-        UIManager.Instance.EnqueueAnimation(AnimatePokemonAttackAndHit(attacker, defender));
+        if (attackInfo.moveHits && move.ScriptableMove.Category != MoveCategory.Status)
+            UIManager.Instance.EnqueueAnimation(AnimatePokemonAttackAndHit(attacker, defender));
+        else
+            UIManager.Instance.EnqueueAnimation(AnimatePokemonAttack(attacker));
     }
 
     private void OnPokemonDamaged(Pokemon pokemon, int damage)
@@ -69,6 +76,28 @@ public class BattleSceneUIManager : MonoBehaviour
     private void OnPokemonSwitchedIn(Pokemon newPokemon)
     {
         UIManager.Instance.EnqueueAnimation(SwitchPokemonIn(newPokemon));
+    }
+
+    private void OnStatusConditionApplied(StatusCondition status, Pokemon pokemon)
+    {
+        if (ConditionsDB.Conditions[status].IsVolatile)
+            return;
+
+        if (pokemon.Owner == PokemonOwner.Player)
+            playerHUD.UpdateStatusCondition(pokemon);
+        else
+            enemyHUD.UpdateStatusCondition(pokemon);
+    }
+
+    private void OnStatusConditionRemoved(StatusCondition status, Pokemon pokemon)
+    {
+        if (ConditionsDB.Conditions[status].IsVolatile)
+            return;
+
+        if (pokemon.Owner == PokemonOwner.Player)
+            playerHUD.UpdateStatusCondition(pokemon);
+        else
+            enemyHUD.UpdateStatusCondition(pokemon);
     }
 
     private IEnumerator AnimatePokemonEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)

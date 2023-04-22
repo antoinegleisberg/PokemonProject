@@ -10,23 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee785e717f1b7a44a9bab69a189de77c, type: 3}
-  m_Name: Ember
+  m_Name: ThunderWave
   m_EditorClassIdentifier: 
-  name: Ember
-  description: The target is attacked with small flames. This may also leave the
-    target with a burn.
-  type: 2
-  category: 1
-  power: 40
-  accuracy: 100
-  pp: 25
+  name: Thunder Wave
+  description: The user launches a weak jolt of electricity that paralyzes the target.
+  type: 4
+  category: 2
+  power: 0
+  accuracy: 90
+  pp: 20
   priority: 0
   alwaysHits: 0
   makesContact: 0
-  moveTargets: 03000000
+  moveTargets: 
   moveEffects:
     statBoosts: []
     conditionEffects:
-    - probability: 10
-      statusCondition: 1
+    - probability: 100
+      statusCondition: 4
       statusEffectTargets: 03000000

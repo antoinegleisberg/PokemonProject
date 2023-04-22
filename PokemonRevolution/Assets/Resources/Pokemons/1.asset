@@ -48,6 +48,10 @@ MonoBehaviour:
     level: 7
   - move: {fileID: 11400000, guid: 4593a6bb6478c8b4f8e31e2cd62daaa1, type: 2}
     level: 15
+  - move: {fileID: 11400000, guid: b76fd3058c95b94479d3642df8cda1b8, type: 2}
+    level: 15
+  - move: {fileID: 11400000, guid: 66c1a6b60714f564abe6d415d4a65aca, type: 2}
+    level: 15
   eggMoves: []
   tmMoves: []
   ability1: {fileID: 0}

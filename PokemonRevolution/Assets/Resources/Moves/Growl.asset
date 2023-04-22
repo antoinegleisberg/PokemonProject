@@ -20,13 +20,14 @@ MonoBehaviour:
   power: 0
   accuracy: 100
   pp: 40
+  priority: 0
+  alwaysHits: 0
   makesContact: 0
-  moveTargets: 03000000
+  moveTargets: 
   moveEffects:
     statBoosts:
     - probability: 100
       stat: 1
       boostValue: -1
       statBoostTargets: 03000000
-    appliedvolatileStatusEffects: []
-    appliedNonVolatileStatusEffects: []
+    conditionEffects: []

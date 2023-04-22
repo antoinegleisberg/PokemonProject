@@ -20,7 +20,9 @@ public class BattleDialogueUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonStatBoosted += OnPokemonStatBoosted;
         BattleEvents.Instance.OnStatusConditionApplied += OnStatusConditionApplied;
         BattleEvents.Instance.OnStatusConditionRemoved += OnStatusConditionRemoved;
+        BattleEvents.Instance.OnStatusConditionMessage += OnStatusConditionMessage;
     }
+
 
     private void OnDestroy()
     {
@@ -50,17 +52,23 @@ public class BattleDialogueUIManager : MonoBehaviour
     private void OnPokemonAttack(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo)
     {
         List<string> messages = new List<string>();
-        string msg = $"{attacker.Name} used {move.ScriptableMove.Name}!" +
-            $"\n{attacker.Name} attacks {defender.Name} with {move.ScriptableMove.Name}, dealing {attackInfo.damage} damage!";
+        string msg = $"{attacker.Name} used {move.ScriptableMove.Name}!";
         messages.Add(msg);
-        if (attackInfo.criticalHit)
-            messages.Add("It's a critical hit!");
-        if ((Mathf.Abs(attackInfo.typeEffectiveness - 0.5f) < Mathf.Epsilon) || (Mathf.Abs(attackInfo.typeEffectiveness - 0.25f) < Mathf.Epsilon))
-            messages.Add("It's not very effective...");
-        else if ((Mathf.Abs(attackInfo.typeEffectiveness - 2.0f) < Mathf.Epsilon) || (Mathf.Abs(attackInfo.typeEffectiveness - 4.0f) < Mathf.Epsilon))
-            messages.Add("It's super effective!");
-        else if (Mathf.Abs(attackInfo.typeEffectiveness) < Mathf.Epsilon)
-            messages.Add($"It doesn't affect {defender.Name} ...");
+        if (attackInfo.moveHits)
+        {
+            if (attackInfo.criticalHit)
+                messages.Add("It's a critical hit!");
+            if ((Mathf.Abs(attackInfo.typeEffectiveness - 0.5f) < Mathf.Epsilon) || (Mathf.Abs(attackInfo.typeEffectiveness - 0.25f) < Mathf.Epsilon))
+                messages.Add("It's not very effective...");
+            else if ((Mathf.Abs(attackInfo.typeEffectiveness - 2.0f) < Mathf.Epsilon) || (Mathf.Abs(attackInfo.typeEffectiveness - 4.0f) < Mathf.Epsilon))
+                messages.Add("It's super effective!");
+            else if (Mathf.Abs(attackInfo.typeEffectiveness) < Mathf.Epsilon)
+                messages.Add($"It doesn't affect {defender.Name} ...");
+        }
+        else
+        {
+            messages.Add($"{attacker.Name}'s attack missed !");
+        }
         UIManager.Instance.WriteDialogueTexts(dialogueText, messages);
     }
 
@@ -119,6 +127,11 @@ public class BattleDialogueUIManager : MonoBehaviour
     private void OnStatusConditionRemoved(StatusCondition statusCondition, Pokemon pokemon)
     {
         string msg = $"{pokemon.Name} {ConditionsDB.Conditions[statusCondition].EndMessage}";
+        UIManager.Instance.WriteDialogueText(dialogueText, msg);
+    }
+    
+    private void OnStatusConditionMessage(string msg)
+    {
         UIManager.Instance.WriteDialogueText(dialogueText, msg);
     }
 }

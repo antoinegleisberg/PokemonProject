@@ -40,12 +40,29 @@ public class BattleManager : MonoBehaviour
 
     public void PerformMove(Pokemon attackingPokemon, Pokemon targetPokemon, Move move)
     {
+        // Check if the move can be performed, depending on status conditions
+        ConditionAttackModifier attackModifier = attackingPokemon.OnBeforeMove(move);
+        if (!attackModifier.CanPerformMove)
+            return;
+
         // Apply PP loss
         attackingPokemon.LoseMovePP(move);
-        
-        // Apply damage
-        AttackInfo attackInfo = CalculateMoveDamage(attackingPokemon, targetPokemon, move);
+
+        // Calculate attack info
+        AttackInfo attackInfo = CalculateMoveDamage(attackingPokemon, targetPokemon, move, attackModifier);
+
+        // Check if the move hits
+        bool moveHits = MoveHits(attackingPokemon, targetPokemon, move);
+        attackInfo.moveHits = moveHits;
+
+        // Raise attack event
         BattleEvents.Instance.PokemonAttacks(attackingPokemon, targetPokemon, move, attackInfo);
+
+        // If the move misses, don't apply damage or effects
+        if (!moveHits)
+            return;
+
+        // Apply damage
         targetPokemon.TakeDamage(attackInfo.damage);
 
         // Apply effects
@@ -107,10 +124,21 @@ public class BattleManager : MonoBehaviour
         currentState.EnterState();
     }
 
-    private AttackInfo CalculateMoveDamage(Pokemon attackingPokemon, Pokemon targetPokemon, Move move)
+    private bool MoveHits(Pokemon attackingPokemon, Pokemon defendingPokemon, Move move)
+    {
+        if (move.ScriptableMove.AlwaysHits)
+            return true;
+
+        float accuracy = move.ScriptableMove.Accuracy * attackingPokemon.Accuracy / defendingPokemon.Evasion;
+        int roundedAccuracy = Mathf.RoundToInt(accuracy);
+
+        return Random.Range(0, 100) < roundedAccuracy;
+    }
+    
+    private AttackInfo CalculateMoveDamage(Pokemon attackingPokemon, Pokemon targetPokemon, Move move, ConditionAttackModifier attackModifier)
     {
         if (move.ScriptableMove.Category == MoveCategory.Status) 
-            return new AttackInfo(false, 0, 1.0f);
+            return new AttackInfo(false, 0, 1.0f, true);
 
         int level = attackingPokemon.Level;
         int attack = (move.ScriptableMove.Category == MoveCategory.Special) ? attackingPokemon.SpecialAttack : attackingPokemon.Attack;
@@ -127,9 +155,10 @@ public class BattleManager : MonoBehaviour
 
         float baseDamage = (((2 * level / 5 + 2) * attack * power / defense / 50) + 2);
         float damage = baseDamage * criticalHitModifier * stabModifier * typeModifier * randomModifier;
+        damage *= attackModifier.DamageMultiplier;
         int roundedDamage = Mathf.Max(1, Mathf.RoundToInt(damage));
 
-        AttackInfo attackInfo = new AttackInfo(criticalHit, roundedDamage, typeModifier);
+        AttackInfo attackInfo = new AttackInfo(criticalHit, roundedDamage, typeModifier, true);
         
         return attackInfo;
     }

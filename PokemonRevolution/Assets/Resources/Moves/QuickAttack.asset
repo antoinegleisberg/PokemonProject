@@ -10,23 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee785e717f1b7a44a9bab69a189de77c, type: 3}
-  m_Name: Ember
+  m_Name: QuickAttack
   m_EditorClassIdentifier: 
-  name: Ember
-  description: The target is attacked with small flames. This may also leave the
-    target with a burn.
-  type: 2
-  category: 1
+  name: Quick Attack
+  description: "The user lunges at the target to inflict damage, moving at blinding
+    speed. This move always goes first.\r"
+  type: 1
+  category: 0
   power: 40
   accuracy: 100
-  pp: 25
-  priority: 0
+  pp: 30
+  priority: 1
   alwaysHits: 0
-  makesContact: 0
+  makesContact: 1
   moveTargets: 03000000
   moveEffects:
     statBoosts: []
-    conditionEffects:
-    - probability: 10
-      statusCondition: 1
-      statusEffectTargets: 03000000
+    conditionEffects: []

@@ -17,14 +17,15 @@ MonoBehaviour:
   type: 8
   category: 2
   power: 0
-  accuracy: 100
+  accuracy: 75
   pp: 35
   priority: 0
+  alwaysHits: 0
   makesContact: 0
-  moveTargets: 03000000
+  moveTargets: 
   moveEffects:
     statBoosts: []
     conditionEffects:
     - probability: 100
-      statusCondition: 4
+      statusCondition: 2
       statusEffectTargets: 03000000

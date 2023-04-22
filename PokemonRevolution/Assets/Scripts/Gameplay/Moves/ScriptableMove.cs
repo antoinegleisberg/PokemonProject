@@ -18,6 +18,7 @@ public class ScriptableMove : ScriptableObject
     [SerializeField] int accuracy;
     [SerializeField] int pp;
     [SerializeField] int priority;
+    [SerializeField] bool alwaysHits;
 
     [SerializeField] bool makesContact;
 
@@ -33,6 +34,7 @@ public class ScriptableMove : ScriptableObject
     public int Accuracy { get => accuracy; }
     public int PP { get => pp; }
     public int Priority { get => priority; }
+    public bool AlwaysHits { get => alwaysHits; }
     public bool MakesContact { get => makesContact; }
     public List<MoveTarget> MoveTargets { get => moveTargets; }
     public MoveEffects MoveEffects { get => moveEffects; }

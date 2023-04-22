@@ -3,25 +3,14 @@ public enum StatusCondition
     None,
 
     Burn,
-    Freeze,
-    Paralysis,
     Poison,
     BadPoison,
+    Paralysis,
+    Freeze,
     Sleep,
-}
 
-/*
-public enum NonVolatileStatus
-{
-    None,
-    Burn,
-    Freeze,
-    Paralysis,
-    Poison,
-    BadPoison,
-    Sleep,
+    Confusion,
 }
-*/
 
 /*
 public enum VolatileStatus
@@ -30,7 +19,6 @@ public enum VolatileStatus
     
     Bound,
     CantEscape,
-    Confusion,
     AbilitySupressed,
     Curse,
     Drowsy,

@@ -10,23 +10,24 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ee785e717f1b7a44a9bab69a189de77c, type: 3}
-  m_Name: Ember
+  m_Name: SandAttack
   m_EditorClassIdentifier: 
-  name: Ember
-  description: The target is attacked with small flames. This may also leave the
-    target with a burn.
-  type: 2
-  category: 1
-  power: 40
+  name: Sand Attack
+  description: "Sand is hurled in the target\u2019s face, lowering the target\u2019s
+    accuracy.\r"
+  type: 9
+  category: 2
+  power: 0
   accuracy: 100
-  pp: 25
+  pp: 15
   priority: 0
   alwaysHits: 0
   makesContact: 0
-  moveTargets: 03000000
+  moveTargets: 
   moveEffects:
-    statBoosts: []
-    conditionEffects:
-    - probability: 10
-      statusCondition: 1
-      statusEffectTargets: 03000000
+    statBoosts:
+    - probability: 100
+      stat: 6
+      boostValue: -1
+      statBoostTargets: 03000000
+    conditionEffects: []
