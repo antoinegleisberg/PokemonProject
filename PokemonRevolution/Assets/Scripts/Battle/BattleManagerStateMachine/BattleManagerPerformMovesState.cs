@@ -33,7 +33,10 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
         else if (battleManager.NextEnemyAction.BattleAction != BattleAction.Attack)
         {
             actions.Enqueue(battleManager.NextEnemyAction);
-            actions.Enqueue(battleManager.NextPlayerAction);
+            if (battleManager.NextEnemyAction.BattleAction != BattleAction.Run)
+            {
+                actions.Enqueue(battleManager.NextPlayerAction);
+            }
         }
         // None of the teams used priority action; check for pokemon speed
         else
@@ -94,10 +97,10 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
 
             PerformAction(nextAction);
 
-            yield return UIManager.Instance.WaitWhileBusy();
+            yield return BattleUIManager.Instance.WaitWhileBusy();
         }
 
-        if (battleManager.NextPlayerAction.BattleAction != BattleAction.Run)
+        if (battleManager.NextPlayerAction.BattleAction != BattleAction.Run && battleManager.NextEnemyAction.BattleAction != BattleAction.Run)
             battleManager.SwitchState(battleManager.EndTurnState);
     }
 

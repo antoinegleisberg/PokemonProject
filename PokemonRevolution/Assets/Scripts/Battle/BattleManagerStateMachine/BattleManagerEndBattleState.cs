@@ -33,9 +33,10 @@ public class BattleManagerEndBattleState : BattleManagerBaseState
         battleManager.PlayerPokemon.OnExitBattle();
         battleManager.EnemyPokemon.OnExitBattle();
 
-        yield return UIManager.Instance.WaitWhileBusy();
-
-        GameEvents.Instance.ExitBattle();
+        yield return BattleUIManager.Instance.WaitWhileBusy();
+        
+        BattleEvents.Instance.EndBattle();
         battleManager.SwitchState(battleManager.OutOfBattleState);
+        GameManager.Instance.SwitchState(GameManager.Instance.FreeRoamState);
     }
 }

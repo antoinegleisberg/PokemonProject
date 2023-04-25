@@ -30,8 +30,7 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        GameEvents.Instance.OnPokemonEncounter += (playerParty, enemyParty) => playerPokemonParty = playerParty;
-        GameEvents.Instance.OnEnterBattle += OnEnterBattle;
+        BattleEvents.Instance.OnBattleStart += OnBattleStart;
 
         BattleUIEvents.Instance.OnAttackButtonPressed += SetActiveSelectorToMoveSelector;
         BattleUIEvents.Instance.OnSwitchPokemonButtonPressed += OnSwitchPokemonButtonPressed;
@@ -51,8 +50,7 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
     private void UnsubscribeToEvents()
     {
-        GameEvents.Instance.OnPokemonEncounter -= (playerParty, enemyParty) => playerPokemonParty = playerParty;
-        GameEvents.Instance.OnEnterBattle -= OnEnterBattle;
+        BattleEvents.Instance.OnBattleStart -= OnBattleStart;
 
         BattleUIEvents.Instance.OnAttackButtonPressed -= SetActiveSelectorToMoveSelector;
         BattleUIEvents.Instance.OnSwitchPokemonButtonPressed -= OnSwitchPokemonButtonPressed;
@@ -81,7 +79,7 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
     private IEnumerator SetActiveSelectorCoroutine(GameObject selector)
     {
-        yield return UIManager.Instance.WaitWhileBusy();
+        yield return BattleUIManager.Instance.WaitWhileBusy();
         SetActiveSelector(selector);
     }
 
@@ -94,9 +92,10 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
     private void SetActiveSelectorToMoveSelector() => SetActiveSelector(moveSelector);
 
-    private void OnEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
+    private void OnBattleStart(PokemonParty playerParty, PokemonParty enemyParty)
     {
-        moveSelectorUIManager.UpdateMovesUI(playerPokemon);
+        playerPokemonParty = playerParty;
+        moveSelectorUIManager.UpdateMovesUI(playerPokemonParty.GetFirstPokemon());
         SetActiveSelector(null);
     }
 

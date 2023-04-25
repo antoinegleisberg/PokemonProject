@@ -7,7 +7,7 @@ public class BattleManagerStartBattleState : BattleManagerBaseState
 
     public override void EnterState()
     {
-        GameEvents.Instance.EnterBattle(battleManager.PlayerPokemon, battleManager.EnemyPokemon);
+        BattleEvents.Instance.StartBattle(battleManager.PlayerParty, battleManager.EnemyParty);
         battleManager.SwitchState(battleManager.StartTurnState);
     }
 

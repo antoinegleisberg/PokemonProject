@@ -7,6 +7,9 @@ public class BattleEvents : MonoBehaviour
 
     private void Awake() => Instance = this;
 
+    public event Action<PokemonParty, PokemonParty> OnBattleStart;
+    public event Action OnBattleEnd;
+
     public event Action OnEnterActionSelection;
     public event Action OnExitActionSelection;
     
@@ -22,6 +25,9 @@ public class BattleEvents : MonoBehaviour
     public event Action OnReplaceFaintedPokemon;
     public event Action<Pokemon> OnPokemonSwitchedOut;
     public event Action<Pokemon> OnPokemonSwitchedIn;
+
+    public void StartBattle(PokemonParty playerParty, PokemonParty enemyParty) => OnBattleStart?.Invoke(playerParty, enemyParty);
+    public void EndBattle() => OnBattleEnd?.Invoke();
 
     public void EnterActionSelectionState() => OnEnterActionSelection?.Invoke();
     public void ExitActionSelectionState() => OnExitActionSelection?.Invoke();

@@ -77,6 +77,11 @@ public class Pokemon
         Owner = owner;
         Gender = (Random.Range(0, 100) < scriptablePokemon.MalePercentage) ? Gender.Male : Gender.Female;
 
+        StatusCondition = StatusCondition.None;
+        VolatileStatusConditions = new List<StatusCondition>();
+        RemainingStatusTime = new Dictionary<StatusCondition, int>();
+        StatusTimeCount = new Dictionary<StatusCondition, int>();
+
         InitIVs();
         InitEVs();
         ResetStatBoosts();
@@ -84,10 +89,6 @@ public class Pokemon
         SetInitialMoves();
 
         CurrentHP = MaxHP;
-        StatusCondition = StatusCondition.None;
-        VolatileStatusConditions = new List<StatusCondition>();
-        RemainingStatusTime = new Dictionary<StatusCondition, int>();
-        StatusTimeCount = new Dictionary<StatusCondition, int>();
     }
     
     

@@ -2,9 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapArea : MonoBehaviour
-{
-    public static MapArea Instance { get; private set; }
-    
+{    
     [SerializeField] private List<WildEncounter> wildEncounters;
     [SerializeField] private int encounterRate = 10;
 
@@ -32,18 +30,4 @@ public class MapArea : MonoBehaviour
 
         return null;
     }
-
-    private void Awake()
-    {
-        Instance = this;
-    }
-}
-
-[System.Serializable]
-public class WildEncounter
-{
-    public ScriptablePokemon pokemon;
-    public int minLevel;
-    public int maxLevel;
-    public int probability;
 }

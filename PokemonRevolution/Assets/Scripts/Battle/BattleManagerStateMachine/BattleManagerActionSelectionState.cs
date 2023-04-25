@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleManagerActionSelectionState : BattleManagerBaseState
@@ -27,10 +28,40 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
 
     public override void ExitState()
     {
-        int randomEnemyMove = Random.Range(0, battleManager.EnemyPokemon.Moves.Count);
-        battleManager.NextEnemyAction = new BattleActionInfo(BattleAction.Attack, randomEnemyMove, battleManager.EnemyPokemon, 0);
+        int randomEnemyMove = GetRandomEnemyMove();
+
+        if (randomEnemyMove == -1)
+        {
+            battleManager.NextEnemyAction = new BattleActionInfo(BattleAction.Run);
+            Debug.Log("The enemy pokemon ran !");
+        }
+        else
+            battleManager.NextEnemyAction = new BattleActionInfo(BattleAction.Attack, randomEnemyMove, battleManager.EnemyPokemon, 0);
 
         BattleEvents.Instance.ExitActionSelectionState();
+    }
+
+    private int GetRandomEnemyMove()
+    {
+        List<int> enemyMovesIndexes = new List<int>();
+        for (int i = 0; i < battleManager.EnemyPokemon.Moves.Count; i++)
+            enemyMovesIndexes.Add(i);
+
+        int randomEnemyMove = -1;
+        while (enemyMovesIndexes.Count > 0)
+        {
+            int randomIndex = Random.Range(0, enemyMovesIndexes.Count);
+            if (battleManager.EnemyPokemon.Moves[randomIndex].CurrentPP > 0)
+            {
+                randomEnemyMove = randomIndex;
+                break;
+            }
+            else
+            {
+                enemyMovesIndexes.RemoveAt(randomIndex);
+            }
+        }
+        return randomEnemyMove;
     }
 
     public override void OnDestroy()

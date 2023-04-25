@@ -4,12 +4,9 @@ using UnityEngine;
 
 public class BattleDialogueUIManager : MonoBehaviour
 {
-    [SerializeField] private GameObject dialogueBox;
-    [SerializeField] private TextMeshProUGUI dialogueText;
-
     private void Start()
     {
-        GameEvents.Instance.OnEnterBattle += OnEnterBattle;
+        BattleEvents.Instance.OnBattleStart += OnBattleStart;
         
         BattleEvents.Instance.OnEnterActionSelection += OnEnterActionSelection;
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
@@ -26,7 +23,7 @@ public class BattleDialogueUIManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameEvents.Instance.OnEnterBattle -= OnEnterBattle;
+        BattleEvents.Instance.OnBattleStart -= OnBattleStart;
         
         BattleEvents.Instance.OnEnterActionSelection -= OnEnterActionSelection;
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
@@ -39,14 +36,14 @@ public class BattleDialogueUIManager : MonoBehaviour
         BattleEvents.Instance.OnStatusConditionRemoved -= OnStatusConditionRemoved;
     }
 
-    private void OnEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
+    private void OnBattleStart(PokemonParty playerParty, PokemonParty enemyParty)
     {
-        UIManager.Instance.WriteDialogueText(dialogueText, $"A wild {enemyPokemon.Name} appeared!");
+        BattleUIManager.Instance.WriteDialogueText($"A wild {enemyParty.GetFirstPokemon().Name} appeared!");
     }
 
     private void OnEnterActionSelection()
     {
-        UIManager.Instance.WriteDialogueText(dialogueText, $"What will you do?");
+        BattleUIManager.Instance.WriteDialogueText($"What will you do?");
     }
 
     private void OnPokemonAttack(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo)
@@ -69,26 +66,26 @@ public class BattleDialogueUIManager : MonoBehaviour
         {
             messages.Add($"{attacker.Name}'s attack missed !");
         }
-        UIManager.Instance.WriteDialogueTexts(dialogueText, messages);
+        BattleUIManager.Instance.WriteDialogueTexts(messages);
     }
 
     private void OnPokemonFainted(Pokemon pokemon)
     {
-        UIManager.Instance.WriteDialogueText(dialogueText, $"{pokemon.Name} fainted!");
+        BattleUIManager.Instance.WriteDialogueText($"{pokemon.Name} fainted!");
     }
 
     private void OnPokemonSwitchedOut(Pokemon oldPokemon)
     {
         if (oldPokemon.Owner != PokemonOwner.Player)
             return;
-        UIManager.Instance.WriteDialogueText(dialogueText, $"{oldPokemon.Name}, come back!");
+        BattleUIManager.Instance.WriteDialogueText($"{oldPokemon.Name}, come back!");
     }
 
     private void OnPokemonSwitchedIn(Pokemon newPokemon)
     {
         if (newPokemon.Owner != PokemonOwner.Player)
             return;
-        UIManager.Instance.WriteDialogueText(dialogueText, $"Go {newPokemon.Name} !");
+        BattleUIManager.Instance.WriteDialogueText($"Go {newPokemon.Name} !");
     }
 
     private void OnPokemonStatBoosted(Stat stat, int boost, Pokemon pokemon) 
@@ -115,23 +112,23 @@ public class BattleDialogueUIManager : MonoBehaviour
                 msg = "I have no idea how the hell this happened !";
                 break;
         }
-        UIManager.Instance.WriteDialogueText(dialogueText, msg);
+        BattleUIManager.Instance.WriteDialogueText(msg);
     }
 
     private void OnStatusConditionApplied(StatusCondition statusCondition, Pokemon pokemon)
     {
         string msg = $"{pokemon.Name} {ConditionsDB.Conditions[statusCondition].StartMessage}";
-        UIManager.Instance.WriteDialogueText(dialogueText, msg);
+        BattleUIManager.Instance.WriteDialogueText(msg);
     }
 
     private void OnStatusConditionRemoved(StatusCondition statusCondition, Pokemon pokemon)
     {
         string msg = $"{pokemon.Name} {ConditionsDB.Conditions[statusCondition].EndMessage}";
-        UIManager.Instance.WriteDialogueText(dialogueText, msg);
+        BattleUIManager.Instance.WriteDialogueText(msg);
     }
     
     private void OnStatusConditionMessage(string msg)
     {
-        UIManager.Instance.WriteDialogueText(dialogueText, msg);
+        BattleUIManager.Instance.WriteDialogueText(msg);
     }
 }

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class BattleUIManager : MonoBehaviour
 {
-    public static UIManager Instance;
+    public static BattleUIManager Instance;
 
     [SerializeField] private int textSpeed;
     private Queue<string> messagesQueue;
-    private TextMeshProUGUI currentTMPText;
+    
+    [SerializeField] private TextMeshProUGUI battleSystemDialogue;
 
     [SerializeField] private float timeBetweenAnimations = 0.25f;
     private Queue<IEnumerator> animationsQueue;
@@ -31,20 +32,17 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    public void WriteDialogueText(TextMeshProUGUI TMPText, string text)
+    public void WriteDialogueText(string text)
     {
-        currentTMPText = TMPText;
         messagesQueue.Enqueue(text);
     }
     
-    public void WriteDialogueTexts(TextMeshProUGUI TMPText, List<string> texts)
+    public void WriteDialogueTexts(List<string> texts)
     {
-        currentTMPText = TMPText;
         foreach (string msg in texts)
         {
             messagesQueue.Enqueue(msg);
         }
-        
     }
     
     public void EnqueueAnimation(IEnumerator animation)
@@ -61,10 +59,10 @@ public class UIManager : MonoBehaviour
                 isWriting = true;
 
                 string nextMessage = messagesQueue.Dequeue();
-                currentTMPText.text = "";
+                battleSystemDialogue.text = "";
                 foreach (var letter in nextMessage.ToCharArray())
                 {
-                    currentTMPText.text += letter;
+                    battleSystemDialogue.text += letter;
                     yield return new WaitForSeconds(1.0f / textSpeed);
                 }
 

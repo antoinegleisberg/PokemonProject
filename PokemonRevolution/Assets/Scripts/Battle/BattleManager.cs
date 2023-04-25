@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -7,6 +8,9 @@ public class BattleManager : MonoBehaviour
     public PokemonParty EnemyParty { get; private set; }
     public Pokemon PlayerPokemon { get; private set; }
     public Pokemon EnemyPokemon { get; private set; }
+    public int NumberPokemonsPerTeam { get; private set; } // TODO
+    public List<Pokemon> PlayerPokemons { get; private set; } // TODO
+    public List<Pokemon> EnemyPokemons { get; private set; } // TODO
 
     public BattleActionInfo NextPlayerAction { get; set; }
     public BattleActionInfo NextEnemyAction { get; set; }
@@ -19,10 +23,18 @@ public class BattleManager : MonoBehaviour
     public BattleManagerPerformMovesState PerformMovesState;
     public BattleManagerEndTurnState EndTurnState;
     public BattleManagerEndBattleState EndBattleState;
+    
+    public void StartBattle(PokemonParty playerParty, PokemonParty enemyParty)
+    {
+        PlayerParty = playerParty;
+        EnemyParty = enemyParty;
+        PlayerPokemon = PlayerParty.GetFirstPokemon();
+        EnemyPokemon = EnemyParty.GetFirstPokemon();
+        SwitchState(StartBattleState);
+    }
 
     public void SwitchState(BattleManagerBaseState newState)
     {
-        // Debug.Log("Entering state: " + newState.GetType().Name);
         StartCoroutine(SwitchStateCoroutine(newState));
     }
 
@@ -49,17 +61,13 @@ public class BattleManager : MonoBehaviour
         attackingPokemon.LoseMovePP(move);
 
         // Calculate attack info
-        AttackInfo attackInfo = CalculateMoveDamage(attackingPokemon, targetPokemon, move, attackModifier);
-
-        // Check if the move hits
-        bool moveHits = MoveHits(attackingPokemon, targetPokemon, move);
-        attackInfo.moveHits = moveHits;
+        AttackInfo attackInfo = CalculateMoveInfo(attackingPokemon, targetPokemon, move, attackModifier);
 
         // Raise attack event
         BattleEvents.Instance.PokemonAttacks(attackingPokemon, targetPokemon, move, attackInfo);
 
         // If the move misses, don't apply damage or effects
-        if (!moveHits)
+        if (!attackInfo.moveHits)
             return;
 
         // Apply damage
@@ -92,8 +100,6 @@ public class BattleManager : MonoBehaviour
         EndBattleState.InitState(this);
 
         currentState = OutOfBattleState;
-
-        GameEvents.Instance.OnPokemonEncounter += OnPokemonEncounter;
     }
 
     private void Update()
@@ -110,8 +116,6 @@ public class BattleManager : MonoBehaviour
         PerformMovesState.OnDestroy();
         EndTurnState.OnDestroy();
         EndBattleState.OnDestroy();
-
-        GameEvents.Instance.OnPokemonEncounter -= OnPokemonEncounter;
     }
 
     private IEnumerator SwitchStateCoroutine(BattleManagerBaseState newState)
@@ -119,9 +123,16 @@ public class BattleManager : MonoBehaviour
         currentState.ExitState();
         currentState = newState;
 
-        yield return UIManager.Instance.WaitWhileBusy();
+        yield return BattleUIManager.Instance.WaitWhileBusy();
 
         currentState.EnterState();
+    }
+
+    private AttackInfo CalculateMoveInfo(Pokemon attackingPokemon, Pokemon targetPokemon, Move move, ConditionAttackModifier attackModifier)
+    {
+        AttackInfo attackInfo = CalculateMoveDamage(attackingPokemon, targetPokemon, move, attackModifier);
+        attackInfo.moveHits = MoveHits(attackingPokemon, targetPokemon, move);
+        return attackInfo;
     }
 
     private bool MoveHits(Pokemon attackingPokemon, Pokemon defendingPokemon, Move move)
@@ -161,14 +172,5 @@ public class BattleManager : MonoBehaviour
         AttackInfo attackInfo = new AttackInfo(criticalHit, roundedDamage, typeModifier, true);
         
         return attackInfo;
-    }
-
-    private void OnPokemonEncounter(PokemonParty playerParty, PokemonParty enemyParty)
-    {
-        PlayerParty = playerParty;
-        EnemyParty = enemyParty;
-        PlayerPokemon = PlayerParty.GetFirstPokemon();
-        EnemyPokemon = EnemyParty.GetFirstPokemon();
-        SwitchState(StartBattleState);
     }
 }

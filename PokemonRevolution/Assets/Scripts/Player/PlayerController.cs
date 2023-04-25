@@ -8,21 +8,32 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float baseMoveSpeed;
     [SerializeField] private float runningMoveSpeed;
     [SerializeField] private Animator animator;
+    
     [SerializeField] private LayerMask solidObjectsCollidersLayer;
-    [SerializeField] private LayerMask tallGrassLayer;
+    [SerializeField] private LayerMask tallGrassLayer; // unused
+    [SerializeField] private LayerMask interactableLayer;
+    
     [SerializeField] private PokemonPartyManager playerPartyManager;
     
     private float moveSpeed;
     private Vector2Int lastInput;
     private bool isMoving;
+    private Vector2Int facing;
 
     private void Start()
     {
         lastInput = InputManager.Instance.MovementInput;
         isMoving = false;
         moveSpeed = baseMoveSpeed;
+
+        InputEvents.Instance.OnInteract += Interact;
     }
-    
+
+    private void OnDestroy()
+    {
+        InputEvents.Instance.OnInteract -= Interact;
+    }
+
     private void Update()
     {
         Move();
@@ -38,6 +49,7 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetFloat("moveX", lastInput.x);
                 animator.SetFloat("moveY", lastInput.y);
+                facing = lastInput;
 
                 Vector3 targetPosition = playerTransform.position;
                 targetPosition.x += lastInput.x;
@@ -53,7 +65,6 @@ public class PlayerController : MonoBehaviour
         else moveSpeed = baseMoveSpeed;
         animator.SetBool("isMoving", isMoving && !isRunning);
         animator.SetBool("isRunning", isMoving && isRunning);
-
     }
 
     private IEnumerator Move(Vector3 targetPosition)
@@ -68,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
         playerTransform.position = targetPosition;
         isMoving = false;
-        CheckForEncounters();
+        GameManager.Instance.CheckForEncounters(playerTransform.position);
     }
 
     private bool IsWalkable(Vector3 targetPosition)
@@ -79,17 +90,16 @@ public class PlayerController : MonoBehaviour
         }
         return true;
     }
-
-    private void CheckForEncounters()
+    
+    private void Interact()
     {
-        if (Physics2D.OverlapCircle(playerTransform.position, 0.2f, tallGrassLayer) != null)
+        Vector2 interactPos = new Vector2(playerTransform.position.x, playerTransform.position.y) + facing;
+
+        Collider2D collider = Physics2D.OverlapCircle(interactPos, 0.2f, interactableLayer);
+        if (collider != null)
         {
-            if (Random.Range(0, 100) < MapArea.Instance.EncounterRate)
-            {
-                Pokemon enemyPokemon = MapArea.Instance.GetRandomWildPokemon();
-                PokemonParty enemyParty = new PokemonParty(new List<Pokemon>() { enemyPokemon });
-                GameEvents.Instance.EncounterPokemon(playerPartyManager.PokemonParty, enemyParty);
-            }
+            IInteractable interactable = collider.GetComponentInParent<Transform>().GetComponentInChildren<IInteractable>();
+            interactable.Interact();
         }
     }
 }

@@ -20,6 +20,10 @@ MonoBehaviour:
   power: 40
   accuracy: 100
   pp: 35
+  priority: 0
+  alwaysHits: 0
+  makesContact: 0
+  moveTargets: 03000000
   moveEffects:
     statBoosts: []
-  moveTargets: 03000000
+    conditionEffects: []

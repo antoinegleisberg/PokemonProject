@@ -34,7 +34,6 @@ public class MoveSelectorUIManager : MonoBehaviour
             moveButtons[i].transform.Find("MoveName").GetComponent<TextMeshProUGUI>().text = playerPokemon.Moves[i].ScriptableMove.Name;
             moveButtons[i].transform.Find("Image").GetComponent<Image>().sprite = TypeUtils.TypeInfo(playerPokemon.Moves[i].ScriptableMove.Type).TypeIcon;
             moveButtons[i].transform.Find("PPText").GetComponent<TextMeshProUGUI>().text = "PP " + playerPokemon.Moves[i].CurrentPP + "/" + playerPokemon.Moves[i].ScriptableMove.PP;
-            moveButtons[i].GetComponent<Image>().color = TypeUtils.TypeInfo(playerPokemon.Moves[i].ScriptableMove.Type).TypeColor;
 
             if (playerPokemon.Moves[i].CurrentPP == 0)
             {
@@ -44,6 +43,7 @@ public class MoveSelectorUIManager : MonoBehaviour
             else
             {
                 moveButtons[i].interactable = true;
+                moveButtons[i].GetComponent<Image>().color = TypeUtils.TypeInfo(playerPokemon.Moves[i].ScriptableMove.Type).TypeColor;
             }
         }
         for (int i = playerPokemon.Moves.Count; i < 4; i++)

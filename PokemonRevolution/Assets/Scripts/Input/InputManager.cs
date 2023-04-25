@@ -27,8 +27,10 @@ public class InputManager : MonoBehaviour
         MovementInput = Vector2Int.zero;
         IsRunning = false;
 
-        GameEvents.Instance.OnEnterBattle += OnEnterBattle;
-        GameEvents.Instance.OnExitBattle += OnExitBattle;
+        GameEvents.Instance.OnEnterBattle += ActivateUIActionMap;
+        GameEvents.Instance.OnExitBattle += ActivatePlayerActionMap;
+        GameEvents.Instance.OnEnterDialogue += ActivateUIActionMap;
+        GameEvents.Instance.OnExitDialogue += ActivatePlayerActionMap;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -38,6 +40,14 @@ public class InputManager : MonoBehaviour
         if (newInput.x != 0) newInput.y = 0;
         else newInput.y = (int)context.ReadValue<Vector2>().y;
         MovementInput = newInput;
+    }
+
+    public void OnInteract(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            InputEvents.Instance.Interact();
+        }
     }
 
     public void OnRun(InputAction.CallbackContext context)
@@ -50,24 +60,38 @@ public class InputManager : MonoBehaviour
     {
         Vector2 input = context.ReadValue<Vector2>();
         Vector2Int input2Int = new Vector2Int((int)input.x, (int)input.y);
-        InputEvents.Current.NavigateUI(input2Int);
+        InputEvents.Instance.NavigateUI(input2Int);
     }
 
-    private void OnEnterBattle(Pokemon p1, Pokemon p2)
+    public void OnUISubmit(InputAction.CallbackContext context)
     {
-        playerActionMap.Disable();
-        uiActionMap.Enable();
+        if (context.performed)
+            InputEvents.Instance.Submit();
     }
-    
-    private void OnExitBattle()
+
+    public void OnUICancel(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            InputEvents.Instance.Cancel();
+    }
+
+    private void ActivatePlayerActionMap()
     {
         playerActionMap.Enable();
         uiActionMap.Disable();
     }
+    
+    private void ActivateUIActionMap()
+    {
+        playerActionMap.Disable();
+        uiActionMap.Enable();
+    }
 
     private void OnDestroy()
     {
-        GameEvents.Instance.OnEnterBattle -= OnEnterBattle;
-        GameEvents.Instance.OnExitBattle -= OnExitBattle;
+        GameEvents.Instance.OnEnterBattle -= ActivateUIActionMap;
+        GameEvents.Instance.OnExitBattle -= ActivatePlayerActionMap;
+        GameEvents.Instance.OnEnterDialogue -= ActivateUIActionMap;
+        GameEvents.Instance.OnExitDialogue -= ActivatePlayerActionMap;
     }
 }

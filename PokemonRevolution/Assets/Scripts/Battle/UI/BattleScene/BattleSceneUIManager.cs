@@ -21,7 +21,7 @@ public class BattleSceneUIManager : MonoBehaviour
     
     private void Start()
     {
-        GameEvents.Instance.OnEnterBattle += OnEnterBattle;
+        BattleEvents.Instance.OnBattleStart += OnBattleStart;
 
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
         BattleEvents.Instance.OnPokemonDamaged += OnPokemonDamaged;
@@ -34,7 +34,7 @@ public class BattleSceneUIManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        GameEvents.Instance.OnEnterBattle -= OnEnterBattle;
+        BattleEvents.Instance.OnBattleStart -= OnBattleStart;
 
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
         BattleEvents.Instance.OnPokemonDamaged -= OnPokemonDamaged;
@@ -45,37 +45,37 @@ public class BattleSceneUIManager : MonoBehaviour
         BattleEvents.Instance.OnStatusConditionRemoved -= OnStatusConditionRemoved;
     }
 
-    private void OnEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
+    private void OnBattleStart(PokemonParty playerParty, PokemonParty enemyParty)
     {
         battleBackgroundImage.sprite = defaultBattleBackground;
         
-        UIManager.Instance.EnqueueAnimation(AnimatePokemonEnterBattle(playerPokemon, enemyPokemon));
+        BattleUIManager.Instance.EnqueueAnimation(AnimatePokemonEnterBattle(playerParty.GetFirstPokemon(), enemyParty.GetFirstPokemon()));
     }
 
     private void OnPokemonAttack(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo)
     {
         if (attackInfo.moveHits && move.ScriptableMove.Category != MoveCategory.Status)
-            UIManager.Instance.EnqueueAnimation(AnimatePokemonAttackAndHit(attacker, defender));
+            BattleUIManager.Instance.EnqueueAnimation(AnimatePokemonAttackAndHit(attacker, defender));
         else
-            UIManager.Instance.EnqueueAnimation(AnimatePokemonAttack(attacker));
+            BattleUIManager.Instance.EnqueueAnimation(AnimatePokemonAttack(attacker));
     }
 
     private void OnPokemonDamaged(Pokemon pokemon, int damage)
     {
         if (pokemon.Owner == PokemonOwner.Player)
-            UIManager.Instance.EnqueueAnimation(playerHUD.UpdateHPBarSmooth(pokemon));
+            BattleUIManager.Instance.EnqueueAnimation(playerHUD.UpdateHPBarSmooth(pokemon));
         else
-            UIManager.Instance.EnqueueAnimation(enemyHUD.UpdateHPBarSmooth(pokemon));
+            BattleUIManager.Instance.EnqueueAnimation(enemyHUD.UpdateHPBarSmooth(pokemon));
     }
 
     private void OnPokemonFainted(Pokemon pokemon)
     {
-        UIManager.Instance.EnqueueAnimation(AnimatePokemonFaints(pokemon));
+        BattleUIManager.Instance.EnqueueAnimation(AnimatePokemonFaints(pokemon));
     }
 
     private void OnPokemonSwitchedIn(Pokemon newPokemon)
     {
-        UIManager.Instance.EnqueueAnimation(SwitchPokemonIn(newPokemon));
+        BattleUIManager.Instance.EnqueueAnimation(SwitchPokemonIn(newPokemon));
     }
 
     private void OnStatusConditionApplied(StatusCondition status, Pokemon pokemon)
