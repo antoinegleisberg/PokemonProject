@@ -13,12 +13,15 @@ public class DialogueManager : MonoBehaviour
     private Dialogue currentDialogue;
     private int currentLine;
     private bool isTyping;
+
+    public bool IsBusy { get; private set; }
     
     public void ShowDialogue(Dialogue dialogue)
     {
         dialogueBox.SetActive(true);
         currentDialogue = dialogue;
         currentLine = 0;
+        IsBusy = true;
         GameEvents.Instance.EnterDialogue();
         StartCoroutine(TypeDialogue(currentDialogue.Lines[currentLine]));
     }
@@ -46,7 +49,9 @@ public class DialogueManager : MonoBehaviour
         else
         {
             dialogueBox.SetActive(false);
+            IsBusy = false;
             GameEvents.Instance.ExitDialogue();
+            GameEvents.Instance.AfterDialogueExited();
         }
     }
 
@@ -54,6 +59,7 @@ public class DialogueManager : MonoBehaviour
     {
         Instance = this;
         isTyping = false;
+        IsBusy = false;
     }
 
     private void Start()

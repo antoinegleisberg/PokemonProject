@@ -31,6 +31,7 @@ public class InputManager : MonoBehaviour
         GameEvents.Instance.OnExitBattle += ActivatePlayerActionMap;
         GameEvents.Instance.OnEnterDialogue += ActivateUIActionMap;
         GameEvents.Instance.OnExitDialogue += ActivatePlayerActionMap;
+        GameEvents.Instance.OnEnterNpcFov += ActivateUIActionMap;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -83,6 +84,8 @@ public class InputManager : MonoBehaviour
     
     private void ActivateUIActionMap()
     {
+        MovementInput = Vector2Int.zero;
+        IsRunning = false;
         playerActionMap.Disable();
         uiActionMap.Enable();
     }
@@ -93,5 +96,6 @@ public class InputManager : MonoBehaviour
         GameEvents.Instance.OnExitBattle -= ActivatePlayerActionMap;
         GameEvents.Instance.OnEnterDialogue -= ActivateUIActionMap;
         GameEvents.Instance.OnExitDialogue -= ActivatePlayerActionMap;
+        GameEvents.Instance.OnEnterNpcFov -= ActivateUIActionMap;
     }
 }
