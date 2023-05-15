@@ -9,6 +9,9 @@ public class ConditionsDB
         {
             StatusCondition.None,
             new StatusConditionData()
+            {
+                CatchRateModifier = 1,
+            }
         },
         // Burn
         {
@@ -22,6 +25,7 @@ public class ConditionsDB
                 StartMessage = "has been burned !",
                 EndMessage = "is no longer burned !",
                 IsVolatile = false,
+                CatchRateModifier = 1.5f,
                 OnBeforeMove = (Pokemon pokemon, Move move) =>
                 {
                     if (move.ScriptableMove.Category == MoveCategory.Physical)
@@ -48,6 +52,7 @@ public class ConditionsDB
                 StartMessage = "has been poisoned !",
                 EndMessage = "has been cured of his poisoning !",
                 IsVolatile = false,
+                CatchRateModifier = 1.5f,
                 OnBattleTurnEnd = (Pokemon pokemon) =>
                 {
                     int damage = Mathf.RoundToInt((float)pokemon.MaxHP / 8);
@@ -68,6 +73,7 @@ public class ConditionsDB
                 StartMessage = "has been badly poisoned !",
                 EndMessage = "has been cured of his poisoning !",
                 IsVolatile = false,
+                CatchRateModifier = 1.5f,
                 OnBattleTurnEnd = (Pokemon pokemon) =>
                 {
                     float damage = (float)pokemon.MaxHP / 16 * (pokemon.StatusTimeCount[StatusCondition.BadPoison]);
@@ -89,6 +95,7 @@ public class ConditionsDB
                 StartMessage = "has been paralyzed !",
                 EndMessage = "is no longer paralyzed !",
                 IsVolatile = false,
+                CatchRateModifier = 1.5f,
                 OnGetStat = (Pokemon pokemon, Stat stat) =>
                 {
                     if (stat == Stat.Speed)
@@ -116,6 +123,7 @@ public class ConditionsDB
                 StartMessage = "has been frozen !",
                 EndMessage = "thawed out !",
                 IsVolatile = false,
+                CatchRateModifier = 2,
                 OnBeforeMove = (Pokemon pokemon, Move move) =>
                 {
                     bool canAttack = false;
@@ -142,6 +150,7 @@ public class ConditionsDB
                 StartMessage = "fell asleep !",
                 EndMessage = "woke up !",
                 IsVolatile = false,
+                CatchRateModifier = 2,
                 OnStart = (Pokemon pokemon) =>
                 {
                     pokemon.RemainingStatusTime[StatusCondition.Sleep] = Random.Range(1, 4);

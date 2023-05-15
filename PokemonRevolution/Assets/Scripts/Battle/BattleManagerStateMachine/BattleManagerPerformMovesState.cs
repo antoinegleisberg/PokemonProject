@@ -25,18 +25,12 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
         if (battleManager.NextPlayerAction.BattleAction != BattleAction.Attack)
         {
             actions.Enqueue(battleManager.NextPlayerAction);
-            if (battleManager.NextPlayerAction.BattleAction != BattleAction.Run)
-            {
-                actions.Enqueue(battleManager.NextEnemyAction);
-            }
+            actions.Enqueue(battleManager.NextEnemyAction);
         }
         else if (battleManager.NextEnemyAction.BattleAction != BattleAction.Attack)
         {
             actions.Enqueue(battleManager.NextEnemyAction);
-            if (battleManager.NextEnemyAction.BattleAction != BattleAction.Run)
-            {
-                actions.Enqueue(battleManager.NextPlayerAction);
-            }
+            actions.Enqueue(battleManager.NextPlayerAction);
         }
         // None of the teams used priority action; check for pokemon speed
         else
@@ -84,7 +78,8 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
 
     private IEnumerator PerformTurnActions(Queue<BattleActionInfo> actions)
     {
-        while (actions.Count > 0)
+        bool continueBattle = true;
+        while (actions.Count > 0 && continueBattle)
         {
             BattleActionInfo nextAction = actions.Dequeue();
 
@@ -95,16 +90,19 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
                 continue;
             }
 
-            PerformAction(nextAction);
+            continueBattle = PerformAction(nextAction);
 
             yield return BattleUIManager.Instance.WaitWhileBusy();
         }
 
-        if (battleManager.NextPlayerAction.BattleAction != BattleAction.Run && battleManager.NextEnemyAction.BattleAction != BattleAction.Run)
+        if (continueBattle)
             battleManager.SwitchState(battleManager.EndTurnState);
+        else
+            battleManager.SwitchState(battleManager.EndBattleState);
     }
 
-    private void PerformAction(BattleActionInfo battleActionInfo)
+    // return wether the battle continues or not
+    private bool PerformAction(BattleActionInfo battleActionInfo)
     {
         switch (battleActionInfo.BattleAction)
         {
@@ -113,22 +111,25 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
                 Move move = battleActionInfo.SourcePokemon.Moves[moveIndex];
                 Pokemon targetPokemon = (battleActionInfo.TargetPokemonPosition == 0) ? battleManager.PlayerPokemon : battleManager.EnemyPokemon;
                 battleManager.PerformMove(battleActionInfo.SourcePokemon, targetPokemon, move);
-                break;
+                return true;
 
             case BattleAction.SwitchPokemon:
                 int pokemonIndex = battleActionInfo.ActionParameter;
                 Pokemon newPokemon = battleManager.PlayerParty.Pokemons[pokemonIndex];
                 battleManager.SwitchPokemon(battleManager.PlayerPokemon, newPokemon);
-                break;
+                return true;
 
             case BattleAction.Run:
-                battleManager.SwitchState(battleManager.EndBattleState);
-                break;
-                
+                bool succededToRun = battleManager.CanRunFromBattle();
+                return !succededToRun;
+
+            case BattleAction.UsePokeball:
+                bool coughtPokemon = battleManager.CanCatchPokemon();
+                return !coughtPokemon;
+
             default:
-                Debug.Log("Used something else than attack, switch or run : not implemented yet");
-                break;
+                Debug.Log("Used something else than attack, switch , pokeball or run : not implemented yet");
+                return true;
         }
-        
     }
 }

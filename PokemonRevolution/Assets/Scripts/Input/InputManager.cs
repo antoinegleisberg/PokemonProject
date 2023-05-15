@@ -3,8 +3,7 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-    private static InputManager instance;
-    public static InputManager Instance { get { return instance; } }
+    public static InputManager Instance { get; private set; }
     
     [SerializeField] private InputActionAsset inputActions;
     private InputActionMap playerActionMap;
@@ -15,7 +14,7 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null) instance = this;
+        if (Instance == null) Instance = this;
         playerActionMap = inputActions.FindActionMap("Player");
         uiActionMap = inputActions.FindActionMap("UI");
         playerActionMap.Enable();
@@ -46,9 +45,7 @@ public class InputManager : MonoBehaviour
     public void OnInteract(InputAction.CallbackContext context)
     {
         if (context.performed)
-        {
-            InputEvents.Instance.Interact();
-        }
+            GameManager.Instance.PlayerController.CheckForInteraction();
     }
 
     public void OnRun(InputAction.CallbackContext context)
@@ -61,19 +58,19 @@ public class InputManager : MonoBehaviour
     {
         Vector2 input = context.ReadValue<Vector2>();
         Vector2Int input2Int = new Vector2Int((int)input.x, (int)input.y);
-        InputEvents.Instance.NavigateUI(input2Int);
+        UIManager.Instance.HandleUINavigation(input2Int);
     }
 
     public void OnUISubmit(InputAction.CallbackContext context)
     {
         if (context.performed)
-            InputEvents.Instance.Submit();
+            UIManager.Instance.HandleUISubmit();
     }
 
     public void OnUICancel(InputAction.CallbackContext context)
     {
         if (context.performed)
-            InputEvents.Instance.Cancel();
+            UIManager.Instance.HandleUICancel();
     }
 
     private void ActivatePlayerActionMap()

@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class BattleSceneUIManager : MonoBehaviour
 {
+    [SerializeField] private GameObject battleScene;
+
     [SerializeField] private Sprite defaultBattleBackground;
 
     [SerializeField] private Image battleBackgroundImage;
@@ -18,6 +20,10 @@ public class BattleSceneUIManager : MonoBehaviour
     [SerializeField] private float attackAnimationDuration = 0.1f;
     [SerializeField] private float hitAnimationDuration = 0.08f;
     [SerializeField] private float faintAnimationDuration = 0.8f;
+
+    // TODO: move this out of here to player inventory
+    [SerializeField] private GameObject pokeballPrefab;
+    private GameObject pokeball;
     
     private void Start()
     {
@@ -30,6 +36,13 @@ public class BattleSceneUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
         BattleEvents.Instance.OnStatusConditionApplied += OnStatusConditionApplied;
         BattleEvents.Instance.OnStatusConditionRemoved += OnStatusConditionRemoved;
+
+        BattleEvents.Instance.OnPokeballThrown += OnPokeballThrown;
+        BattleEvents.Instance.OnPokemonCaught += OnPokemonCaught;
+        BattleEvents.Instance.OnPokemonEscaped += OnPokemonEscaped;
+
+        BattleEvents.Instance.OnExpGained += OnExpGained;
+        BattleEvents.Instance.OnLevelUp += OnLevelUp;
     }
 
     private void OnDestroy()
@@ -43,6 +56,13 @@ public class BattleSceneUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
         BattleEvents.Instance.OnStatusConditionApplied -= OnStatusConditionApplied;
         BattleEvents.Instance.OnStatusConditionRemoved -= OnStatusConditionRemoved;
+
+        BattleEvents.Instance.OnPokeballThrown -= OnPokeballThrown;
+        BattleEvents.Instance.OnPokemonCaught -= OnPokemonCaught;
+        BattleEvents.Instance.OnPokemonEscaped -= OnPokemonEscaped;
+
+        BattleEvents.Instance.OnExpGained -= OnExpGained;
+        BattleEvents.Instance.OnLevelUp -= OnLevelUp;
     }
 
     private void OnBattleStart(PokemonParty playerParty, PokemonParty enemyParty)
@@ -98,6 +118,33 @@ public class BattleSceneUIManager : MonoBehaviour
             playerHUD.UpdateStatusCondition(pokemon);
         else
             enemyHUD.UpdateStatusCondition(pokemon);
+    }
+
+    private void OnPokeballThrown(Pokemon pokemon)
+    {
+        BattleUIManager.Instance.EnqueueAnimation(AnimateThrowPokeball(pokemon));
+    }
+
+    private void OnPokemonCaught(Pokemon pokemon)
+    {
+        BattleUIManager.Instance.EnqueueAnimation(AnimatePokemonCaught(pokemon));
+    }
+
+    private void OnPokemonEscaped(Pokemon pokemon)
+    {
+        BattleUIManager.Instance.EnqueueAnimation(AnimatePokemonEscaped(pokemon));
+    }
+
+    private void OnExpGained(Pokemon pokemon, int exp)
+    {
+        if (pokemon.Owner == PokemonOwner.Player)
+            BattleUIManager.Instance.EnqueueAnimation(playerHUD.UpdateExpBarSmooth(pokemon, exp));
+    }
+
+    private void OnLevelUp(Pokemon pokemon)
+    {
+        if (pokemon.Owner == PokemonOwner.Player)
+            playerHUD.UpdateHUD(pokemon);
     }
 
     private IEnumerator AnimatePokemonEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
@@ -178,6 +225,32 @@ public class BattleSceneUIManager : MonoBehaviour
             Coroutine enemyAnim = StartCoroutine(MoveImage(enemyPokemonImage, enemyInitPos, playerOffset, switchInAnimationDuration));
             yield return enemyAnim;
         }
+    }
+
+    private IEnumerator AnimateThrowPokeball(Pokemon pokemon)
+    {
+        pokeball = Instantiate(pokeballPrefab, battleScene.transform);
+        Vector3 startPos = playerPokemonImage.rectTransform.localPosition + new Vector3(0, 100, 0);
+        Vector3 targetPos = enemyPokemonImage.rectTransform.localPosition;
+        Vector3 offset = targetPos - startPos;
+        yield return MoveImage(pokeball.GetComponent<Image>(), startPos, offset, 0.3f);
+        yield return new WaitForSeconds(0.2f);
+        enemyPokemonImage.color = Color.clear;
+        yield return new WaitForSeconds(0.2f);
+    }
+
+    private IEnumerator AnimatePokemonCaught(Pokemon pokemon)
+    {
+        pokeball.GetComponent<Image>().color = Color.gray;
+        yield return new WaitForSeconds(0.5f);
+        Destroy(pokeball);
+    }
+    
+    private IEnumerator AnimatePokemonEscaped(Pokemon pokemon)
+    {
+        Destroy(pokeball);
+        enemyPokemonImage.color = Color.white;
+        yield return null;
     }
 
     private IEnumerator MoveImage(Image image, Vector3 initialPos, Vector3 offset, float animationTime)

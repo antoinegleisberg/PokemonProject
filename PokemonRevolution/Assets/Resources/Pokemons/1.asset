@@ -19,9 +19,9 @@ MonoBehaviour:
     the seed on its back.
   height: 0.7
   weight: 6.9
-  frontSprite: {fileID: 21300000, guid: b065983d9d1c8944bb49a90d52034ffe, type: 3}
-  backSprite: {fileID: 21300000, guid: d73e2549848b38a46886d1bc9af8f128, type: 3}
-  iconSprite: {fileID: 21300000, guid: 6ffdfd2c805e7e94d82257ee5d9a9c1d, type: 3}
+  frontSprite: {fileID: 21300000, guid: 214687a4bdde6da4fae442bb6c5561f3, type: 3}
+  backSprite: {fileID: 21300000, guid: bc15a10caab071945840853e5c21f4b1, type: 3}
+  iconSprite: {fileID: 21300000, guid: ab00608f49f22224a8b9c02462280cff, type: 3}
   type1: 5
   type2: 8
   baseHP: 0
@@ -30,9 +30,10 @@ MonoBehaviour:
   baseSpecialAttack: 65
   baseSpecialDefense: 65
   baseSpeed: 45
+  growthRate: 3
   baseFriendship: 50
   catchRate: 45
-  experienceYield: 0
+  experienceYield: 64
   hpEVYield: 0
   attackEVYield: 0
   defenseEVYield: 0

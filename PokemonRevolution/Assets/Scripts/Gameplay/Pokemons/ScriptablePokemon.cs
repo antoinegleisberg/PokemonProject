@@ -27,7 +27,7 @@ public class ScriptablePokemon : ScriptableObject
     [SerializeField] private int baseSpecialDefense;
     [SerializeField] private int baseSpeed;
 
-    // [SerializeField] GrowthRate growthRate;
+    [SerializeField] GrowthRate growthRate;
     [SerializeField] private int baseFriendship;
     [SerializeField] private int catchRate;
 
@@ -68,6 +68,7 @@ public class ScriptablePokemon : ScriptableObject
     public int BaseSpecialAttack { get => baseSpecialAttack; }
     public int BaseSpecialDefense { get => baseSpecialDefense; }
     public int BaseSpeed { get => baseSpeed; }
+    public GrowthRate GrowthRate { get => growthRate; }
     public int BaseFriendship { get => baseFriendship; }
     public int CatchRate { get => catchRate; }
     public int ExperienceYield { get => experienceYield; }

@@ -10,6 +10,7 @@ public class StatusConditionData
     public string StartMessage { get; set; }
     public string EndMessage { get; set; }
     public bool IsVolatile { get; set; }
+    public float CatchRateModifier { get; set; }
 
     public Func<Pokemon, Stat, float> OnGetStat { get; set; }
     public Action<Pokemon> OnStart { get; set; }

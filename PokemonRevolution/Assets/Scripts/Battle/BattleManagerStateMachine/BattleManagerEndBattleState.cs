@@ -33,6 +33,14 @@ public class BattleManagerEndBattleState : BattleManagerBaseState
         battleManager.PlayerPokemon.OnExitBattle();
         battleManager.EnemyPokemon.OnExitBattle();
 
+        if (battleManager.IsTrainerBattle)
+        {
+            Pokemon enemyPokemon = battleManager.EnemyParty.GetFirstPokemon();
+            bool enemyLost = enemyPokemon == null;
+
+            battleManager.EnemyTrainer.CanBattle = !enemyLost;
+        }
+
         yield return BattleUIManager.Instance.WaitWhileBusy();
         
         BattleEvents.Instance.EndBattle();

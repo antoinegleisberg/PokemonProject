@@ -17,6 +17,8 @@ public class BattleSceneHUDManager : MonoBehaviour
     [SerializeField] private Image statusImage;
     [SerializeField] private TextMeshProUGUI statusText;
 
+    [SerializeField] private GameObject expBar;
+
     public void UpdateHUD(Pokemon pokemon)
     {
         Sprite sprite = (pokemon.Owner == PokemonOwner.Player) ? 
@@ -29,6 +31,12 @@ public class BattleSceneHUDManager : MonoBehaviour
         float fillAmount = (float)pokemon.CurrentHP / (float)pokemon.MaxHP;
         healthBar.transform.localScale = new Vector3(fillAmount, 1, 1);
         healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHP}";
+
+        if (pokemon.Owner == PokemonOwner.Player)
+        {
+            float targetExpFillAmount = 1.0f - (float)GrowthRateDB.ExpBeforeLevelUp(pokemon) / GrowthRateDB.Exp2NextLevel(pokemon.ScriptablePokemon.GrowthRate, pokemon.Level);
+            expBar.transform.localScale = new Vector3(targetExpFillAmount, 1, 1);
+        }
 
         UpdateStatusCondition(pokemon);
     }
@@ -56,6 +64,32 @@ public class BattleSceneHUDManager : MonoBehaviour
 
         healthBar.transform.localScale = new Vector3(pokemonCurrentHP, 1, 1);
         healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHP}";
+    }
+
+    public IEnumerator UpdateExpBarSmooth(Pokemon pokemon, int exp)
+    {
+        float targetExpFillAmount = 1.0f - (float)GrowthRateDB.ExpBeforeLevelUp(pokemon) / GrowthRateDB.Exp2NextLevel(pokemon.ScriptablePokemon.GrowthRate, pokemon.Level);
+        targetExpFillAmount = Mathf.Clamp01(targetExpFillAmount);
+        Debug.Log(targetExpFillAmount);
+        Debug.Log(pokemon.Level);
+        Debug.Log(GrowthRateDB.ExpBeforeLevelUp(pokemon));
+        Debug.Log(GrowthRateDB.Exp2NextLevel(pokemon.ScriptablePokemon.GrowthRate, pokemon.Level));
+        float currentExpDisplayed = expBar.transform.localScale.x;
+        float changeAmount = targetExpFillAmount - currentExpDisplayed;
+
+        float animationTime = 0.5f;
+
+        for (float t = 0; t < animationTime; t += Time.deltaTime)
+        {
+            float normalizedTime = t / animationTime;
+            currentExpDisplayed = targetExpFillAmount - (1 - normalizedTime) * changeAmount;
+
+            expBar.transform.localScale = new Vector3(currentExpDisplayed, 1, 1);
+
+            yield return null;
+        }
+
+        expBar.transform.localScale = new Vector3(currentExpDisplayed, 1, 1);
     }
 
     public void UpdateStatusCondition(Pokemon pokemon)

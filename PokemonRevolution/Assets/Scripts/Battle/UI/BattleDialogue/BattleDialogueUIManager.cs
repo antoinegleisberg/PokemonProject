@@ -7,7 +7,7 @@ public class BattleDialogueUIManager : MonoBehaviour
     private void Start()
     {
         BattleEvents.Instance.OnBattleStart += OnBattleStart;
-        
+
         BattleEvents.Instance.OnEnterActionSelection += OnEnterActionSelection;
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
         BattleEvents.Instance.OnPokemonFainted += OnPokemonFainted;
@@ -18,13 +18,26 @@ public class BattleDialogueUIManager : MonoBehaviour
         BattleEvents.Instance.OnStatusConditionApplied += OnStatusConditionApplied;
         BattleEvents.Instance.OnStatusConditionRemoved += OnStatusConditionRemoved;
         BattleEvents.Instance.OnStatusConditionMessage += OnStatusConditionMessage;
+
+        BattleEvents.Instance.OnPokeballThrown += OnPokeballThrown;
+        BattleEvents.Instance.OnPokemonEscaped += OnPokemonEscaped;
+        BattleEvents.Instance.OnPokemonCaught += OnPokemonCaught;
+        BattleEvents.Instance.OnAttemptCatchTrainerPokemon += OnAttemptCatchTrainerPokemon;
+
+        BattleEvents.Instance.OnTryToRunAway += OnTryToRunAway;
+        BattleEvents.Instance.OnRunAwaySuccess += OnRunAwaySuccess;
+        BattleEvents.Instance.OnRunAwayFail += OnRunAwayFail;
+        BattleEvents.Instance.OnAttemptRunFromTrainer += OnAttemptRunFromTrainer;
+
+        BattleEvents.Instance.OnExpGained += OnExpGained;
+        BattleEvents.Instance.OnLevelUp += OnLevelUp;
     }
 
 
     private void OnDestroy()
     {
         BattleEvents.Instance.OnBattleStart -= OnBattleStart;
-        
+
         BattleEvents.Instance.OnEnterActionSelection -= OnEnterActionSelection;
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
         BattleEvents.Instance.OnPokemonFainted -= OnPokemonFainted;
@@ -34,6 +47,19 @@ public class BattleDialogueUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonStatBoosted -= OnPokemonStatBoosted;
         BattleEvents.Instance.OnStatusConditionApplied -= OnStatusConditionApplied;
         BattleEvents.Instance.OnStatusConditionRemoved -= OnStatusConditionRemoved;
+
+        BattleEvents.Instance.OnPokeballThrown -= OnPokeballThrown;
+        BattleEvents.Instance.OnPokemonEscaped -= OnPokemonEscaped;
+        BattleEvents.Instance.OnPokemonCaught -= OnPokemonCaught;
+        BattleEvents.Instance.OnAttemptCatchTrainerPokemon -= OnAttemptCatchTrainerPokemon;
+
+        BattleEvents.Instance.OnTryToRunAway -= OnTryToRunAway;
+        BattleEvents.Instance.OnRunAwaySuccess -= OnRunAwaySuccess;
+        BattleEvents.Instance.OnRunAwayFail -= OnRunAwayFail;
+        BattleEvents.Instance.OnAttemptRunFromTrainer -= OnAttemptRunFromTrainer;
+
+        BattleEvents.Instance.OnExpGained -= OnExpGained;
+        BattleEvents.Instance.OnLevelUp -= OnLevelUp;
     }
 
     private void OnBattleStart(PokemonParty playerParty, PokemonParty enemyParty)
@@ -84,11 +110,12 @@ public class BattleDialogueUIManager : MonoBehaviour
     private void OnPokemonSwitchedIn(Pokemon newPokemon)
     {
         if (newPokemon.Owner != PokemonOwner.Player)
-            return;
-        BattleUIManager.Instance.WriteDialogueText($"Go {newPokemon.Name} !");
+            BattleUIManager.Instance.WriteDialogueText($"The enemy trainer sent out {newPokemon.Name}!");
+        else
+            BattleUIManager.Instance.WriteDialogueText($"Go {newPokemon.Name} !");
     }
 
-    private void OnPokemonStatBoosted(Stat stat, int boost, Pokemon pokemon) 
+    private void OnPokemonStatBoosted(Stat stat, int boost, Pokemon pokemon)
     {
         string msg;
         switch (boost)
@@ -126,9 +153,59 @@ public class BattleDialogueUIManager : MonoBehaviour
         string msg = $"{pokemon.Name} {ConditionsDB.Conditions[statusCondition].EndMessage}";
         BattleUIManager.Instance.WriteDialogueText(msg);
     }
-    
+
     private void OnStatusConditionMessage(string msg)
     {
         BattleUIManager.Instance.WriteDialogueText(msg);
+    }
+
+    private void OnPokeballThrown(Pokemon pokemon)
+    {
+        BattleUIManager.Instance.WriteDialogueText($"You throw a pokeball at the wild {pokemon.Name} !");
+    }
+
+    private void OnPokemonEscaped(Pokemon pokemon)
+    {
+        BattleUIManager.Instance.WriteDialogueText($"The wild {pokemon.Name} appeared to get cought !");
+    }
+
+    private void OnPokemonCaught(Pokemon pokemon)
+    {
+        BattleUIManager.Instance.WriteDialogueText($"You caught {pokemon.Name} !");
+    }
+
+    private void OnAttemptCatchTrainerPokemon()
+    {
+        BattleUIManager.Instance.WriteDialogueText($"You can't catch a trainer's pokemon !");
+    }
+
+    private void OnTryToRunAway()
+    {
+        BattleUIManager.Instance.WriteDialogueText($"You run from the battle");
+    }
+
+    private void OnRunAwaySuccess()
+    {
+        BattleUIManager.Instance.WriteDialogueText($"Got away safely !");
+    }
+
+    private void OnRunAwayFail()
+    {
+        BattleUIManager.Instance.WriteDialogueText($"Can't escape !");
+    }
+
+    private void OnAttemptRunFromTrainer()
+    {
+        BattleUIManager.Instance.WriteDialogueText($"You can't run from a trainer battle !");
+    }
+
+    private void OnExpGained(Pokemon pokemon, int exp)
+    {
+        BattleUIManager.Instance.WriteDialogueText($"{pokemon.Name} gained {exp} exp !");
+    }
+
+    private void OnLevelUp(Pokemon pokemon)
+    {
+        BattleUIManager.Instance.WriteDialogueText($"{pokemon.Name} grew to level {pokemon.Level} !");
     }
 }

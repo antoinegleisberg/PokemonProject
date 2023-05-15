@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class NPCController : MonoBehaviour, IInteractable
 {
+    [SerializeField] private Direction defaultFacingDirection;
+
     [SerializeField] private Dialogue dialogue;
     [SerializeField] private Character character;
     [SerializeField] private List<NPCMovementPattern> movementPatterns;
@@ -15,6 +17,9 @@ public class NPCController : MonoBehaviour, IInteractable
     {
         if (character.IsMoving)
             return;
+
+        Fov FOV = transform.parent.GetComponentInChildren<Fov>();
+        FOV?.gameObject.SetActive(false);
 
         isInDialogue = true;
         Vector3 faceTowards = source.position - transform.position;
@@ -52,6 +57,7 @@ public class NPCController : MonoBehaviour, IInteractable
     private void Start()
     {
         GameEvents.Instance.OnAfterDialogueExited += OnAfterDialogueExited;
+        character.FaceTowards(defaultFacingDirection);
         isInDialogue = false;
         if (movementPatterns != null && movementPatterns.Count > 0)
             moveCoroutine = StartCoroutine(Move());
@@ -65,9 +71,14 @@ public class NPCController : MonoBehaviour, IInteractable
     private void OnAfterDialogueExited() {
         if (isInDialogue)
         {
-            if (GetComponent<Trainer>() != null)
+            Trainer trainer = GetComponent<Trainer>();
+            if (trainer != null)
             {
-                GameManager.Instance.TriggerTrainerBattle(GetComponent<Trainer>().PokemonPartyManager);
+                if (trainer.CanBattle)
+                {
+                    trainer.PokemonPartyManager.PokemonParty.HealAll();
+                    GameManager.Instance.TriggerTrainerBattle(GetComponent<Trainer>());
+                }
             }
         }
         isInDialogue = false;
@@ -77,6 +88,7 @@ public class NPCController : MonoBehaviour, IInteractable
 [System.Serializable]
 public struct NPCMovementPattern
 {
+    public Direction lookTowards;
     public Vector2Int movement;
     public bool run;
     public float waitTime;

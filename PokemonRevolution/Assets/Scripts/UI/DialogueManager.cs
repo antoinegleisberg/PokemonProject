@@ -26,6 +26,27 @@ public class DialogueManager : MonoBehaviour
         StartCoroutine(TypeDialogue(currentDialogue.Lines[currentLine]));
     }
 
+    public void ShowNextLine()
+    {
+        if (isTyping)
+            return;
+
+        if (currentDialogue == null)
+            return;
+
+        currentLine++;
+        if (currentLine < currentDialogue.Lines.Count)
+            StartCoroutine(TypeDialogue(currentDialogue.Lines[currentLine]));
+        else
+        {
+            dialogueBox.SetActive(false);
+            IsBusy = false;
+            currentDialogue = null;
+            GameEvents.Instance.ExitDialogue();
+            GameEvents.Instance.AfterDialogueExited();
+        }
+    }
+
     private IEnumerator TypeDialogue(string msg)
     {
         isTyping = true;
@@ -38,39 +59,10 @@ public class DialogueManager : MonoBehaviour
         isTyping = false;
     }   
 
-    private void ShowNextLine()
-    {
-        if (isTyping)
-            return;
-
-        currentLine++;
-        if (currentLine < currentDialogue.Lines.Count)
-            StartCoroutine(TypeDialogue(currentDialogue.Lines[currentLine]));
-        else
-        {
-            dialogueBox.SetActive(false);
-            IsBusy = false;
-            GameEvents.Instance.ExitDialogue();
-            GameEvents.Instance.AfterDialogueExited();
-        }
-    }
-
     private void Awake()
     {
         Instance = this;
         isTyping = false;
         IsBusy = false;
-    }
-
-    private void Start()
-    {
-        InputEvents.Instance.OnUISubmit += ShowNextLine;
-        InputEvents.Instance.OnUICancel += ShowNextLine;
-    }
-
-    private void OnDestroy()
-    {
-        InputEvents.Instance.OnUISubmit -= ShowNextLine;
-        InputEvents.Instance.OnUICancel -= ShowNextLine;
     }
 }

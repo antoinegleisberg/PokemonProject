@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+using UnityEngine.Assertions;
 
 public class Pokemon
 {
@@ -40,8 +40,9 @@ public class Pokemon
     public ScriptablePokemon ScriptablePokemon { get; private set; }
     public string Name { get; private set; }
     public int Level { get; private set; }
+    public int TotalExperiencePoints { get; private set; }
     public int CurrentHP { get; private set; }
-    public PokemonOwner Owner { get; private set; }
+    public PokemonOwner Owner { get; set; }
     public Gender Gender { get; private set; }
     public Dictionary<Stat, int> Stats { get; private set; }
     public Dictionary<Stat, int> IVs { get; private set; }
@@ -74,6 +75,7 @@ public class Pokemon
         Name = name;
         if (Name == "") Name = scriptablePokemon.Name;
         Level = level;
+        TotalExperiencePoints = GrowthRateDB.Level2TotalExp(scriptablePokemon.GrowthRate, level);
         Owner = owner;
         Gender = (Random.Range(0, 100) < scriptablePokemon.MalePercentage) ? Gender.Male : Gender.Female;
 
@@ -151,7 +153,67 @@ public class Pokemon
         CurrentHP -= damage;
         if (CurrentHP < 0) CurrentHP = 0;
         if (damage > 0) BattleEvents.Instance.PokemonDamaged(this, damage);
-        if (IsFainted) BattleEvents.Instance.PokemonFaints(this);
+        if (IsFainted)
+        {
+            BattleEvents.Instance.PokemonFaints(this);
+            BattleEvents.Instance.AfterPokemonFainted(this);
+        }
+    }
+    
+    public System.Collections.IEnumerator GainExp(int exp)
+    {
+        while (exp > 0 && Level < Globals.MaxPokemonLevel)
+        {
+            int expBeforeLvUp = GrowthRateDB.ExpBeforeLevelUp(this);
+            if (exp >= expBeforeLvUp)
+            {
+                Debug.Log("I will be gaining a level !");
+                TotalExperiencePoints += expBeforeLvUp;
+                exp -= expBeforeLvUp;
+
+                Debug.Log("Gained exp");
+
+                // Add it for pokemons at max level
+                // int maxExp = GrowthRateDB.Level2TotalExp(ScriptablePokemon.GrowthRate, Globals.MaxPokemonLevel);
+                // TotalExperiencePoints = Mathf.Clamp(TotalExperiencePoints, 0, maxExp);
+
+                BattleEvents.Instance.ExpGained(this, expBeforeLvUp);
+
+                Debug.Log("Exp event called");
+
+                yield return BattleUIManager.Instance.WaitWhileBusy();
+
+                Assert.IsTrue(GrowthRateDB.ShouldLevelUp(this));
+                Debug.Log("About to level up");
+                LevelUp();
+                Debug.Log("Leveled up");
+            }
+            else
+            {
+                TotalExperiencePoints += exp;
+                BattleEvents.Instance.ExpGained(this, exp);
+                exp = 0;
+            }
+        }
+    }
+
+    public void LevelUp()
+    {
+        if (Level >= Globals.MaxPokemonLevel)
+            return;
+
+        // check for missing Exp, for example in the case of rare candies etc.
+        if (TotalExperiencePoints < GrowthRateDB.Level2TotalExp(ScriptablePokemon.GrowthRate, Level + 1))
+        {
+            TotalExperiencePoints += GrowthRateDB.ExpBeforeLevelUp(this);
+        }   
+
+        Level += 1;
+        CalculateStats();
+        BattleEvents.Instance.LevelUp(this);
+
+        // TODO
+        // Check for new moves and evolution
     }
 
     public void LoseMovePP(Move move)
@@ -160,6 +222,18 @@ public class Pokemon
         {
             if (m.ScriptableMove.Name == move.ScriptableMove.Name)
                 m.CurrentPP--;
+        }
+    }
+
+    public void HealFull()
+    {
+        CurrentHP = MaxHP;
+        CureStatus();
+        ClearVolatileStatusConditions();
+        ResetStatBoosts();
+        foreach (Move move in Moves)
+        {
+            move.CurrentPP = move.ScriptableMove.PP;
         }
     }
 

@@ -41,6 +41,7 @@ public class Character : MonoBehaviour
     public void FaceTowards(Direction facingDirection)
     {
         characterAnimator.FacingDirection = facingDirection;
+        UpdateFOV(facingDirection);
     }
 
     public void MoveAndStop(Vector2 moveVector, bool run = false, Action onAfterMovement = null)
@@ -118,6 +119,14 @@ public class Character : MonoBehaviour
         isRunningMovementCoroutine = false;
         if (stopOnNextTile)
             IsMoving = false;
+    }
+    
+    private void UpdateFOV(Direction facingDirection)
+    {
+        Fov fov = transform.parent.Find("Fov")?.GetComponent<Fov>();
+        if (fov != null)
+            // minus because z axis faces into the screen
+            fov.transform.eulerAngles = new Vector3(0, 0, -DirectionUtils.Rotation(facingDirection));
     }
 
     private void Start()

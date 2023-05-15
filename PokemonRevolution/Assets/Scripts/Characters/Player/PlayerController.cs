@@ -11,16 +11,26 @@ public class PlayerController : MonoBehaviour
     
     private Direction facing;
 
+    public void CheckForInteraction()
+    {
+        Vector2 interactPos = new Vector2(playerTransform.position.x, playerTransform.position.y) + DirectionUtils.ToVec2(facing);
+
+        Collider2D collider = Physics2D.OverlapCircle(interactPos, 0.2f, GameLayers.Instance.InteractableLayer);
+        if (collider != null)
+        {
+            IInteractable interactable = collider.GetComponentInParent<Transform>().GetComponentInChildren<IInteractable>();
+            interactable.Interact(playerTransform);
+        }
+    }
+
     private void Start()
     {
-        InputEvents.Instance.OnInteract += Interact;
-
         facing = Direction.Down;
     }
 
     private void OnDestroy()
     {
-        InputEvents.Instance.OnInteract -= Interact;
+        
     }
 
     private void Update()
@@ -42,17 +52,5 @@ public class PlayerController : MonoBehaviour
     {
         GameManager.Instance.CheckForNPCs();
         GameManager.Instance.CheckForEncounters(playerTransform.position);
-    }
-    
-    private void Interact()
-    {
-        Vector2 interactPos = new Vector2(playerTransform.position.x, playerTransform.position.y) + DirectionUtils.ToVec2(facing);
-
-        Collider2D collider = Physics2D.OverlapCircle(interactPos, 0.2f, GameLayers.Instance.InteractableLayer);
-        if (collider != null)
-        {
-            IInteractable interactable = collider.GetComponentInParent<Transform>().GetComponentInChildren<IInteractable>();
-            interactable.Interact(playerTransform);
-        }
     }
 }

@@ -41,9 +41,6 @@ public class Fov : MonoBehaviour
         }
 
         npcController.Interact(source);
-
-        GameObject FOV = transform.gameObject;
-        FOV.SetActive(false);
     }
 
     private void Start()

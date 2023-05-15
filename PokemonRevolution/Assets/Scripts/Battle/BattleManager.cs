@@ -12,6 +12,9 @@ public class BattleManager : MonoBehaviour
     public List<Pokemon> PlayerPokemons { get; private set; } // TODO
     public List<Pokemon> EnemyPokemons { get; private set; } // TODO
 
+    public Trainer EnemyTrainer { get; set; }
+    public bool IsTrainerBattle { get; set; }
+
     public BattleActionInfo NextPlayerAction { get; set; }
     public BattleActionInfo NextEnemyAction { get; set; }
 
@@ -23,7 +26,7 @@ public class BattleManager : MonoBehaviour
     public BattleManagerPerformMovesState PerformMovesState;
     public BattleManagerEndTurnState EndTurnState;
     public BattleManagerEndBattleState EndBattleState;
-    
+
     public void StartBattle(PokemonParty playerParty, PokemonParty enemyParty)
     {
         PlayerParty = playerParty;
@@ -77,6 +80,68 @@ public class BattleManager : MonoBehaviour
         if (move.ScriptableMove.MoveEffects != null)
             move.ScriptableMove.MoveEffects.ApplyEffects(attackingPokemon, targetPokemon);
     }
+    
+    public bool CanRunFromBattle()
+    {
+        if (IsTrainerBattle)
+        {
+            BattleEvents.Instance.AttemptRunFromTrainer();
+            return false;
+        }
+
+        BattleEvents.Instance.TryToRunAway();
+        if (PlayerPokemon.Speed >= EnemyPokemon.Speed)
+        {
+            BattleEvents.Instance.RunAwaySuccess();
+            return true;
+        }
+
+        int odds = (Mathf.FloorToInt(PlayerPokemon.Speed * 128 / EnemyPokemon.Speed) + 30) % 256;
+        if (Random.Range(0, 256) < odds)
+        {
+            BattleEvents.Instance.RunAwaySuccess();
+            return true;
+        }
+        BattleEvents.Instance.RunAwayFail();
+        return false;
+    }
+
+    public bool CanCatchPokemon()
+    {
+        if (IsTrainerBattle)
+        {
+            BattleEvents.Instance.AttemptCatchTrainerPokemon();
+            return false;
+        }
+
+        float ballBonus = 1;
+        float statusBonus = ConditionsDB.Conditions[EnemyPokemon.StatusCondition].CatchRateModifier;
+        float baseCatchRate = 1 - 2.0f * EnemyPokemon.CurrentHP / (3.0f * EnemyPokemon.MaxHP);
+        int catchRate = Mathf.FloorToInt(baseCatchRate * EnemyPokemon.ScriptablePokemon.CatchRate * ballBonus * statusBonus);
+        bool caught = Random.Range(0, 256) <= catchRate;
+        StartCoroutine(CanCatchPokemonCoroutine(caught));
+        if (caught)
+        {
+            EnemyPokemon.Owner = PokemonOwner.Player;
+            if (!PlayerParty.IsFull)
+            {
+                PlayerParty.AddPokemon(EnemyPokemon);
+            }
+            else
+                Debug.Log("Party is full ! TODO : add it to the box");
+        }
+        return caught;
+    }
+
+    private IEnumerator CanCatchPokemonCoroutine(bool caught)
+    {
+        BattleEvents.Instance.ThrowPokeball(EnemyPokemon);
+        yield return BattleUIManager.Instance.WaitWhileBusy();
+        if (caught)
+            BattleEvents.Instance.PokemonCaught(EnemyPokemon);
+        else
+            BattleEvents.Instance.PokemonEscapes(EnemyPokemon);
+    }
 
     private void Awake()
     {
@@ -100,6 +165,8 @@ public class BattleManager : MonoBehaviour
         EndBattleState.InitState(this);
 
         currentState = OutOfBattleState;
+
+        BattleEvents.Instance.OnAfterPokemonFainted += AfterPokemonFainted;
     }
 
     private void Update()
@@ -116,6 +183,23 @@ public class BattleManager : MonoBehaviour
         PerformMovesState.OnDestroy();
         EndTurnState.OnDestroy();
         EndBattleState.OnDestroy();
+
+        BattleEvents.Instance.OnAfterPokemonFainted -= AfterPokemonFainted;
+    }
+
+    private void AfterPokemonFainted(Pokemon faintedPokemon)
+    {
+        if (faintedPokemon.Owner == PokemonOwner.Player || faintedPokemon.Owner == PokemonOwner.AllyTrainer)
+            return;
+        
+        StartCoroutine(PlayerPokemon.GainExp(CalculateExpGained(faintedPokemon)));
+    }
+
+    private int CalculateExpGained(Pokemon faintedPokemon)
+    {
+        int exp = Mathf.FloorToInt(faintedPokemon.ScriptablePokemon.ExperienceYield * faintedPokemon.Level / 7);
+        float trainerBonus = (IsTrainerBattle) ? 1.5f : 1.0f;
+        return Mathf.FloorToInt(exp * trainerBonus);
     }
 
     private IEnumerator SwitchStateCoroutine(BattleManagerBaseState newState)

@@ -8,6 +8,7 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
     [SerializeField] private GameObject moveSelector;
     [SerializeField] private GameObject switchPokemonSelector;
     [SerializeField] private GameObject replacePokemonSelector;
+    [SerializeField] private GameObject bagSelector;
     private List<GameObject> selectors;
 
     [SerializeField] private MoveSelectorUIManager moveSelectorUIManager;
@@ -18,7 +19,7 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
     private void Start()
     {
-        selectors = new List<GameObject> { actionSelector, moveSelector, switchPokemonSelector, replacePokemonSelector };
+        selectors = new List<GameObject> { actionSelector, moveSelector, switchPokemonSelector, replacePokemonSelector, bagSelector };
 
         SubscribeToEvents();
     }
@@ -37,8 +38,8 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
         BattleUIEvents.Instance.OnBagButtonPressed += OnBagButtonPressed;
         
         BattleUIEvents.Instance.OnCancelMoveSelection += SetActiveSelectorToActionSelector;
-        
         BattleUIEvents.Instance.OnCancelSwitchPokemonSelection += SetActiveSelectorToActionSelector;
+        BattleUIEvents.Instance.OnCancelBagSelection += SetActiveSelectorToActionSelector;
 
         BattleEvents.Instance.OnEnterActionSelection += SetActiveSelectorToActionSelector;
         BattleEvents.Instance.OnExitActionSelection += DeactivateAllSelectors;
@@ -57,8 +58,8 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
         BattleUIEvents.Instance.OnBagButtonPressed -= OnBagButtonPressed;
         
         BattleUIEvents.Instance.OnCancelMoveSelection -= SetActiveSelectorToActionSelector;
-        
         BattleUIEvents.Instance.OnCancelSwitchPokemonSelection -= SetActiveSelectorToActionSelector;
+        BattleUIEvents.Instance.OnCancelBagSelection -= SetActiveSelectorToActionSelector;
 
         BattleEvents.Instance.OnEnterActionSelection -= SetActiveSelectorToActionSelector;
         BattleEvents.Instance.OnExitActionSelection -= DeactivateAllSelectors;
@@ -107,7 +108,7 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
     private void OnBagButtonPressed()
     {
-        // TODO
+        SetActiveSelector(bagSelector);
     }
 
     private void OnPokemonAttack(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo)

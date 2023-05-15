@@ -1,24 +1,25 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     
+    
     private GameManagerBaseState currentState;
     public GameManagerFreeRoamState FreeRoamState;
     public GameManagerBattleState BattleState;
     public GameManagerDialogueState DialogueState;
-    
-    
+    public GameManagerCutsceneState CutsceneState;
+
     [SerializeField] private BattleManager battleManager;
     [SerializeField] private PokemonPartyManager playerPartyManager;
     [SerializeField] private MapArea currentArea;
     [SerializeField] private Transform player;
 
-    public Transform Player { get => player; }
+    public Transform PlayerTransform { get => player; }
+    public PlayerController PlayerController { get; private set; }
+
 
     public void SwitchState(GameManagerBaseState newState)
     {
@@ -35,6 +36,8 @@ public class GameManager : MonoBehaviour
             {
                 Pokemon enemyPokemon = currentArea.GetRandomWildPokemon();
                 PokemonParty enemyParty = new PokemonParty(new List<Pokemon>() { enemyPokemon });
+                battleManager.EnemyTrainer = null;
+                battleManager.IsTrainerBattle = false;
                 StartBattle(enemyParty);
             }
         }
@@ -42,17 +45,25 @@ public class GameManager : MonoBehaviour
     
     public void CheckForNPCs()
     {
-        if (Physics2D.OverlapCircle(Player.position, 0.2f, GameLayers.Instance.FovLayer) != null)
+        if (Physics2D.OverlapCircle(PlayerTransform.position, 0.2f, GameLayers.Instance.FovLayer) != null)
         {
-            Fov fov = Physics2D.OverlapCircle(Player.position, 0.2f, GameLayers.Instance.FovLayer).GetComponentInParent<Transform>().parent.GetComponentInChildren<Fov>();
-            fov.OnEnterFOV(Player);
+            Fov fov = Physics2D.OverlapCircle(PlayerTransform.position, 0.2f, GameLayers.Instance.FovLayer).GetComponentInParent<Transform>().parent.GetComponentInChildren<Fov>();
+            fov.OnEnterFOV(PlayerTransform);
         }
     }
 
-    public void TriggerTrainerBattle(PokemonPartyManager enemyPartyManager)
+    public void TriggerTrainerBattle(Trainer enemyTrainer)
     {
-        PokemonParty enemyParty = enemyPartyManager.PokemonParty;
+        PokemonParty enemyParty = enemyTrainer.PokemonPartyManager.PokemonParty;
+        battleManager.EnemyTrainer = enemyTrainer;
+        battleManager.IsTrainerBattle = true;
         StartBattle(enemyParty);
+    }
+
+    private void StartBattle(PokemonParty enemyParty)
+    {
+        SwitchState(BattleState);
+        battleManager.StartBattle(playerPartyManager.PokemonParty, enemyParty);
     }
 
     private void Awake()
@@ -62,6 +73,9 @@ public class GameManager : MonoBehaviour
         FreeRoamState = new GameManagerFreeRoamState();
         BattleState = new GameManagerBattleState();
         DialogueState = new GameManagerDialogueState();
+        CutsceneState = new GameManagerCutsceneState();
+
+        PlayerController = player.GetComponentInChildren<PlayerController>();
     }
 
     private void Start()
@@ -69,9 +83,15 @@ public class GameManager : MonoBehaviour
         FreeRoamState.InitState(this);
         BattleState.InitState(this);
         DialogueState.InitState(this);
+        CutsceneState.InitState(this);
 
         currentState = FreeRoamState;
         currentState.EnterState();
+    }
+
+    private void Update()
+    {
+        currentState.UpdateState();
     }
 
     private void OnDestroy()
@@ -79,11 +99,6 @@ public class GameManager : MonoBehaviour
         FreeRoamState.OnDestroy();
         BattleState.OnDestroy();
         DialogueState.OnDestroy();
-    }
-
-    private void StartBattle(PokemonParty enemyParty)
-    {
-        SwitchState(BattleState);
-        battleManager.StartBattle(playerPartyManager.PokemonParty, enemyParty);
+        CutsceneState.OnDestroy();
     }
 }
