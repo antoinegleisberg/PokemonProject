@@ -39,6 +39,8 @@ public class BattleEvents : MonoBehaviour
 
     public event Action<Pokemon, int> OnExpGained;
     public event Action<Pokemon> OnLevelUp;
+    public event Action<Pokemon, ScriptableMove> OnChooseMoveToForget;
+    public event Action<Pokemon, ScriptableMove, ScriptableMove> OnMoveLearnt;
 
     public void StartBattle(PokemonParty playerParty, PokemonParty enemyParty) => OnBattleStart?.Invoke(playerParty, enemyParty);
     public void EndBattle() => OnBattleEnd?.Invoke();
@@ -72,4 +74,6 @@ public class BattleEvents : MonoBehaviour
 
     public void ExpGained(Pokemon pokemon, int exp) => OnExpGained?.Invoke(pokemon, exp);
     public void LevelUp(Pokemon pokemon) => OnLevelUp?.Invoke(pokemon);
+    public void ChooseMoveToForget(Pokemon pokemon, ScriptableMove newMove) => OnChooseMoveToForget?.Invoke(pokemon, newMove);
+    public void MoveLearnt(Pokemon pokemon, ScriptableMove oldMove, ScriptableMove newMove) => OnMoveLearnt?.Invoke(pokemon, oldMove, newMove);
 }

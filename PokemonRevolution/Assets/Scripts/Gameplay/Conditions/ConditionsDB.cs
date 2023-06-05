@@ -34,7 +34,7 @@ public class ConditionsDB
                 },
                 OnBattleTurnEnd = (Pokemon pokemon) =>
                 {
-                    int damage = Mathf.RoundToInt((float)pokemon.MaxHP / 16);
+                    float damage = (float)pokemon.MaxHP / 16;
                     BattleEvents.Instance.StatusConditionMessage($"{pokemon.Name} was hurt due to his burn");
                     pokemon.TakeDamage(damage);
                 }
@@ -55,7 +55,7 @@ public class ConditionsDB
                 CatchRateModifier = 1.5f,
                 OnBattleTurnEnd = (Pokemon pokemon) =>
                 {
-                    int damage = Mathf.RoundToInt((float)pokemon.MaxHP / 8);
+                    float damage = (float)pokemon.MaxHP / 8;
                     BattleEvents.Instance.StatusConditionMessage($"{pokemon.Name} was hurt due to poisoning");
                     pokemon.TakeDamage(damage);
                 }
@@ -77,9 +77,8 @@ public class ConditionsDB
                 OnBattleTurnEnd = (Pokemon pokemon) =>
                 {
                     float damage = (float)pokemon.MaxHP / 16 * (pokemon.StatusTimeCount[StatusCondition.BadPoison]);
-                    int roundedDamage = Mathf.RoundToInt(damage);
                     BattleEvents.Instance.StatusConditionMessage($"{pokemon.Name} was hurt due to bad poisoning");
-                    pokemon.TakeDamage(roundedDamage);
+                    pokemon.TakeDamage(damage);
                 }
             }
         },
@@ -209,7 +208,7 @@ public class ConditionsDB
                             int attack = pokemon.Attack;
                             int defense = pokemon.Defense;
                             int power = 40;
-                            int damage = ((2 * level / 5 + 2) * attack * power / defense / 50) + 2;
+                            float damage = ((2 * (float)level / 5 + 2) * attack * power / defense / 50) + 2;
                             pokemon.TakeDamage(damage);
                         }
                     }

@@ -36,6 +36,9 @@ public class Pokemon
         {5, 8f/3f},
         {6, 9f/3f},
     };
+    
+    public int MaxLevel { get; private set; } = 100;
+    public int MaxNumberMoves { get; private set; } = 4;
 
     public ScriptablePokemon ScriptablePokemon { get; private set; }
     public string Name { get; private set; }
@@ -54,6 +57,7 @@ public class Pokemon
     public Dictionary<StatusCondition, int> RemainingStatusTime { get; private set; }
     public Dictionary<StatusCondition, int> StatusTimeCount { get; private set; }
 
+    private ScriptableMove moveToLearn;
 
     public int MaxHP { get { return GetStat(Stat.MaxHP); } }
     public int Attack { get { return GetStat(Stat.Attack); } }
@@ -119,7 +123,6 @@ public class Pokemon
                 RemainingStatusTime[status]--;
         }
 
-
         return modifier;
     }
     
@@ -148,11 +151,13 @@ public class Pokemon
         OnPokemonSwitchedOut();
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
-        CurrentHP -= damage;
+        int roundedDamage = Mathf.Max(1, Mathf.FloorToInt(damage));
+
+        CurrentHP -= roundedDamage;
         if (CurrentHP < 0) CurrentHP = 0;
-        if (damage > 0) BattleEvents.Instance.PokemonDamaged(this, damage);
+        if (roundedDamage >= 1) BattleEvents.Instance.PokemonDamaged(this, roundedDamage);
         if (IsFainted)
         {
             BattleEvents.Instance.PokemonFaints(this);
@@ -162,16 +167,13 @@ public class Pokemon
     
     public System.Collections.IEnumerator GainExp(int exp)
     {
-        while (exp > 0 && Level < Globals.MaxPokemonLevel)
+        while (exp > 0 && Level < MaxLevel)
         {
             int expBeforeLvUp = GrowthRateDB.ExpBeforeLevelUp(this);
             if (exp >= expBeforeLvUp)
             {
-                Debug.Log("I will be gaining a level !");
                 TotalExperiencePoints += expBeforeLvUp;
                 exp -= expBeforeLvUp;
-
-                Debug.Log("Gained exp");
 
                 // Add it for pokemons at max level
                 // int maxExp = GrowthRateDB.Level2TotalExp(ScriptablePokemon.GrowthRate, Globals.MaxPokemonLevel);
@@ -179,14 +181,10 @@ public class Pokemon
 
                 BattleEvents.Instance.ExpGained(this, expBeforeLvUp);
 
-                Debug.Log("Exp event called");
-
                 yield return BattleUIManager.Instance.WaitWhileBusy();
 
                 Assert.IsTrue(GrowthRateDB.ShouldLevelUp(this));
-                Debug.Log("About to level up");
-                LevelUp();
-                Debug.Log("Leveled up");
+                yield return LevelUp();
             }
             else
             {
@@ -197,10 +195,10 @@ public class Pokemon
         }
     }
 
-    public void LevelUp()
+    public System.Collections.IEnumerator LevelUp()
     {
-        if (Level >= Globals.MaxPokemonLevel)
-            return;
+        if (Level >= MaxLevel)
+            yield break;
 
         // check for missing Exp, for example in the case of rare candies etc.
         if (TotalExperiencePoints < GrowthRateDB.Level2TotalExp(ScriptablePokemon.GrowthRate, Level + 1))
@@ -212,10 +210,22 @@ public class Pokemon
         CalculateStats();
         BattleEvents.Instance.LevelUp(this);
 
+        // yield return BattleUIManager.Instance.WaitWhileBusy();
+
+        yield return CheckForNewMoves();
+
         // TODO
-        // Check for new moves and evolution
+        // Check for evolution
     }
 
+    public void ReplaceMove(int index)
+    {
+        if (index < 0 || index >= Moves.Count)
+            return;
+        Move oldMove = Moves[index];
+        Moves[index] = new Move(moveToLearn);
+        BattleEvents.Instance.MoveLearnt(this, oldMove.ScriptableMove, moveToLearn);
+    }
     public void LoseMovePP(Move move)
     {
         foreach (Move m in Moves)
@@ -362,9 +372,9 @@ public class Pokemon
                 Moves.Add(new Move(move.Move));
             }
         }
-        if (Moves.Count > 4)
+        if (Moves.Count > MaxNumberMoves)
         {
-            Moves.RemoveRange(0, Moves.Count - 4);
+            Moves.RemoveRange(0, Moves.Count - MaxNumberMoves);
         }
     }
 
@@ -411,6 +421,32 @@ public class Pokemon
                 statValue *= ConditionsDB.Conditions[status].OnGetStat(this, stat);
 
         return Mathf.FloorToInt(statValue);
+    }
+
+    private System.Collections.IEnumerator CheckForNewMoves()
+    {
+        foreach (LearnableMove learnableMove in ScriptablePokemon.LearnableMoves)
+        {
+            if (learnableMove.Level == Level)
+            {
+                moveToLearn = learnableMove.Move;
+                if (Moves.Count < MaxNumberMoves)
+                    LearnNewMove(learnableMove.Move);
+                else
+                    BattleEvents.Instance.ChooseMoveToForget(this, learnableMove.Move);
+            }
+            yield return new WaitUntil(() => !BattleUIManager.Instance.IsPaused);
+        }
+        yield break;
+    }
+
+    private void LearnNewMove(ScriptableMove newMove)
+    {
+        if (Moves.Count < MaxNumberMoves)
+        {
+            Moves.Add(new Move(newMove));
+            BattleEvents.Instance.MoveLearnt(this, null, newMove);
+        }
     }
 }
 

@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     public Transform PlayerTransform { get => player; }
     public PlayerController PlayerController { get; private set; }
+    public MapArea CurrentArea { get => currentArea; }
 
 
     public void SwitchState(GameManagerBaseState newState)
@@ -27,41 +28,21 @@ public class GameManager : MonoBehaviour
         currentState = newState;
         currentState.EnterState();
     }
-
-    public void CheckForEncounters(Vector3 position)
-    {
-        if (Physics2D.OverlapCircle(position, 0.2f, GameLayers.Instance.TallGrassLayer) != null)
-        {
-            if (Random.Range(0, 100) < currentArea.EncounterRate)
-            {
-                Pokemon enemyPokemon = currentArea.GetRandomWildPokemon();
-                PokemonParty enemyParty = new PokemonParty(new List<Pokemon>() { enemyPokemon });
-                battleManager.EnemyTrainer = null;
-                battleManager.IsTrainerBattle = false;
-                StartBattle(enemyParty);
-            }
-        }
-    }
     
     public void CheckForNPCs()
     {
         if (Physics2D.OverlapCircle(PlayerTransform.position, 0.2f, GameLayers.Instance.FovLayer) != null)
         {
-            Fov fov = Physics2D.OverlapCircle(PlayerTransform.position, 0.2f, GameLayers.Instance.FovLayer).GetComponentInParent<Transform>().parent.GetComponentInChildren<Fov>();
+            Fov fov = Physics2D.OverlapCircle(PlayerTransform.position, 0.2f, GameLayers.Instance.FovLayer).GetComponent<Fov>();
             fov.OnEnterFOV(PlayerTransform);
         }
     }
 
-    public void TriggerTrainerBattle(Trainer enemyTrainer)
+    public void StartBattle(PokemonParty enemyParty, Trainer enemyTrainer)
     {
-        PokemonParty enemyParty = enemyTrainer.PokemonPartyManager.PokemonParty;
         battleManager.EnemyTrainer = enemyTrainer;
-        battleManager.IsTrainerBattle = true;
-        StartBattle(enemyParty);
-    }
+        battleManager.IsTrainerBattle = enemyTrainer != null;
 
-    private void StartBattle(PokemonParty enemyParty)
-    {
         SwitchState(BattleState);
         battleManager.StartBattle(playerPartyManager.PokemonParty, enemyParty);
     }

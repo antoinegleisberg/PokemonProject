@@ -74,7 +74,8 @@ public class BattleManager : MonoBehaviour
             return;
 
         // Apply damage
-        targetPokemon.TakeDamage(attackInfo.damage);
+        if (move.ScriptableMove.Category != MoveCategory.Status)
+            targetPokemon.TakeDamage(attackInfo.damage);
 
         // Apply effects
         if (move.ScriptableMove.MoveEffects != null)
@@ -132,7 +133,7 @@ public class BattleManager : MonoBehaviour
         }
         return caught;
     }
-
+    
     private IEnumerator CanCatchPokemonCoroutine(bool caught)
     {
         BattleEvents.Instance.ThrowPokeball(EnemyPokemon);
@@ -167,13 +168,14 @@ public class BattleManager : MonoBehaviour
         currentState = OutOfBattleState;
 
         BattleEvents.Instance.OnAfterPokemonFainted += AfterPokemonFainted;
+        BattleUIEvents.Instance.OnSelectMoveToForget += SelectedMoveToForget;
     }
 
     private void Update()
     {
         currentState.UpdateState();
     }
-
+    
     private void OnDestroy()
     {
         OutOfBattleState.OnDestroy();
@@ -185,14 +187,21 @@ public class BattleManager : MonoBehaviour
         EndBattleState.OnDestroy();
 
         BattleEvents.Instance.OnAfterPokemonFainted -= AfterPokemonFainted;
+        BattleUIEvents.Instance.OnSelectMoveToForget -= SelectedMoveToForget;
     }
 
     private void AfterPokemonFainted(Pokemon faintedPokemon)
     {
         if (faintedPokemon.Owner == PokemonOwner.Player || faintedPokemon.Owner == PokemonOwner.AllyTrainer)
             return;
-        
+
+        Debug.Log("Start gain EXP coroutine");
         StartCoroutine(PlayerPokemon.GainExp(CalculateExpGained(faintedPokemon)));
+    }
+
+    private void SelectedMoveToForget(int index)
+    {
+        PlayerPokemon.ReplaceMove(index);
     }
 
     private int CalculateExpGained(Pokemon faintedPokemon)
@@ -232,7 +241,7 @@ public class BattleManager : MonoBehaviour
     
     private AttackInfo CalculateMoveDamage(Pokemon attackingPokemon, Pokemon targetPokemon, Move move, ConditionAttackModifier attackModifier)
     {
-        if (move.ScriptableMove.Category == MoveCategory.Status) 
+        if (move.ScriptableMove.Category == MoveCategory.Status)
             return new AttackInfo(false, 0, 1.0f, true);
 
         int level = attackingPokemon.Level;
@@ -241,19 +250,18 @@ public class BattleManager : MonoBehaviour
         
         int power = move.ScriptableMove.Power;
         bool criticalHit = Random.Range(1, 16) == 1;
-        int criticalHitModifier = criticalHit ? 2 : 1;
+        float criticalHitModifier = criticalHit ? 1.5f : 1;
         bool stab = attackingPokemon.ScriptablePokemon.Type1 == move.ScriptableMove.Type || 
             attackingPokemon.ScriptablePokemon.Type2 == move.ScriptableMove.Type;
         float stabModifier = stab ? 1.5f : 1.0f;
         float typeModifier = TypeUtils.TypeModifier(move.ScriptableMove, targetPokemon.ScriptablePokemon);
         float randomModifier = Random.Range(0.85f, 1.0f);
 
-        float baseDamage = (((2 * level / 5 + 2) * attack * power / defense / 50) + 2);
+        float baseDamage = (((2 * (float)level / 5 + 2) * attack * power / defense / 50) + 2);
         float damage = baseDamage * criticalHitModifier * stabModifier * typeModifier * randomModifier;
         damage *= attackModifier.DamageMultiplier;
-        int roundedDamage = Mathf.Max(1, Mathf.RoundToInt(damage));
 
-        AttackInfo attackInfo = new AttackInfo(criticalHit, roundedDamage, typeModifier, true);
+        AttackInfo attackInfo = new AttackInfo(criticalHit, damage, typeModifier, true);
         
         return attackInfo;
     }

@@ -16,7 +16,7 @@ public class GameManagerBattleState : GameManagerBaseState
 
     public override void UpdateState()
     {
-
+        
     }
 
 

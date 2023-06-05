@@ -1,0 +1,1312 @@
+====================
+No. 0001 - Bulbasaur
+====================
+
+Types: Grass Poison
+
+Species: Seed Pokémon
+Height: 0.7 m
+Weight: 6.9 kg
+
+Abilities: Overgrow / Chlorophyll
+
+Base stats
+Old: HP 45 / Atq 49 / Def 49 / SpA 65 / SpD 65 / Spe 45 / Total 318
+New: 
+
+EV yield: 1 SpA
+Catch rate: 45
+Base friendship: 50
+Base exp: 64
+Growth rate: Medium Slow
+Gender: 87.5% male, 12.5% female
+
+Evolution: Ivysaur (Level 16)
+
+Moves
+1 - Growl
+1 - Tackle
+3 - Vine Whip
+6 - Growth
+9 - Leech Seed
+12 - Razor Leaf
+15 - Poison Powder
+15 - Sleep Powder
+18 - Seed Bomb
+21 - Take Down
+24 - Sweet Scent
+27 - Synthesis
+30 - Worry Seed
+33 - Double-Edge
+36 - Solar Beam
+
+====================
+No. 0002 - Ivysaur
+====================
+
+Types: Grass Poison
+
+Species: Seed Pokémon
+Height: 1.0 m
+Weight: 13.0 kg
+
+Abilities: Overgrow / Chlorophyll
+
+Base stats
+Old: HP 60 / Atq 62 / Def 63 / SpA 80 / SpD 80 / Spe 60 / Total 405
+New: 
+
+EV yield: 1 SpA, 1 SpD
+Catch rate: 45
+Base friendship: 50
+Base exp: 142
+Growth rate: Medium Slow
+Gender: 87.5% male, 12.5% female
+
+Evolution: Venusaur (Level 32)
+
+Moves
+1 - Growl
+1 - Growth
+1 - Tackle
+1 - Vine Whip
+9 - Leech Seed
+12 - Razor Leaf
+15 - Poison Powder
+15 - Sleep Powder
+20 - Seed Bomb
+25 - Take Down
+30 - Sweet Scent
+35 - Synthesis
+40 - Worry Seed
+45 - Double-Edge
+50 - Solar Beam
+
+====================
+No. 0003 - Venusaur
+====================
+
+Types: Grass Poison
+
+Species: Seed Pokémon
+Height: 2.0 m
+Weight: 100.0 kg
+
+Abilities: Overgrow / Chlorophyll
+
+Base stats
+Old: HP 80 / Atq 82 / Def 83 / SpA 100 / SpD 100 / Spe 80 / Total 525
+New: 
+
+EV yield: 2 SpA, 1 SpD
+Catch rate: 45
+Base friendship: 50
+Base exp: 236
+Growth rate: Medium Slow
+Gender: 87.5% male, 12.5% female
+
+Evolution: None
+
+Moves
+1 - Growl
+1 - Growth
+1 - Petal Blizzard
+1 - Petal Dance
+1 - Tackle
+1 - Vine Whip
+9 - Leech Seed
+12 - Razor Leaf
+15 - Poison Powder
+15 - Sleep Powder
+20 - Seed Bomb
+25 - Take Down
+30 - Sweet Scent
+37 - Synthesis
+44 - Worry Seed
+51 - Double-Edge
+58 - Solar Beam
+
+====================
+No. 0004 - Charmander
+====================
+
+Types: Fire
+
+Species: Lizard Pokémon
+Height: 0.6 m
+Weight: 8.5 kg
+
+Abilities: Blaze / Solar Power
+
+Base stats
+Old: HP 39 / Atq 52 / Def 43 / SpA 60 / SpD 50 / Spe 65 / Total 309
+New: 
+
+EV yield: 1 Spe
+Catch rate: 45
+Base friendship: 50
+Base exp: 62
+Growth rate: Medium Slow
+Gender: 87.5% male, 12.5% female
+
+Evolution: Charmeleon (Level 16)
+
+Moves
+1 - Growl
+1 - Scratch
+4 - Ember
+8 - Smokescreen
+12 - Dragon Breath
+17 - Fire Fang
+20 - Slash
+24 - Flamethrower
+28 - Scary Face
+32 - Fire Spin
+36 - Inferno
+40 - Flare Blitz
+
+====================
+No. 0005 - Charmeleon
+====================
+
+Types: Fire
+
+Species: Flame Pokémon
+Height: 1.1 m
+Weight: 19.0 kg
+
+Abilities: Blaze / Solar Power
+
+Base stats
+Old: HP 58 / Atq 64 / Def 58 / SpA 80 / SpD 65 / Spe 80 / Total 405
+New: 
+
+EV yield: 1 SpA, 1 Spe
+Catch rate: 45
+Base friendship: 50
+Base exp: 142
+Growth rate: Medium Slow
+Gender: 87.5% male, 12.5% female
+
+Evolution: Charizard (Level 36)
+
+Moves
+1 - Ember
+1 - Growl
+1 - Scratch
+1 - Smokescreen
+12 - Dragon Breath
+19 - Fire Fang
+24 - Slash
+30 - Flamethrower
+37 - Scary Face
+48 - Inferno
+54 - Flare Blitz
+
+====================
+No. 0006 - Charizard
+====================
+
+Types: Fire Flying
+
+Species: Flame Pokémon
+Height: 1.7 m
+Weight: 90.5 kg
+
+Abilities: Blaze / Solar Power
+
+Base stats
+Old: HP 78 / Atq 84 / Def 78 / SpA 109 / SpD 85 / Spe 100 / Total 534
+New: 
+
+EV yield: 3 SpA
+Catch rate: 45
+Base friendship: 50
+Base exp: 267
+Growth rate: Medium Slow
+Gender: 87.5% male, 12.5% female
+
+Evolution: None
+
+Moves
+1 - Dragon Claw
+1 - Ember
+1 - Growl
+1 - Heat Wave
+1 - Scratch
+1 - Smokescreen
+12 - Dragon Breath
+19 - Fire Fang
+24 - Slash
+30 - Flamethrower
+39 - Scary Face
+46 - Fire Spin
+54 - Inferno
+62 - Flare Blitz
+
+====================
+No. 0007 - Squirtle
+====================
+
+Types: Water
+
+Species: Tiny Turtle Pokémon
+Height: 0.5 m
+Weight: 9.0 kg
+
+Abilities: Torrent / Rain Dish
+
+Base stats
+Old: HP 44 / Atq 48 / Def 65 / SpA 50 / SpD 64 / Spe 43 / Total 314
+New: 
+
+EV yield: 1 Def
+Catch rate: 45
+Base friendship: 50
+Base exp: 63
+Growth rate: Medium Slow
+Gender: 87.5% male, 12.5% female
+
+Evolution: Wartortle (Level 16)
+
+Moves
+1 - Tackle
+1 - Tail Whip
+3 - Water Gun
+6 - Withdraw
+9 - Rapid Spin
+12 - Bite
+15 - Water Pulse
+18 - Protect
+21 - Rain Dance
+24 - Aqua Tail
+27 - Shell Smash
+30 - Iron Defense
+33 - Hydro Pump
+36 - Skull Bash
+
+====================
+No. 0008 - Wartortle
+====================
+
+Types: Water
+
+Species: Turtle Pokémon
+Height: 1.0 m
+Weight: 22.5 kg
+
+Abilities: Torrent / Rain Dish
+
+Base stats
+Old: HP 59 / Atq 63 / Def 80 / SpA 65 / SpD 80 / Spe 58 / Total 405
+New: 
+
+EV yield: 1 Def, 1 SpD
+Catch rate: 45
+Base friendship: 50
+Base exp: 142
+Growth rate: Medium Slow
+Gender: 87.5% male, 12.5% female
+
+Evolution: Blastoise (Level 36)
+
+Moves
+1 - Tackle
+1 - Tail Whip
+1 - Water Gun
+1 - Withdraw
+9 - Rapid Spin
+12 - Bite
+15 - Water Pulse
+20 - Protect
+25 - Rain Dance
+30 - Aqua Tail
+35 - Shell Smash
+40 - Iron Defense
+45 - Hydro Pump
+50 - Skull Bash
+
+====================
+No. 0009 - Blastoise
+====================
+
+Types: Water
+
+Species: Shellfish Pokémon
+Height: 1.6 m
+Weight: 85.5 kg
+
+Abilities: Torrent / Rain Dish
+
+Base stats
+Old: HP 79 / Atq 83 / Def 100 / SpA 85 / SpD 105 / Spe 78 / Total 530
+New: 
+
+EV yield: 3 SpD
+Catch rate: 45
+Base friendship: 50
+Base exp: 239
+Growth rate: Medium Slow
+Gender: 87.5% male, 12.5% female
+
+Evolution: None
+
+Moves
+1 - Flash Cannon
+1 - Tackle
+1 - Tail Whip
+1 - Water Gun
+1 - Withdraw
+9 - Rapid Spin
+12 - Bite
+15 - Water Pulse
+20 - Protect
+25 - Rain Dance
+30 - Aqua Tail
+35 - Shell Smash
+42 - Iron Defense
+49 - Hydro Pump
+56 - Skull Bash
+
+====================
+No. 0010 - Caterpie
+====================
+
+Types: Bug
+
+Species: Worm Pokémon
+Height: 0.3 m
+Weight: 2.9 kg
+
+Abilities: Shield Dust / Run Away
+
+Base stats
+Old: HP 45 / Atq 30 / Def 35 / SpA 20 / SpD 20 / Spe 45 / Total 195
+New: 
+
+EV yield: 1 HP
+Catch rate: 255
+Base friendship: 50
+Base exp: 39
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: Metapod (Level 7)
+
+Moves
+1 - String Shot
+1 - Tackle
+9 - Bug Bite
+
+====================
+No. 0011 - Metapod
+====================
+
+Types: Bug
+
+Species: Cocoon Pokémon
+Height: 0.7 m
+Weight: 9.9 kg
+
+Abilities: Shed Skin
+
+Base stats
+Old: HP 50 / Atq 20 / Def 55 / SpA 25 / SpD 25 / Spe 30 / Total 205
+New: 
+
+EV yield: 2 Def
+Catch rate: 120
+Base friendship: 50
+Base exp: 72
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: Butterfree (Level 10)
+
+Moves
+1 - Harden
+
+====================
+No. 0012 - Butterfree
+====================
+
+Types: Bug Flying
+
+Species: Butterfly Pokémon
+Height: 1.1 m
+Weight: 32.0 kg
+
+Abilities: Compound Eyes / Tinted Lens
+
+Base stats
+Old: HP 60 / Atq 45 / Def 50 / SpA 90 / SpD 80 / Spe 70 / Total 395
+New: 
+
+EV yield: 2 SpA, 1 SpD
+Catch rate: 45
+Base friendship: 50
+Base exp: 178
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: None
+
+Moves
+1 - Bug Bite
+1 - Gust
+1 - Harden
+1 - String Shot
+1 - Tackle
+4 - Supersonic
+8 - Confusion
+12 - Poison Powder
+12 - Sleep Powder
+12 - Stun Spore
+16 - Psybeam
+20 - Whirlwind
+24 - Air Slash
+28 - Safeguard
+32 - Bug Buzz
+36 - Tailwind
+40 - Rage Powder
+44 - Quiver Dance
+
+====================
+No. 0013 - Weedle
+====================
+
+Types: Bug Poison
+
+Species: Hairy Bug Pokémon
+Height: 0.3 m
+Weight: 3.2 kg
+
+Abilities: Shield Dust / Run Away
+
+Base stats
+Old: HP 40 / Atq 35 / Def 30 / SpA 20 / SpD 20 / Spe 50 / Total 195
+New: 
+
+EV yield: 1 Spe
+Catch rate: 255
+Base friendship: 50
+Base exp: 39
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: Kakuna (Level 7)
+
+Moves
+1 - Poison Sting
+1 - String Shot
+9 - Bug Bite
+
+====================
+No. 0014 - Kakuna
+====================
+
+Types: Bug Poison
+
+Species: Cocoon Pokémon
+Height: 0.6 m
+Weight: 10.0 kg
+
+Abilities: Shed Skin
+
+Base stats
+Old: HP 45 / Atq 25 / Def 50 / SpA 25 / SpD 25 / Spe 35 / Total 205
+New: 
+
+EV yield: 2 Def
+Catch rate: 120
+Base friendship: 50
+Base exp: 72
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: Beedrill (Level 10)
+
+Moves
+1 - Harden
+
+====================
+No. 0015 - Beedrill
+====================
+
+Types: Bug Poison
+
+Species: Poison Bee Pokémon
+Height: 1.0 m
+Weight: 29.5 kg
+
+Abilities: Swarm / Sniper
+
+Base stats
+Old: HP 65 / Atq 90 / Def 40 / SpA 45 / SpD 80 / Spe 75 / Total 395
+New: 
+
+EV yield: 2 Atq, 1 SpD
+Catch rate: 45
+Base friendship: 50
+Base exp: 178
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: None
+
+Moves
+1 - Bug Bite
+1 - Fury Attack
+1 - Harden
+1 - Poison Sting
+1 - String Shot
+11 - Fury Cutter
+14 - Laser Focus
+17 - Poison Sting
+20 - Focus Energy
+23 - Venoshock
+26 - Assurance
+29 - Toxic Spikes
+32 - Pin Missile
+35 - Poison Jab
+38 - Agility
+41 - Endeavor
+44 - Fell Stinger
+
+====================
+No. 0016 - Pidgey
+====================
+
+Types: Normal Flying
+
+Species: Tiny Bird Pokémon
+Height: 0.3 m
+Weight: 1.8 kg
+
+Abilities: Keen Eye / Tangled Feet / Big Pecks
+
+Base stats
+Old: HP 40 / Atq 45 / Def 40 / SpA 35 / SpD 35 / Spe 56 / Total 251
+New: 
+
+EV yield: 1 Spe
+Catch rate: 255
+Base friendship: 50
+Base exp: 50
+Growth rate: Medium Slow
+Gender: 50% male, 50% female
+
+Evolution: Pidgeotto (Level 18)
+
+Moves
+1 - Tackle
+5 - Sand Attack
+9 - Gust
+13 - Quick Attack
+17 - Whirlwind
+21 - Twister
+25 - Feather Dance
+29 - Agility
+33 - Wing Attack
+37 - Roost
+41 - Tailwind
+45 - Aerial Ace
+49 - Air Slash
+53 - Hurricane
+
+====================
+No. 0017 - Pidgeotto
+====================
+
+Types: Normal Flying
+
+Species: Bird Pokémon
+Height: 1.1 m
+Weight: 30.0 kg
+
+Abilities: Keen Eye / Tangled Feet / Big Pecks
+
+Base stats
+Old: HP 63 / Atq 60 / Def 55 / SpA 50 / SpD 50 / Spe 71 / Total 349
+New: 
+
+EV yield: 2 Spe
+Catch rate: 120
+Base friendship: 50
+Base exp: 122
+Growth rate: Medium Slow
+Gender: 50% male, 50% female
+
+Evolution: Pidgeot (Level 36)
+
+Moves
+1 - Gust
+1 - Sand Attack
+1 - Tackle
+5 - Sand Attack
+9 - Gust
+13 - Quick Attack
+17 - Whirlwind
+22 - Twister
+27 - Feather Dance
+32 - Agility
+37 - Wing Attack
+42 - Roost
+47 - Tailwind
+52 - Aerial Ace
+57 - Air Slash
+62 - Hurricane
+
+====================
+No. 0018 - Pidgeot
+====================
+
+Types: Normal Flying
+
+Species: Bird Pokémon
+Height: 1.5 m
+Weight: 39.5 kg
+
+Abilities: Keen Eye / Tangled Feet / Big Pecks
+
+Base stats
+Old: HP 83 / Atq 80 / Def 75 / SpA 70 / SpD 70 / Spe 101 / Total 479
+New: 
+
+EV yield: 3 Spe
+Catch rate: 45
+Base friendship: 50
+Base exp: 216
+Growth rate: Medium Slow
+Gender: 50% male, 50% female
+
+Evolution: None
+
+Moves
+1 - Gust
+1 - Hurricane
+1 - Quick Attack
+1 - Sand Attack
+1 - Tackle
+5 - Sand Attack
+9 - Gust
+13 - Quick Attack
+17 - Whirlwind
+22 - Twister
+27 - Feather Dance
+32 - Agility
+38 - Wing Attack
+44 - Roost
+50 - Tailwind
+56 - Aerial Ace
+62 - Air Slash
+68 - Hurricane
+
+====================
+No. 0019 - Rattata
+====================
+
+Types: Normal
+
+Species: Mouse Pokémon
+Height: 0.3 m
+Weight: 3.5 kg
+
+Abilities: Run Away / Guts / Hustle
+
+Base stats
+Old: HP 30 / Atq 56 / Def 35 / SpA 25 / SpD 35 / Spe 72 / Total 253
+New: 
+
+EV yield: 1 Spe
+Catch rate: 255
+Base friendship: 50
+Base exp: 51
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: Raticate (Level 20)
+
+Moves
+1 - Tackle
+1 - Tail Whip
+4 - Quick Attack
+7 - Focus Energy
+10 - Bite
+13 - Laser Focus
+16 - Take Down
+19 - Assurance
+22 - Crunch
+25 - Sucker Punch
+28 - Super Fang
+31 - Double-Edge
+34 - Endeavor
+
+====================
+No. 0020 - Raticate
+====================
+
+Types: Normal
+
+Species: Mouse Pokémon
+Height: 0.7 m
+Weight: 18.5 kg
+
+Abilities: Run Away / Guts / Hustle
+
+Base stats
+Old: HP 55 / Atq 81 / Def 60 / SpA 50 / SpD 70 / Spe 97 / Total 413
+New: 
+
+EV yield: 2 Spe
+Catch rate: 127
+Base friendship: 50
+Base exp: 145
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: None
+
+Moves
+1 - Focus Energy
+1 - Quick Attack
+1 - Scary Face
+1 - Swords Dance
+1 - Tackle
+1 - Tail Whip
+4 - Quick Attack
+7 - Focus Energy
+10 - Bite
+13 - Laser Focus
+16 - Take Down
+19 - Assurance
+24 - Crunch
+29 - Sucker Punch
+34 - Super Fang
+39 - Double-Edge
+44 - Endeavor
+
+====================
+No. 0021 - Spearow
+====================
+
+Types: Normal Flying
+
+Species: Tiny Bird Pokémon
+Height: 0.3 m
+Weight: 2.0 kg
+
+Abilities: Keen Eye / Sniper
+
+Base stats
+Old: HP 40 / Atq 60 / Def 30 / SpA 31 / SpD 31 / Spe 70 / Total 262
+New: 
+
+EV yield: 1 Spe
+Catch rate: 255
+Base friendship: 50
+Base exp: 52
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: Fearow (Level 20)
+
+Moves
+1 - Growl
+1 - Peck
+4 - Leer
+8 - Assurance
+11 - Fury Attack
+15 - Aerial Ace
+18 - Wing Attack
+22 - Take Down
+25 - Agility
+29 - Focus Energy
+32 - Roost
+36 - Drill Peck
+
+====================
+No. 0022 - Fearow
+====================
+
+Types: Normal Flying
+
+Species: Beak Pokémon
+Height: 1.2 m
+Weight: 38.0 kg
+
+Abilities: Keen Eye / Sniper
+
+Base stats
+Old: HP 65 / Atq 90 / Def 65 / SpA 61 / SpD 61 / Spe 100 / Total 442
+New: 
+
+EV yield: 2 Spe
+Catch rate: 90
+Base friendship: 50
+Base exp: 155
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: None
+
+Moves
+1 - Drill Run
+1 - Growl
+1 - Leer
+1 - Peck
+1 - Pluck
+4 - Leer
+8 - Assurance
+11 - Fury Attack
+15 - Aerial Ace
+18 - Wing Attack
+23 - Take Down
+27 - Agility
+32 - Focus Energy
+36 - Roost
+41 - Drill Peck
+45 - Drill Run
+
+====================
+No. 0023 - Ekans
+====================
+
+Types: Poison
+
+Species: Snake Pokémon
+Height: 2.0 m
+Weight: 6.9 kg
+
+Abilities: Intimidate / Shed Skin / Unnerve
+
+Base stats
+Old: HP 35 / Atq 60 / Def 44 / SpA 40 / SpD 54 / Spe 55 / Total 288
+New: 
+
+EV yield: 1 Atq
+Catch rate: 255
+Base friendship: 50
+Base exp: 58
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: Arbok (Level 22)
+
+Moves
+1 - Leer
+1 - Wrap
+4 - Poison Sting
+9 - Bite
+12 - Glare
+17 - Screech
+20 - Acid
+25 - Spit Up
+25 - Stockpile
+25 - Swallow
+28 - Acid Spray
+33 - Sludge Bomb
+36 - Gastro Acid
+38 - Belch
+41 - Haze
+44 - Coil
+49 - Gunk Shot
+
+====================
+No. 0024 - Arbok
+====================
+
+Types: Poison
+
+Species: Cobra Pokémon
+Height: 3.5 m
+Weight: 65.0 kg
+
+Abilities: Intimidate / Shed Skin / Unnerve
+
+Base stats
+Old: HP 60 / Atq 95 / Def 69 / SpA 65 / SpD 79 / Spe 80 / Total 448
+New: 
+
+EV yield: 2 Atq
+Catch rate: 90
+Base friendship: 50
+Base exp: 157
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: None
+
+Moves
+1 - Bite
+1 - Crunch
+1 - Fire Fang
+1 - Ice Fang
+1 - Leer
+1 - Poison Sting
+1 - Thunder Fang
+1 - Wrap
+4 - Poison Sting
+9 - Bite
+12 - Glare
+17 - Screech
+20 - Acid
+27 - Spit Up
+27 - Stockpile
+27 - Swallow
+32 - Acid Spray
+39 - Sludge Bomb
+44 - Gastro Acid
+48 - Belch
+51 - Haze
+56 - Coil
+63 - Gunk Shot
+
+====================
+No. 0025 - Pikachu
+====================
+
+Types: Electric
+
+Species: Mouse Pokémon
+Height: 0.4 m
+Weight: 6.0 kg
+
+Abilities: Static / Lightning Rod
+
+Base stats
+Old: HP 35 / Atq 55 / Def 40 / SpA 50 / SpD 50 / Spe 90 / Total 320
+New: 
+
+EV yield: 2 Spe
+Catch rate: 190
+Base friendship: 50
+Base exp: 112
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: Raichu (use Thunder Stone, outside Alola)
+
+Moves
+1 - Charm
+1 - Growl
+1 - Nasty Plot
+1 - Nuzzle
+1 - Play Nice
+1 - Quick Attack
+1 - Sweet Kiss
+1 - Tail Whip
+1 - Thunder Shock
+4 - Thunder Wave
+8 - Double Team
+12 - Electro Ball
+16 - Feint
+20 - Spark
+24 - Agility
+28 - Iron Tail
+32 - Discharge
+36 - Thunderbolt
+40 - Light Screen
+44 - Thunder
+
+====================
+No. 0026 - Raichu
+====================
+
+Types: Electric
+
+Species: Mouse Pokémon
+Height: 0.8 m
+Weight: 30.0 kg
+
+Abilities: Static / Lightning Rod
+
+Base stats
+Old: HP 60 / Atq 90 / Def 55 / SpA 90 / SpD 80 / Spe 110 / Total 485
+New: 
+
+EV yield: 3 Spe
+Catch rate: 75
+Base friendship: 50
+Base exp: 243
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: Raichu (use Thunder Stone, in Alola)
+
+Moves
+1 - Agility
+1 - Charm
+1 - Discharge
+1 - Double Team
+1 - Electro Ball
+1 - Feint
+1 - Growl
+1 - Iron Tail
+1 - Light Screen
+1 - Nasty Plot
+1 - Nuzzle
+1 - Play Nice
+1 - Quick Attack
+1 - Spark
+1 - Sweet Kiss
+1 - Tail Whip
+1 - Thunder
+1 - Thunder Shock
+1 - Thunder Wave
+5 - Thunderbolt
+
+====================
+No. 0027 - Sandshrew
+====================
+
+Types: Ground
+
+Species: Mouse Pokémon
+Height: 0.6 m
+Weight: 12.0 kg
+
+Abilities: Sand Veil / Sand Rush
+
+Base stats
+Old: HP 50 / Atq 75 / Def 85 / SpA 20 / SpD 30 / Spe 40 / Total 300
+New: 
+
+EV yield: 1 Def
+Catch rate: 255
+Base friendship: 50
+Base exp: 60
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: Sandslash (Level 22)
+
+Moves
+1 - Defense Curl
+1 - Scratch
+3 - Poison Sting
+6 - Sand Attack
+9 - Rollout
+12 - Fury Cutter
+15 - Rapid Spin
+18 - Bulldoze
+21 - Swift
+24 - Fury Swipes
+27 - Agility
+30 - Slash
+33 - Dig
+36 - Gyro Ball
+39 - Swords Dance
+42 - Sandstorm
+45 - Earthquake
+
+====================
+No. 0028 - Sandslash
+====================
+
+Types: Ground
+
+Species: Mouse Pokémon
+Height: 1.0 m
+Weight: 29.5 kg
+
+Abilities: Sand Veil / Sand Rush
+
+Base stats
+Old: HP 75 / Atq 100 / Def 110 / SpA 45 / SpD 55 / Spe 65 / Total 450
+New: 
+
+EV yield: 2 Def
+Catch rate: 90
+Base friendship: 50
+Base exp: 158
+Growth rate: Medium Fast
+Gender: 50% male, 50% female
+
+Evolution: None
+
+Moves
+1 - Agility
+1 - Crush Claw
+1 - Defense Curl
+1 - Poison Sting
+1 - Sand Attack
+1 - Scratch
+9 - Rollout
+12 - Fury Cutter
+15 - Rapid Spin
+18 - Bulldoze
+21 - Swift
+26 - Fury Swipes
+31 - Sand Tomb
+36 - Slash
+41 - Dig
+46 - Gyro Ball
+51 - Swords Dance
+56 - Sandstorm
+61 - Earthquake
+
+====================
+No. 0030 - Nidorina
+====================
+
+Types: Poison
+
+Species: Poison Pin Pokémon
+Height: 0.8 m
+Weight: 20.0 kg
+
+Abilities: Poison Point / Rivalry / Hustle
+
+Base stats
+Old: HP 70 / Atq 62 / Def 67 / SpA 55 / SpD 55 / Spe 56 / Total 365
+New: 
+
+EV yield: 2 HP
+Catch rate: 120
+Base friendship: 50
+Base exp: 128
+Growth rate: Medium Slow
+Gender: 0% male, 100% female
+
+Evolution: Nidoqueen (use Moon Stone)
+
+Moves
+1 - Growl
+1 - Poison Sting
+1 - Scratch
+1 - Tail Whip
+15 - Fury Swipes
+22 - Toxic Spikes
+29 - Double Kick
+36 - Bite
+43 - Helping Hand
+50 - Toxic
+57 - Flatter
+64 - Crunch
+71 - Earth Power
+
+====================
+No. 0031 - Nidoqueen
+====================
+
+Types: Poison Ground
+
+Species: Drill Pokémon
+Height: 1.3 m
+Weight: 60.0 kg
+
+Abilities: Poison Point / Rivalry / Sheer Force
+
+Base stats
+Old: HP 90 / Atq 92 / Def 87 / SpA 75 / SpD 85 / Spe 76 / Total 505
+New: 
+
+EV yield: 3 HP
+Catch rate: 45
+Base friendship: 50
+Base exp: 227
+Growth rate: Medium Slow
+Gender: 0% male, 100% female
+
+Evolution: None
+
+Moves
+1 - Bite
+1 - Crunch
+1 - Double Kick
+1 - Earth Power
+1 - Flatter
+1 - Fury Swipes
+1 - Growl
+1 - Helping Hand
+1 - Poison Sting
+1 - Scratch
+1 - Sludge Wave
+1 - Superpower
+1 - Tail Whip
+1 - Toxic
+1 - Toxic Spikes
+
+====================
+No. 0033 - Nidorino
+====================
+
+Types: Poison
+
+Species: Poison Pin Pokémon
+Height: 0.9 m
+Weight: 19.5 kg
+
+Abilities: Poison Point / Rivalry / Hustle
+
+Base stats
+Old: HP 61 / Atq 72 / Def 57 / SpA 55 / SpD 55 / Spe 65 / Total 365
+New: 
+
+EV yield: 2 Atq
+Catch rate: 120
+Base friendship: 50
+Base exp: 128
+Growth rate: Medium Slow
+Gender: 100% male, 0% female
+
+Evolution: Nidoking (use Moon Stone)
+
+Moves
+1 - Focus Energy
+1 - Leer
+1 - Peck
+1 - Poison Sting
+15 - Fury Attack
+22 - Toxic Spikes
+29 - Double Kick
+36 - Horn Attack
+43 - Helping Hand
+50 - Toxic
+57 - Flatter
+64 - Poison Jab
+71 - Earth Power
+
+====================
+No. 0034 - Nidoking
+====================
+
+Types: Poison Ground
+
+Species: Drill Pokémon
+Height: 1.4 m
+Weight: 62.0 kg
+
+Abilities: Poison Point / Rivalry / Sheer Force
+
+Base stats
+Old: HP 81 / Atq 102 / Def 77 / SpA 85 / SpD 75 / Spe 85 / Total 505
+New: 
+
+EV yield: 3 Atq
+Catch rate: 45
+Base friendship: 50
+Base exp: 227
+Growth rate: Medium Slow
+Gender: 100% male, 0% female
+
+Evolution: None
+
+Moves
+1 - Double Kick
+1 - Earth Power
+1 - Flatter
+1 - Focus Energy
+1 - Fury Attack
+1 - Helping Hand
+1 - Horn Attack
+1 - Leer
+1 - Megahorn
+1 - Peck
+1 - Poison Jab
+1 - Poison Sting
+1 - Sludge Wave
+1 - Toxic
+1 - Toxic Spikes
+

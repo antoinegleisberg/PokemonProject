@@ -30,7 +30,7 @@ public class GrowthRateDB
                     return Mathf.FloorToInt(Mathf.Pow(level, 3) * Mathf.FloorToInt((1911 - 10 * level) / 3) / 500);
                 if (level <= 100)
                     return Mathf.FloorToInt(Mathf.Pow(level, 3) * (160 - level) / 100);
-                if (level <= Globals.MaxPokemonLevel)
+                if (level <= 200)
                     return Mathf.FloorToInt(Mathf.Pow(level, 3) * 3 / 5);
                 else
                     return 600000;
@@ -54,7 +54,7 @@ public class GrowthRateDB
                     return Mathf.FloorToInt(Mathf.Pow(level, 3) * (level + 14) / 50);
                 if (level <= 100)
                     return Mathf.FloorToInt(Mathf.Pow(level, 3) * (Mathf.FloorToInt(level / 2) + 32) / 50);
-                if (level <= Globals.MaxPokemonLevel)
+                if (level <= 200)
                     return Mathf.FloorToInt(Mathf.Pow(level, 3) * 8.0f / 5);
                 else
                     return 1640000;
@@ -82,7 +82,7 @@ public class GrowthRateDB
 
     public static bool ShouldLevelUp(Pokemon pokemon)
     {
-        if (pokemon.Level >= Globals.MaxPokemonLevel)
+        if (pokemon.Level >= pokemon.MaxLevel)
             return false;
 
         return ExpBeforeLevelUp(pokemon) <= 0;

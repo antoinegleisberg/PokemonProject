@@ -31,8 +31,9 @@ public class BattleDialogueUIManager : MonoBehaviour
 
         BattleEvents.Instance.OnExpGained += OnExpGained;
         BattleEvents.Instance.OnLevelUp += OnLevelUp;
+        BattleEvents.Instance.OnMoveLearnt += OnMoveLearnt;
+        BattleEvents.Instance.OnChooseMoveToForget += OnChooseMoveToForget;
     }
-
 
     private void OnDestroy()
     {
@@ -60,6 +61,8 @@ public class BattleDialogueUIManager : MonoBehaviour
 
         BattleEvents.Instance.OnExpGained -= OnExpGained;
         BattleEvents.Instance.OnLevelUp -= OnLevelUp;
+        BattleEvents.Instance.OnMoveLearnt -= OnMoveLearnt;
+        BattleEvents.Instance.OnChooseMoveToForget -= OnChooseMoveToForget;
     }
 
     private void OnBattleStart(PokemonParty playerParty, PokemonParty enemyParty)
@@ -207,5 +210,18 @@ public class BattleDialogueUIManager : MonoBehaviour
     private void OnLevelUp(Pokemon pokemon)
     {
         BattleUIManager.Instance.WriteDialogueText($"{pokemon.Name} grew to level {pokemon.Level} !");
+    }
+
+    private void OnMoveLearnt(Pokemon pokemon, ScriptableMove oldMove, ScriptableMove newMove)
+    {
+        if (oldMove == null)
+            BattleUIManager.Instance.WriteDialogueText($"{pokemon.Name} learnt {newMove.Name} !");
+        else
+            BattleUIManager.Instance.WriteDialogueText($"{pokemon.Name} forgot {oldMove.Name} and learnt {newMove.Name} !");
+    }
+
+    private void OnChooseMoveToForget(Pokemon pokemon, ScriptableMove newMove)
+    {
+        BattleUIManager.Instance.WriteDialogueText($"{pokemon.Name} is trying to learn {newMove.Name}, but it already knows {pokemon.Moves.Count} moves. Forget an old move ?");
     }
 }

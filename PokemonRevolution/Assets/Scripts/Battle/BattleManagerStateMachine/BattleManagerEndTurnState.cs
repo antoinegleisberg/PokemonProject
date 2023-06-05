@@ -31,15 +31,12 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
         bool playerPokemonFainted = battleManager.PlayerPokemon.IsFainted;
         if (playerPokemonFainted)
         {
-            Debug.Log("Player pokemon fainted ....");
             if (battleManager.PlayerParty.GetFirstPokemon() == null)
             {
-                Debug.Log("Player has no more pokemon to switch to ! The battle is lost"); 
                 battleManager.SwitchState(battleManager.EndBattleState);
             }
             else
             {
-                Debug.Log("Waiting for replacement");
                 BattleEvents.Instance.ReplaceFaintedPokemon();
             }
         }
@@ -51,7 +48,6 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
 
     private void OnReplacingPokemonSelected(int pokemonIndex)
     {
-        Debug.Log("Replacing selected pokemon !");
         Pokemon nextPokemon = battleManager.PlayerParty.Pokemons[pokemonIndex];
         battleManager.SwitchPokemon(battleManager.PlayerPokemon, nextPokemon);
 

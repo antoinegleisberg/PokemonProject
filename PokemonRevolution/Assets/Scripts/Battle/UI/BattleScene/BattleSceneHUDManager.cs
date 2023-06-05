@@ -70,10 +70,6 @@ public class BattleSceneHUDManager : MonoBehaviour
     {
         float targetExpFillAmount = 1.0f - (float)GrowthRateDB.ExpBeforeLevelUp(pokemon) / GrowthRateDB.Exp2NextLevel(pokemon.ScriptablePokemon.GrowthRate, pokemon.Level);
         targetExpFillAmount = Mathf.Clamp01(targetExpFillAmount);
-        Debug.Log(targetExpFillAmount);
-        Debug.Log(pokemon.Level);
-        Debug.Log(GrowthRateDB.ExpBeforeLevelUp(pokemon));
-        Debug.Log(GrowthRateDB.Exp2NextLevel(pokemon.ScriptablePokemon.GrowthRate, pokemon.Level));
         float currentExpDisplayed = expBar.transform.localScale.x;
         float changeAmount = targetExpFillAmount - currentExpDisplayed;
 

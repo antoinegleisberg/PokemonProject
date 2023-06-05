@@ -77,7 +77,7 @@ public class NPCController : MonoBehaviour, IInteractable
                 if (trainer.CanBattle)
                 {
                     trainer.PokemonPartyManager.PokemonParty.HealAll();
-                    GameManager.Instance.TriggerTrainerBattle(GetComponent<Trainer>());
+                    GameManager.Instance.StartBattle(trainer.PokemonPartyManager.PokemonParty, trainer);
                 }
             }
         }

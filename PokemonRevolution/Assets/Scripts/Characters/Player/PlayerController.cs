@@ -28,11 +28,6 @@ public class PlayerController : MonoBehaviour
         facing = Direction.Down;
     }
 
-    private void OnDestroy()
-    {
-        
-    }
-
     private void Update()
     {
         Move();
@@ -50,7 +45,16 @@ public class PlayerController : MonoBehaviour
     
     private void OnMoveOver()
     {
-        GameManager.Instance.CheckForNPCs();
-        GameManager.Instance.CheckForEncounters(playerTransform.position);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(playerTransform.position, 0.2f, GameLayers.Instance.TriggerableLayers);
+
+        foreach (Collider2D collider in colliders)
+        {
+            IPlayerTriggerable triggerable = collider.GetComponent<IPlayerTriggerable>();
+            if (triggerable != null)
+            {
+                triggerable.OnPlayerTriggered(this);
+                break;
+            }
+        }
     }
 }

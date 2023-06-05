@@ -1,13 +1,19 @@
 using System.Collections;
 using UnityEngine;
 
-public class Fov : MonoBehaviour
+public class Fov : MonoBehaviour, IPlayerTriggerable
 {
     [SerializeField] private NPCController npcController;
     [SerializeField] private Character character;
     [SerializeField] private GameObject exclamation;
 
     private Coroutine fovCoroutine;
+
+    public void OnPlayerTriggered(PlayerController playerController)
+    {
+        Transform playerPosition = playerController.transform;
+        OnEnterFOV(playerPosition);
+    }
 
     public void OnEnterFOV(Transform source)
     {

@@ -9,17 +9,19 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
     [SerializeField] private GameObject switchPokemonSelector;
     [SerializeField] private GameObject replacePokemonSelector;
     [SerializeField] private GameObject bagSelector;
+    [SerializeField] private GameObject forgetMoveSelector;
     private List<GameObject> selectors;
 
     [SerializeField] private MoveSelectorUIManager moveSelectorUIManager;
     [SerializeField] private PokemonSelectorUIManager pokemonSelectorUIManager;
     [SerializeField] private PokemonSelectorUIManager pokemonReplacementUIManager;
+    [SerializeField] private ForgetMoveSelectorUIManager forgetMoveSelectorUIManager;
 
     private PokemonParty playerPokemonParty;
 
     private void Start()
     {
-        selectors = new List<GameObject> { actionSelector, moveSelector, switchPokemonSelector, replacePokemonSelector, bagSelector };
+        selectors = new List<GameObject> { actionSelector, moveSelector, switchPokemonSelector, replacePokemonSelector, bagSelector, forgetMoveSelector };
 
         SubscribeToEvents();
     }
@@ -47,6 +49,8 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
         BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
         BattleEvents.Instance.OnReplaceFaintedPokemon += OnReplaceFaintedPokemon;
+
+        BattleEvents.Instance.OnChooseMoveToForget += OnChooseMoveToForget;
     }
 
     private void UnsubscribeToEvents()
@@ -67,6 +71,8 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
         BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
         BattleEvents.Instance.OnReplaceFaintedPokemon -= OnReplaceFaintedPokemon;
+        
+        BattleEvents.Instance.OnChooseMoveToForget -= OnChooseMoveToForget;
     }
 
     private void SetActiveSelector(GameObject selector)
@@ -125,5 +131,11 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
     {
         pokemonReplacementUIManager.UpdatePokemonButtons(playerPokemonParty);
         SetActiveSelector(replacePokemonSelector);
+    }
+    
+    private void OnChooseMoveToForget(Pokemon pokemon, ScriptableMove newMove)
+    {
+        forgetMoveSelectorUIManager.UpdateUI(pokemon, newMove);
+        SetActiveSelector(forgetMoveSelector);
     }
 }

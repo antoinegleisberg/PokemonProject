@@ -17,6 +17,7 @@ public class BattleUIEvents : MonoBehaviour
     public event Action<int> OnMoveSelected;
     public event Action OnCancelMoveSelection;
     public event Action<int> OnTargetSelected; // TODO
+    public event Action<int> OnSelectMoveToForget;
 
     // Bag button events : TODO
     public event Action OnPokeballsButtonPressed;
@@ -45,6 +46,7 @@ public class BattleUIEvents : MonoBehaviour
     public void MoveSelected(int moveIndex) => OnMoveSelected?.Invoke(moveIndex);
     public void CancelMoveSelection() => OnCancelMoveSelection?.Invoke();
     public void TargetSelected(int targetIndex) => OnTargetSelected?.Invoke(targetIndex);
+    public void SelectMoveToForget(int moveIndex) => OnSelectMoveToForget?.Invoke(moveIndex);
 
     public void PokeballsButtonPressed() => OnPokeballsButtonPressed?.Invoke();
     public void BattleItemsButtonPressed() => OnBattleItemsButtonPressed?.Invoke();
