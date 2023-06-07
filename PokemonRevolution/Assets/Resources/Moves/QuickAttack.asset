@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee785e717f1b7a44a9bab69a189de77c, type: 3}
   m_Name: QuickAttack
   m_EditorClassIdentifier: 
-  name: Quick Attack
+  moveName: Quick Attack
   description: "The user lunges at the target to inflict damage, moving at blinding
     speed. This move always goes first.\r"
   type: 1

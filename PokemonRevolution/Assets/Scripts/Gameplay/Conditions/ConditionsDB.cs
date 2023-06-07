@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ConditionsDB
+public static class ConditionsDB
 {
     public static Dictionary<StatusCondition, StatusConditionData> Conditions { get; set; } = new Dictionary<StatusCondition, StatusConditionData>()
     {

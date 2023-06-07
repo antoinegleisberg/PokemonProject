@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, ISaveable
 {
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Character character;
@@ -55,6 +55,29 @@ public class PlayerController : MonoBehaviour
                 triggerable.OnPlayerTriggered(this);
                 break;
             }
+        }
+    }
+
+    public void SaveData(ref GameData data)
+    {
+        data.PlayerData.PlayerPosition = playerTransform.position;
+
+        data.PlayerData.PokemonsSaveData = new List<PokemonSaveData>();
+        foreach (Pokemon pokemon in playerPartyManager.PokemonParty.Pokemons)
+        {
+            data.PlayerData.PokemonsSaveData.Add(pokemon.GetSaveData());
+        }
+    }
+
+    public void LoadData(GameData data)
+    {
+        playerTransform.position = data.PlayerData.PlayerPosition;
+
+        playerPartyManager.PokemonParty.Pokemons.Clear();
+        foreach (PokemonSaveData pokemonSaveData in data.PlayerData.PokemonsSaveData)
+        {
+            Pokemon pokemon = new Pokemon(pokemonSaveData);
+            playerPartyManager.PokemonParty.Pokemons.Add(pokemon);
         }
     }
 }

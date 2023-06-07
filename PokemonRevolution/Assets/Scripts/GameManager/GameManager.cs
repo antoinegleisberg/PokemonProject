@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -14,13 +15,13 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private BattleManager battleManager;
     [SerializeField] private PokemonPartyManager playerPartyManager;
-    [SerializeField] private MapArea currentArea;
     [SerializeField] private Transform player;
 
     public Transform PlayerTransform { get => player; }
     public PlayerController PlayerController { get; private set; }
-    public MapArea CurrentArea { get => currentArea; }
-
+    public MapArea CurrentArea { get; private set; }
+    public SceneDetails PreviousScene { get; private set; }
+    public SceneDetails CurrentScene { get; private set; }
 
     public void SwitchState(GameManagerBaseState newState)
     {
@@ -47,6 +48,27 @@ public class GameManager : MonoBehaviour
         battleManager.StartBattle(playerPartyManager.PokemonParty, enemyParty);
     }
 
+    public void SetCurrentScene(SceneDetails currentScene)
+    {
+        PreviousScene = CurrentScene;
+        CurrentScene = currentScene;
+        Debug.Log($"Setting current scene to {CurrentScene.gameObject.name}");
+    }
+
+    private void UpdateMapArea(SceneDetails sceneDetails)
+    {
+        List<MapArea> loadedMapAreas = FindObjectsOfType<MapArea>().ToList();
+        foreach (MapArea mapArea in loadedMapAreas)
+        {
+            if (mapArea.gameObject.scene.name == CurrentScene.gameObject.name)
+            {
+                Debug.Log($"Setting current map area to {CurrentScene.gameObject.name}");
+                CurrentArea = mapArea;
+                break;
+            }
+        }
+    }
+    
     private void Awake()
     {
         Instance = this;
@@ -57,6 +79,9 @@ public class GameManager : MonoBehaviour
         CutsceneState = new GameManagerCutsceneState();
 
         PlayerController = player.GetComponentInChildren<PlayerController>();
+
+        PokemonsDB.Init();
+        MovesDB.Init();
     }
 
     private void Start()
@@ -65,6 +90,8 @@ public class GameManager : MonoBehaviour
         BattleState.InitState(this);
         DialogueState.InitState(this);
         CutsceneState.InitState(this);
+
+        SceneEvents.Instance.OnCurrentSceneLoaded += UpdateMapArea;
 
         currentState = FreeRoamState;
         currentState.EnterState();
@@ -81,5 +108,7 @@ public class GameManager : MonoBehaviour
         BattleState.OnDestroy();
         DialogueState.OnDestroy();
         CutsceneState.OnDestroy();
+        
+        SceneEvents.Instance.OnCurrentSceneLoaded -= UpdateMapArea;
     }
 }

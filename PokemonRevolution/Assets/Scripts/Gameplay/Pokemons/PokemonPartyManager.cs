@@ -12,7 +12,10 @@ public class PokemonPartyManager : MonoBehaviour
     private void Awake()
     {
         pokemonParty = new PokemonParty();
+    }
 
+    private void Start()
+    {
         foreach (PokemonBuilder pokemonBuilder in pokemonBuilders)
         {
             pokemonParty.Pokemons.Add(pokemonBuilder.BuildPokemon());

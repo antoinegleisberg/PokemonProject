@@ -38,6 +38,13 @@ public class Character : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        IsRunning = false;
+        IsMoving = false;
+        moveSpeed = baseMoveSpeed;
+    }
+    
     public void FaceTowards(Direction facingDirection)
     {
         characterAnimator.FacingDirection = facingDirection;
@@ -127,13 +134,6 @@ public class Character : MonoBehaviour
         if (fov != null)
             // minus because z axis faces into the screen
             fov.transform.eulerAngles = new Vector3(0, 0, -DirectionUtils.Rotation(facingDirection));
-    }
-
-    private void Start()
-    {
-        IsRunning = false;
-        IsMoving = false;
-        moveSpeed = baseMoveSpeed;
     }
 
     private bool IsWalkable(Vector3 targetPosition)

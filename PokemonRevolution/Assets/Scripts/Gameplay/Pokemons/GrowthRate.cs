@@ -12,7 +12,7 @@ public enum GrowthRate
     Fluctuating
 }
 
-public class GrowthRateDB
+public static class GrowthRateDB
 {
     public static int Level2TotalExp(GrowthRate growthRate, int level)
     {
@@ -63,6 +63,17 @@ public class GrowthRateDB
                 Debug.Log("This should never happen !");
                 return 1000000;
         }
+    }
+
+    public static int TotalExp2Level(GrowthRate growthRate, int exp)
+    {
+        int level = 1;
+        while (Level2TotalExp(growthRate, level) <= exp)
+        {
+            level++;
+        }
+        level--;
+        return level;
     }
 
     public static int Exp2NextLevel(GrowthRate growthRate, int currentLevel)

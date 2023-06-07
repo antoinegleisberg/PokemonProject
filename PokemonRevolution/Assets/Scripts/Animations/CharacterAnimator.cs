@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -65,11 +64,6 @@ public class CharacterAnimator : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        FacingDirection = Direction.Down;
-    }
-
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -98,9 +92,15 @@ public class CharacterAnimator : MonoBehaviour
             { Direction.Right, IdleRight }
         };
 
+        FacingDirection = Direction.Down;
         UpdateAnim();
     }
 
+    private void Update()
+    {
+        currentAnimator.Update();
+    }
+    
     private void UpdateAnim()
     {
         bool wasRunning = IsRunning;
@@ -114,10 +114,5 @@ public class CharacterAnimator : MonoBehaviour
         IsRunning = wasRunning;
 
         currentAnimator.Init();
-    }
-
-    private void Update()
-    {
-        currentAnimator.Update();
     }
 }

@@ -12,13 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee785e717f1b7a44a9bab69a189de77c, type: 3}
   m_Name: Vine Whip
   m_EditorClassIdentifier: 
-  name: Vine Whip
+  moveName: Vine Whip
   description: The target is struck with slender, whiplike vines to inflict damage.
   type: 5
   category: 0
   power: 45
   accuracy: 100
   pp: 25
+  priority: 0
+  alwaysHits: 0
+  makesContact: 0
+  moveTargets: 03000000
   moveEffects:
     statBoosts: []
-  moveTargets: 03000000
+    conditionEffects: []

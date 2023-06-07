@@ -97,7 +97,69 @@ public class Pokemon
         CurrentHP = MaxHP;
     }
     
-    
+    public Pokemon(PokemonSaveData saveData)
+    {
+        ScriptablePokemon = PokemonsDB.GetPokemonById(saveData.ScriptablePokemonId);
+        Name = saveData.Name;
+        TotalExperiencePoints = saveData.ExperiencePoints;
+        Level = GrowthRateDB.TotalExp2Level(ScriptablePokemon.GrowthRate, TotalExperiencePoints);
+        Owner = saveData.Owner;
+        Gender = saveData.Gender;
+        StatusCondition = saveData.StatusCondition;
+        VolatileStatusConditions = new List<StatusCondition>();
+        RemainingStatusTime = new Dictionary<StatusCondition, int>();
+        StatusTimeCount = new Dictionary<StatusCondition, int>();
+        IVs = saveData.IVs;
+        EVs = saveData.EVs;
+        ResetStatBoosts();
+        CalculateStats();
+        
+        if (StatusCondition != StatusCondition.None)
+        {
+            RemainingStatusTime[StatusCondition] = saveData.RemainingStatusTime;
+            StatusTimeCount[StatusCondition] = 0;
+        }
+
+        Moves = new List<Move>();
+        foreach (MoveSaveData moveData in saveData.Moves)
+        {
+            Moves.Add(new Move(moveData));
+        }
+
+        CurrentHP = saveData.HealthPoints;
+    }
+
+    public PokemonSaveData GetSaveData()
+    {
+        List<MoveSaveData> movesData = new List<MoveSaveData>();
+        
+        foreach (Move move in Moves)
+        {
+            movesData.Add(move.GetSaveData());
+        }
+
+        int remainingStatusTime = 0;
+        if (RemainingStatusTime.ContainsKey(StatusCondition))
+        {
+            remainingStatusTime = RemainingStatusTime[StatusCondition];
+        }
+
+        return new PokemonSaveData(
+            ScriptablePokemon.Id,
+            Name,
+            TotalExperiencePoints,
+            CurrentHP,
+            Owner,
+            Gender,
+            SerializableDictionary<Stat, int>.FromDictionary(IVs),
+            SerializableDictionary<Stat, int>.FromDictionary(EVs),
+            movesData,
+            StatusCondition,
+            remainingStatusTime
+            );
+    }
+
+
     public ConditionAttackModifier OnBeforeMove(Move move)
     {
         ConditionAttackModifier modifier = new ConditionAttackModifier(true, 1);
@@ -457,6 +519,7 @@ public enum PokemonOwner {
     Wild
 }
 
+[System.Serializable]
 public enum Gender
 {
     None,
@@ -464,6 +527,7 @@ public enum Gender
     Female
 }
 
+[System.Serializable]
 public enum Stat
 {
     MaxHP,

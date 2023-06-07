@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class Move
 {
     public ScriptableMove ScriptableMove { get; set; }
@@ -7,5 +9,19 @@ public class Move
     {
         ScriptableMove = scriptableMove;
         CurrentPP = scriptableMove.PP;
+    }
+
+    public Move(MoveSaveData moveSaveData)
+    {
+        ScriptableMove scriptableMove = MovesDB.GetScriptableMoveByName(moveSaveData.Name);
+        ScriptableMove = scriptableMove;
+        CurrentPP = moveSaveData.PP;
+    }
+
+    public MoveSaveData GetSaveData()
+    {
+        Debug.Log(ScriptableMove);
+        Debug.Log($"Move name: {ScriptableMove.Name}");
+        return new MoveSaveData(ScriptableMove.Name, CurrentPP);
     }
 }
