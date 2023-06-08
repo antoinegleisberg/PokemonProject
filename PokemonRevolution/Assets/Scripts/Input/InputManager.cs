@@ -30,7 +30,28 @@ public class InputManager : MonoBehaviour
         GameEvents.Instance.OnExitBattle += ActivatePlayerActionMap;
         GameEvents.Instance.OnEnterDialogue += ActivateUIActionMap;
         GameEvents.Instance.OnExitDialogue += ActivatePlayerActionMap;
-        GameEvents.Instance.OnEnterNpcFov += ActivateUIActionMap;
+    }
+    
+    private void OnDestroy()
+    {
+        GameEvents.Instance.OnEnterBattle -= ActivateUIActionMap;
+        GameEvents.Instance.OnExitBattle -= ActivatePlayerActionMap;
+        GameEvents.Instance.OnEnterDialogue -= ActivateUIActionMap;
+        GameEvents.Instance.OnExitDialogue -= ActivatePlayerActionMap;
+    }
+
+    public void ActivatePlayerActionMap()
+    {
+        playerActionMap.Enable();
+        uiActionMap.Disable();
+    }
+
+    public void ActivateUIActionMap()
+    {
+        MovementInput = Vector2Int.zero;
+        IsRunning = false;
+        playerActionMap.Disable();
+        uiActionMap.Enable();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -71,28 +92,5 @@ public class InputManager : MonoBehaviour
     {
         if (context.performed)
             UIManager.Instance.HandleUICancel();
-    }
-
-    private void ActivatePlayerActionMap()
-    {
-        playerActionMap.Enable();
-        uiActionMap.Disable();
-    }
-    
-    private void ActivateUIActionMap()
-    {
-        MovementInput = Vector2Int.zero;
-        IsRunning = false;
-        playerActionMap.Disable();
-        uiActionMap.Enable();
-    }
-
-    private void OnDestroy()
-    {
-        GameEvents.Instance.OnEnterBattle -= ActivateUIActionMap;
-        GameEvents.Instance.OnExitBattle -= ActivatePlayerActionMap;
-        GameEvents.Instance.OnEnterDialogue -= ActivateUIActionMap;
-        GameEvents.Instance.OnExitDialogue -= ActivatePlayerActionMap;
-        GameEvents.Instance.OnEnterNpcFov -= ActivateUIActionMap;
     }
 }

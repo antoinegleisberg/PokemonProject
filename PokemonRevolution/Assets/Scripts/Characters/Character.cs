@@ -13,7 +13,7 @@ public class Character : MonoBehaviour
     private bool isMoving;
     private bool isRunning;
     private bool isRunningMovementCoroutine;
-    private bool stopOnNextTile;
+    private bool stopAfterCurrentMovement;
 
     public bool IsMoving {
         get { return isMoving; }
@@ -51,12 +51,18 @@ public class Character : MonoBehaviour
         UpdateFOV(facingDirection);
     }
 
-    public void MoveAndStop(Vector2 moveVector, bool run = false, Action onAfterMovement = null)
+    public void FaceTowards(Vector3 direction)
     {
-        stopOnNextTile = true;
+        Direction facingDirection = DirectionUtils.GetDirection(direction);
+        FaceTowards(facingDirection);
+    }
+
+    public IEnumerator MoveAndStop(Vector2 moveVector, bool run = false, Action onAfterMovement = null)
+    {
+        stopAfterCurrentMovement = true;
         IsRunning = run;
         if (!isRunningMovementCoroutine)
-            StartCoroutine(MoveCoroutine(moveVector, onAfterMovement));
+            yield return MoveCoroutine(moveVector, onAfterMovement);
     }
 
     public void MoveContinuous(Vector2 moveVector, bool run = false, Action onAfterMovement = null)
@@ -65,11 +71,11 @@ public class Character : MonoBehaviour
         {
             if (!isRunningMovementCoroutine)
                 IsMoving = false;
-            stopOnNextTile = true;
+            stopAfterCurrentMovement = true;
             return;
         }
 
-        stopOnNextTile = false;
+        stopAfterCurrentMovement = false;
         IsRunning = run;
         if (!isRunningMovementCoroutine)
             StartCoroutine(MoveCoroutine(moveVector, onAfterMovement));
@@ -79,20 +85,8 @@ public class Character : MonoBehaviour
     {
         isRunningMovementCoroutine = true;
 
-        Vector2Int moveDir;
-        int moveLength;
-
-        // Round and project moveVector
-        if (Mathf.Abs(moveVector.x) > Mathf.Abs(moveVector.y))
-        {
-            moveLength = Mathf.RoundToInt(Mathf.Abs(moveVector.x));
-            moveDir = new Vector2Int(Mathf.RoundToInt(Mathf.Sign(moveVector.x)), 0);
-        }
-        else
-        {
-            moveLength = Mathf.RoundToInt(Mathf.Abs(moveVector.y));
-            moveDir = new Vector2Int(0, Mathf.RoundToInt(Mathf.Sign(moveVector.y)));
-        }
+        Vector2Int moveDir = GetMoveDirection(moveVector);
+        int moveLength = GetMoveDistance(moveVector);
 
         FaceTowards(DirectionUtils.GetDirection(moveDir));
 
@@ -124,10 +118,38 @@ public class Character : MonoBehaviour
         }
 
         isRunningMovementCoroutine = false;
-        if (stopOnNextTile)
+        if (stopAfterCurrentMovement)
             IsMoving = false;
     }
     
+    private Vector2Int GetMoveDirection(Vector2 moveVector)
+    {
+        Vector2Int moveDirection = new Vector2Int(0, 0);
+        if (Mathf.Abs(moveVector.x) > Mathf.Abs(moveVector.y))
+        {
+            moveDirection.x = Mathf.RoundToInt(Mathf.Sign(moveVector.x));
+        }
+        else
+        {
+            moveDirection.y = Mathf.RoundToInt(Mathf.Sign(moveVector.y));
+        }
+        return moveDirection;
+    }
+
+    private int GetMoveDistance(Vector2 moveVector)
+    {
+        int moveLength = 0;
+        if (Mathf.Abs(moveVector.x) > Mathf.Abs(moveVector.y))
+        {
+            moveLength = Mathf.RoundToInt(Mathf.Abs(moveVector.x));
+        }
+        else
+        {
+            moveLength = Mathf.RoundToInt(Mathf.Abs(moveVector.y));
+        }
+        return moveLength;
+    }
+
     private void UpdateFOV(Direction facingDirection)
     {
         Fov fov = transform.parent.Find("Fov")?.GetComponent<Fov>();

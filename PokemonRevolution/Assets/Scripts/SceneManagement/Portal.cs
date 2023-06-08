@@ -7,8 +7,7 @@ public class Portal : MonoBehaviour, IPlayerTriggerable
 {
     [SerializeField] private DestinationId destinationPortalId;
     [SerializeField] private Transform spawnPoint;
-
-    private PlayerController player;
+    
     private SceneFader sceneFader;
 
     public Transform SpawnPoint { get => spawnPoint; }
@@ -20,11 +19,10 @@ public class Portal : MonoBehaviour, IPlayerTriggerable
 
     public void OnPlayerTriggered(PlayerController playerController)
     {
-        player = playerController;
-        StartCoroutine(TeleportPlayer());
+        StartCoroutine(TeleportPlayer(playerController));
     }
 
-    private IEnumerator TeleportPlayer()
+    private IEnumerator TeleportPlayer(PlayerController player)
     {
         yield return sceneFader.FadeIn(0.5f);
 

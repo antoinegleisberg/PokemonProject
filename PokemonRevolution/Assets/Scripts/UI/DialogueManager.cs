@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -13,11 +14,20 @@ public class DialogueManager : MonoBehaviour
     private Dialogue currentDialogue;
     private int currentLine;
     private bool isTyping;
+    private Action onDialogueExited;
 
     public bool IsBusy { get; private set; }
-    
-    public void ShowDialogue(Dialogue dialogue)
+
+    private void Awake()
     {
+        Instance = this;
+        isTyping = false;
+        IsBusy = false;
+    }
+
+    public void ShowDialogue(Dialogue dialogue, Action onDialogueExited = null)
+    {
+        this.onDialogueExited = onDialogueExited;
         dialogueBox.SetActive(true);
         currentDialogue = dialogue;
         currentLine = 0;
@@ -43,7 +53,7 @@ public class DialogueManager : MonoBehaviour
             IsBusy = false;
             currentDialogue = null;
             GameEvents.Instance.ExitDialogue();
-            GameEvents.Instance.AfterDialogueExited();
+            onDialogueExited?.Invoke();
         }
     }
 
@@ -57,12 +67,5 @@ public class DialogueManager : MonoBehaviour
             yield return new WaitForSeconds(1.0f / textSpeed);
         }
         isTyping = false;
-    }   
-
-    private void Awake()
-    {
-        Instance = this;
-        isTyping = false;
-        IsBusy = false;
     }
 }

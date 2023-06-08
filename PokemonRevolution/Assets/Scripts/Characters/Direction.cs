@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public enum Direction
@@ -26,7 +24,7 @@ public class DirectionUtils
     }
     
     public static Direction GetDirection(float x, float y) => GetDirection(new Vector2(x, y));
-    public static Direction GetDirection(Vector2Int vector) => GetDirection(vector.x, vector.y);
+    public static Direction GetDirection(Vector2Int vector) => GetDirection(new Vector2(vector.x, vector.y));
     public static Direction GetDirection(Vector3 vector) => GetDirection(new Vector2(vector.x, vector.y));
     
     public static Vector2Int ToVec2(Direction facingDirection)

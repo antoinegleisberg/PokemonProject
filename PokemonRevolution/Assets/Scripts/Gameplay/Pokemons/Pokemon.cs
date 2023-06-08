@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -37,8 +38,11 @@ public class Pokemon
         {6, 9f/3f},
     };
     
-    public int MaxLevel { get; private set; } = 100;
-    public int MaxNumberMoves { get; private set; } = 4;
+    public static int MaxLevel { get; private set; } = 100;
+    public static int MaxNumberMoves { get; private set; } = 4;
+    public static int MaxEVs { get; private set; } = 510;
+    public static int MaxEVsPerStat { get; private set; } = 255;
+    public static int MaxIVs { get; private set; } = 31;
 
     public ScriptablePokemon ScriptablePokemon { get; private set; }
     public string Name { get; private set; }
@@ -49,7 +53,7 @@ public class Pokemon
     public Gender Gender { get; private set; }
     public Dictionary<Stat, int> Stats { get; private set; }
     public Dictionary<Stat, int> IVs { get; private set; }
-    public Dictionary<Stat, int> EVs { get; private set; } // Not implemented yet
+    public Dictionary<Stat, int> EVs { get; private set; }
     public Dictionary<Stat, int> StatBoosts { get; private set; }
     public List<Move> Moves { get; private set; }
     public StatusCondition StatusCondition { get; private set; }
@@ -215,7 +219,7 @@ public class Pokemon
 
     public void TakeDamage(float damage)
     {
-        int roundedDamage = Mathf.Max(1, Mathf.FloorToInt(damage));
+        int roundedDamage = Mathf.Max(1, Mathf.RoundToInt(damage));
 
         CurrentHP -= roundedDamage;
         if (CurrentHP < 0) CurrentHP = 0;
@@ -227,7 +231,7 @@ public class Pokemon
         }
     }
     
-    public System.Collections.IEnumerator GainExp(int exp)
+    public IEnumerator GainExp(int exp)
     {
         while (exp > 0 && Level < MaxLevel)
         {
@@ -237,9 +241,9 @@ public class Pokemon
                 TotalExperiencePoints += expBeforeLvUp;
                 exp -= expBeforeLvUp;
 
-                // Add it for pokemons at max level
-                // int maxExp = GrowthRateDB.Level2TotalExp(ScriptablePokemon.GrowthRate, Globals.MaxPokemonLevel);
-                // TotalExperiencePoints = Mathf.Clamp(TotalExperiencePoints, 0, maxExp);
+                // For pokemons at max level
+                int maxExp = GrowthRateDB.Level2TotalExp(ScriptablePokemon.GrowthRate, MaxLevel);
+                TotalExperiencePoints = Mathf.Clamp(TotalExperiencePoints, 0, maxExp);
 
                 BattleEvents.Instance.ExpGained(this, expBeforeLvUp);
 
@@ -257,7 +261,19 @@ public class Pokemon
         }
     }
 
-    public System.Collections.IEnumerator LevelUp()
+    public void GainEVs(ScriptablePokemon defeatedPokemon)
+    {
+        int availableEVs = MaxEVs - EVs.Values.Sum();
+        foreach (EVYield evYield in defeatedPokemon.EvYield)
+        {
+            int availableEVforStat = MaxEVsPerStat - EVs[evYield.stat];
+            int EVsGained = Mathf.Min(availableEVs, evYield.value, availableEVforStat);
+            EVs[evYield.stat] += EVsGained;
+            availableEVs -= EVsGained;
+        }
+    }
+    
+    public IEnumerator LevelUp()
     {
         if (Level >= MaxLevel)
             yield break;
@@ -485,7 +501,7 @@ public class Pokemon
         return Mathf.FloorToInt(statValue);
     }
 
-    private System.Collections.IEnumerator CheckForNewMoves()
+    private IEnumerator CheckForNewMoves()
     {
         foreach (LearnableMove learnableMove in ScriptablePokemon.LearnableMoves)
         {

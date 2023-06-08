@@ -197,6 +197,7 @@ public class BattleManager : MonoBehaviour
 
         Debug.Log("Start gain EXP coroutine");
         StartCoroutine(PlayerPokemon.GainExp(CalculateExpGained(faintedPokemon)));
+        PlayerPokemon.GainEVs(faintedPokemon.ScriptablePokemon);
     }
 
     private void SelectedMoveToForget(int index)

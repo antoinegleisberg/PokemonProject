@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TypeUtils
+public static class TypeUtils
 {
     private static Dictionary<PokemonType, ScriptableType> types;
 
@@ -10,11 +10,10 @@ public class TypeUtils
         if (types == null)
         {
             types = new Dictionary<PokemonType, ScriptableType>();
-            Object[] typesList = Resources.LoadAll("Types");
-            foreach (Object t in typesList)
+            ScriptableType[] typesList = Resources.LoadAll<ScriptableType>("Types");
+            foreach (ScriptableType t in typesList)
             {
-                ScriptableType loadedType = (ScriptableType)t;
-                types[loadedType.Type] = loadedType;
+                types[t.Type] = t;
             }
         }
         return types[type];

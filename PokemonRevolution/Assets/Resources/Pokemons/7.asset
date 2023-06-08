@@ -34,12 +34,9 @@ MonoBehaviour:
   baseFriendship: 50
   catchRate: 45
   experienceYield: 66
-  hpEVYield: 0
-  attackEVYield: 0
-  defenseEVYield: 1
-  specialAttackEVYield: 0
-  specialDefenseEVYield: 0
-  speedEVYield: 0
+  evYield:
+  - stat: 2
+    value: 1
   learnableMoves:
   - move: {fileID: 11400000, guid: 131c8166196cf57489d05750114c76df, type: 2}
     level: 1

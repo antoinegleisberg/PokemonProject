@@ -60,7 +60,7 @@ public static class GrowthRateDB
                     return 1640000;
 
             default:
-                Debug.Log("This should never happen !");
+                Debug.LogError("Unknown growth rate !");
                 return 1000000;
         }
     }
@@ -93,7 +93,7 @@ public static class GrowthRateDB
 
     public static bool ShouldLevelUp(Pokemon pokemon)
     {
-        if (pokemon.Level >= pokemon.MaxLevel)
+        if (pokemon.Level >= Pokemon.MaxLevel)
             return false;
 
         return ExpBeforeLevelUp(pokemon) <= 0;

@@ -258,9 +258,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultFacingDirection: 0
-  dialogue:
-    lines:
-    - My pokemon are strong. Let me show you !
+  dialogues:
+  - lines:
+    - I cought some new pokemon on this route !
+    - Let's try them out in a battle !
+  - lines:
+    - I guess you too cought some good pokemon...
   character: {fileID: 181156775}
   movementPatterns: []
 --- !u!4 &181156780

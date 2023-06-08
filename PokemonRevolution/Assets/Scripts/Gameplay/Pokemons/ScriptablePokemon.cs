@@ -32,12 +32,7 @@ public class ScriptablePokemon : ScriptableObject
     [SerializeField] private int catchRate;
 
     [SerializeField] private int experienceYield;
-    [SerializeField] private int hpEVYield;
-    [SerializeField] private int attackEVYield;
-    [SerializeField] private int defenseEVYield;
-    [SerializeField] private int specialAttackEVYield;
-    [SerializeField] private int specialDefenseEVYield;
-    [SerializeField] private int speedEVYield;
+    [SerializeField] private List<EVYield> evYield;
 
     [SerializeField] private List<LearnableMove> learnableMoves;
     [SerializeField] private List<ScriptableMove> eggMoves;
@@ -72,12 +67,7 @@ public class ScriptablePokemon : ScriptableObject
     public int BaseFriendship { get => baseFriendship; }
     public int CatchRate { get => catchRate; }
     public int ExperienceYield { get => experienceYield; }
-    public int HpEVYield { get => hpEVYield; }
-    public int AttackEVYield { get => attackEVYield; }
-    public int DefenseEVYield { get => defenseEVYield; }
-    public int SpecialAttackEVYield { get => specialAttackEVYield; }
-    public int SpecialDefenseEVYield { get => specialDefenseEVYield; }
-    public int SpeedEVYield { get => speedEVYield; }
+    public List<EVYield> EvYield { get => evYield; }
     public List<LearnableMove> LearnableMoves { get => learnableMoves; }
     public List<ScriptableMove> EggMoves { get => eggMoves; }
     public List<ScriptableMove> TmMoves { get => tmMoves; }

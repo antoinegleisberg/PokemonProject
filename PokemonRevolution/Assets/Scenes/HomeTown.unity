@@ -4723,9 +4723,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultFacingDirection: 0
-  dialogue:
-    lines:
-    - Did you know that fire types are strong against grass types ?
+  dialogues:
+  - lines:
+    - Did you know that fire types are strong against grass types?
   character: {fileID: 484131690}
   movementPatterns:
   - lookTowards: 0
@@ -4976,9 +4976,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultFacingDirection: 0
-  dialogue:
-    lines:
-    - My pokemon are strong. Let me show you !
+  dialogues:
+  - lines:
+    - My Pokemon are strong.
+    - Let me show you!
+  - lines:
+    - Oh, I lost. I will train some more and beat you next time!
   character: {fileID: 637285602}
   movementPatterns: []
 --- !u!114 &637285604
@@ -5781,10 +5784,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultFacingDirection: 0
-  dialogue:
-    lines:
-    - Hi, how are you ?
-    - So, have you been catching some Pokemon ?
+  dialogues:
+  - lines:
+    - So? Have you cought any Pokemon?
   character: {fileID: 1497454922}
   movementPatterns:
   - lookTowards: 0

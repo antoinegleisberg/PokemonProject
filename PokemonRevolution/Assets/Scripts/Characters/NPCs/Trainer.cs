@@ -4,9 +4,14 @@ public class Trainer : MonoBehaviour, ISaveable
 {
     [SerializeField] private PokemonPartyManager pokemonPartyManager;
 
-    public bool CanBattle { get; set; } = true;
+    public bool CanBattle { get; set; }
 
     public PokemonPartyManager PokemonPartyManager { get => pokemonPartyManager; }
+
+    private void Awake()
+    {
+        CanBattle = true;
+    }
 
     public void LoadData(GameData data)
     {

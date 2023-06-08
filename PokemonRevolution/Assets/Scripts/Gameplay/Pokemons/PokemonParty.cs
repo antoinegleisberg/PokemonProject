@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PokemonParty
-{    
+{
+    public static readonly int MaxPartySize = 6;
+
     public List<Pokemon> Pokemons { get; private set; }
-    public bool IsFull { get { return Pokemons.Count >= 6; } }
+    public bool IsFull { get { return Pokemons.Count >= MaxPartySize; } }
 
     public PokemonParty() : this(new List<Pokemon>()) { }
     public PokemonParty(List<Pokemon> pokemons) { Pokemons = pokemons; }

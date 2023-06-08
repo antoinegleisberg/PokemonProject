@@ -8,6 +8,11 @@ public class Fov : MonoBehaviour, IPlayerTriggerable
     [SerializeField] private GameObject exclamation;
 
     private Coroutine fovCoroutine;
+    
+    private void Start()
+    {
+        exclamation.SetActive(false);
+    }
 
     public void OnPlayerTriggered(PlayerController playerController)
     {
@@ -19,38 +24,38 @@ public class Fov : MonoBehaviour, IPlayerTriggerable
     {
         if (fovCoroutine != null)
             return;
-        GameEvents.Instance.EnterNpcFov();
-        npcController.StopMoving();
         fovCoroutine = StartCoroutine(OnEnterFOVCoroutine(source));
     }
 
     private IEnumerator OnEnterFOVCoroutine(Transform source)
     {
-        exclamation.SetActive(true);
-        yield return new WaitForSeconds(0.5f);
-        exclamation.SetActive(false);
-        yield return new WaitForSeconds(0.5f);
+        InputManager.Instance.ActivateUIActionMap();
+        npcController.StopMoving();
 
-        Vector3 diff = source.position - transform.position;
-        Vector2 movement = new Vector2(Mathf.Round(diff.x), Mathf.Round(diff.y));
+        yield return ShowExclamation();
 
-        while (character.IsMoving)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-
-        character.MoveAndStop(movement);
-
-        while (character.IsMoving)
-        {
-            yield return new WaitForEndOfFrame();
-        }
+        yield return MoveToTarget(source);
 
         npcController.Interact(source);
     }
 
-    private void Start()
+    private IEnumerator ShowExclamation()
     {
+        exclamation.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
         exclamation.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+    }
+
+    private IEnumerator MoveToTarget(Transform target)
+    {
+        Vector3 diff = target.position - transform.position;
+        Vector2 movement = new Vector2(Mathf.Round(diff.x), Mathf.Round(diff.y));
+
+        yield return new WaitUntil(() => !character.IsMoving);
+
+        character.MoveAndStop(movement);
+
+        yield return new WaitUntil(() => !character.IsMoving);
     }
 }

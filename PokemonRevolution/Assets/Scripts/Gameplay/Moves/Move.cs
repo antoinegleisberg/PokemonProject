@@ -20,8 +20,6 @@ public class Move
 
     public MoveSaveData GetSaveData()
     {
-        Debug.Log(ScriptableMove);
-        Debug.Log($"Move name: {ScriptableMove.Name}");
         return new MoveSaveData(ScriptableMove.Name, CurrentPP);
     }
 }

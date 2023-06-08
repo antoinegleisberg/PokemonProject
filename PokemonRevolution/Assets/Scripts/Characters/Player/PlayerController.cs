@@ -11,6 +11,16 @@ public class PlayerController : MonoBehaviour, ISaveable
     
     private Direction facing;
 
+    private void Start()
+    {
+        facing = Direction.Down;
+    }
+
+    private void Update()
+    {
+        Move();
+    }
+
     public void CheckForInteraction()
     {
         Vector2 interactPos = new Vector2(playerTransform.position.x, playerTransform.position.y) + DirectionUtils.ToVec2(facing);
@@ -23,14 +33,27 @@ public class PlayerController : MonoBehaviour, ISaveable
         }
     }
 
-    private void Start()
+    public void SaveData(ref GameData data)
     {
-        facing = Direction.Down;
+        data.PlayerData.PlayerPosition = playerTransform.position;
+
+        data.PlayerData.PokemonsSaveData = new List<PokemonSaveData>();
+        foreach (Pokemon pokemon in playerPartyManager.PokemonParty.Pokemons)
+        {
+            data.PlayerData.PokemonsSaveData.Add(pokemon.GetSaveData());
+        }
     }
 
-    private void Update()
+    public void LoadData(GameData data)
     {
-        Move();
+        playerTransform.position = data.PlayerData.PlayerPosition;
+
+        playerPartyManager.PokemonParty.Pokemons.Clear();
+        foreach (PokemonSaveData pokemonSaveData in data.PlayerData.PokemonsSaveData)
+        {
+            Pokemon pokemon = new Pokemon(pokemonSaveData);
+            playerPartyManager.PokemonParty.Pokemons.Add(pokemon);
+        }
     }
 
     private void Move()
@@ -55,29 +78,6 @@ public class PlayerController : MonoBehaviour, ISaveable
                 triggerable.OnPlayerTriggered(this);
                 break;
             }
-        }
-    }
-
-    public void SaveData(ref GameData data)
-    {
-        data.PlayerData.PlayerPosition = playerTransform.position;
-
-        data.PlayerData.PokemonsSaveData = new List<PokemonSaveData>();
-        foreach (Pokemon pokemon in playerPartyManager.PokemonParty.Pokemons)
-        {
-            data.PlayerData.PokemonsSaveData.Add(pokemon.GetSaveData());
-        }
-    }
-
-    public void LoadData(GameData data)
-    {
-        playerTransform.position = data.PlayerData.PlayerPosition;
-
-        playerPartyManager.PokemonParty.Pokemons.Clear();
-        foreach (PokemonSaveData pokemonSaveData in data.PlayerData.PokemonsSaveData)
-        {
-            Pokemon pokemon = new Pokemon(pokemonSaveData);
-            playerPartyManager.PokemonParty.Pokemons.Add(pokemon);
         }
     }
 }
