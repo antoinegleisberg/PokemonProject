@@ -4643,9 +4643,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 484131688}
+  - component: {fileID: 484131689}
   - component: {fileID: 484131691}
   - component: {fileID: 484131690}
-  - component: {fileID: 484131689}
+  - component: {fileID: 484131692}
   m_Layer: 10
   m_Name: Controller
   m_TagString: Untagged
@@ -4736,6 +4737,19 @@ MonoBehaviour:
     movement: {x: 0, y: 3}
     run: 0
     waitTime: 0.5
+--- !u!114 &484131692
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 484131687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f66eda809684a0469744d86297be55d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uid: 4e2755ba-7ccf-4196-8f03-fd34dc9d9359
 --- !u!1 &611507682
 GameObject:
   m_ObjectHideFlags: 0
@@ -5746,9 +5760,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1497454919}
+  - component: {fileID: 1497454921}
   - component: {fileID: 1497454920}
   - component: {fileID: 1497454922}
-  - component: {fileID: 1497454921}
+  - component: {fileID: 1497454923}
   m_Layer: 10
   m_Name: Controller
   m_TagString: Untagged
@@ -5787,6 +5802,8 @@ MonoBehaviour:
   dialogues:
   - lines:
     - So? Have you cought any Pokemon?
+  - lines:
+    - Unfortunately, I haven't. Otherwise you would have to fight me!
   character: {fileID: 1497454922}
   movementPatterns:
   - lookTowards: 0
@@ -5847,6 +5864,19 @@ MonoBehaviour:
   baseMoveSpeed: 5
   runningMoveSpeed: 8
   characterAnimator: {fileID: 1668699689}
+--- !u!114 &1497454923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1497454918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f66eda809684a0469744d86297be55d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uid: fe00e2e7-a9d5-441e-bda3-9efac030be6b
 --- !u!1 &1517716060
 GameObject:
   m_ObjectHideFlags: 0

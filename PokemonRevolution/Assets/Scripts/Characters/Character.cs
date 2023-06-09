@@ -57,12 +57,22 @@ public class Character : MonoBehaviour
         FaceTowards(facingDirection);
     }
 
+    public void StopMoving()
+    {
+        IsMoving = false;
+        IsRunning = false;
+        StopAllCoroutines();
+        isRunningMovementCoroutine = false;
+    }
+
     public IEnumerator MoveAndStop(Vector2 moveVector, bool run = false, Action onAfterMovement = null)
     {
         stopAfterCurrentMovement = true;
         IsRunning = run;
         if (!isRunningMovementCoroutine)
+        {
             yield return MoveCoroutine(moveVector, onAfterMovement);
+        }
     }
 
     public void MoveContinuous(Vector2 moveVector, bool run = false, Action onAfterMovement = null)
@@ -152,7 +162,7 @@ public class Character : MonoBehaviour
 
     private void UpdateFOV(Direction facingDirection)
     {
-        Fov fov = transform.parent.Find("Fov")?.GetComponent<Fov>();
+        Fov fov = transform.parent.GetComponentInChildren<Fov>();
         if (fov != null)
             // minus because z axis faces into the screen
             fov.transform.eulerAngles = new Vector3(0, 0, -DirectionUtils.Rotation(facingDirection));

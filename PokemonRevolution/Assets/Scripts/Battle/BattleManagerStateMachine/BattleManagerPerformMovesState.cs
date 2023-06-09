@@ -19,6 +19,13 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
 
     private void PerformTurnActions()
     {
+        Queue<BattleActionInfo> actions = GetBattleActionsInOrder();
+
+        battleManager.StartCoroutine(PerformTurnActions(actions));
+    }
+
+    private Queue<BattleActionInfo> GetBattleActionsInOrder()
+    {
         Queue<BattleActionInfo> actions = new Queue<BattleActionInfo>();
 
         // Check for action priorities
@@ -37,7 +44,7 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
         {
             int playerSpeed = battleManager.NextPlayerAction.SourcePokemon.Speed;
             int enemySpeed = battleManager.NextEnemyAction.SourcePokemon.Speed;
-            
+
             int playerMoveIndex = battleManager.NextPlayerAction.ActionParameter;
             Move playerMove = battleManager.NextPlayerAction.SourcePokemon.Moves[playerMoveIndex];
             int playerPriority = playerMove.ScriptableMove.Priority;
@@ -55,7 +62,7 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
                 playerGoesFirst = true;
             else if (enemySpeed > playerSpeed)
                 playerGoesFirst = false;
-            else if (Random.Range(0,2) == 0)
+            else if (Random.Range(0, 2) == 0)
                 playerGoesFirst = true;
             else
                 playerGoesFirst = false;
@@ -71,9 +78,8 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
                 actions.Enqueue(battleManager.NextPlayerAction);
             }
         }
-        
 
-        battleManager.StartCoroutine(PerformTurnActions(actions));
+        return actions;
     }
 
     private IEnumerator PerformTurnActions(Queue<BattleActionInfo> actions)

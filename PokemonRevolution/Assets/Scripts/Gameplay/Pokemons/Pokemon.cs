@@ -61,8 +61,6 @@ public class Pokemon
     public Dictionary<StatusCondition, int> RemainingStatusTime { get; private set; }
     public Dictionary<StatusCondition, int> StatusTimeCount { get; private set; }
 
-    private ScriptableMove moveToLearn;
-
     public int MaxHP { get { return GetStat(Stat.MaxHP); } }
     public int Attack { get { return GetStat(Stat.Attack); } }
     public int Defense { get { return GetStat(Stat.Defense); } }
@@ -170,8 +168,8 @@ public class Pokemon
 
         if (StatusCondition != StatusCondition.None)
             StatusTimeCount[StatusCondition] += 1;
-        if (ConditionsDB.Conditions[StatusCondition].OnBeforeMove != null)
-            modifier = modifier.Merge(ConditionsDB.Conditions[StatusCondition].OnBeforeMove(this, move));
+        if (ConditionsDB.GetCondition(StatusCondition).OnBeforeMove != null)
+            modifier = modifier.Merge(ConditionsDB.GetCondition(StatusCondition).OnBeforeMove(this, move));
 
         // This executes as if it were after the move
         if (RemainingStatusTime.ContainsKey(StatusCondition))
@@ -181,8 +179,8 @@ public class Pokemon
         foreach (StatusCondition status in VolatileStatusConditions.ToList())
         {
             StatusTimeCount[status] += 1;
-            if (ConditionsDB.Conditions[status].OnBeforeMove != null)
-                modifier = modifier.Merge(ConditionsDB.Conditions[status].OnBeforeMove(this, move));
+            if (ConditionsDB.GetCondition(status).OnBeforeMove != null)
+                modifier = modifier.Merge(ConditionsDB.GetCondition(status).OnBeforeMove(this, move));
             
             // This executes as if it were after the move
             if (RemainingStatusTime.ContainsKey(status))
@@ -204,11 +202,11 @@ public class Pokemon
     {
         if (IsFainted)
             return;
-        ConditionsDB.Conditions[StatusCondition].OnBattleTurnEnd?.Invoke(this);
+        ConditionsDB.GetCondition(StatusCondition).OnBattleTurnEnd?.Invoke(this);
 
         foreach (StatusCondition status in VolatileStatusConditions)
         {
-            ConditionsDB.Conditions[status].OnBattleTurnEnd?.Invoke(this);
+            ConditionsDB.GetCondition(status).OnBattleTurnEnd?.Invoke(this);
         }
     }
 
@@ -223,42 +221,13 @@ public class Pokemon
 
         CurrentHP -= roundedDamage;
         if (CurrentHP < 0) CurrentHP = 0;
-        if (roundedDamage >= 1) BattleEvents.Instance.PokemonDamaged(this, roundedDamage);
-        if (IsFainted)
-        {
-            BattleEvents.Instance.PokemonFaints(this);
-            BattleEvents.Instance.AfterPokemonFainted(this);
-        }
     }
     
-    public IEnumerator GainExp(int exp)
+    public void GainExp(int exp)
     {
-        while (exp > 0 && Level < MaxLevel)
-        {
-            int expBeforeLvUp = GrowthRateDB.ExpBeforeLevelUp(this);
-            if (exp >= expBeforeLvUp)
-            {
-                TotalExperiencePoints += expBeforeLvUp;
-                exp -= expBeforeLvUp;
-
-                // For pokemons at max level
-                int maxExp = GrowthRateDB.Level2TotalExp(ScriptablePokemon.GrowthRate, MaxLevel);
-                TotalExperiencePoints = Mathf.Clamp(TotalExperiencePoints, 0, maxExp);
-
-                BattleEvents.Instance.ExpGained(this, expBeforeLvUp);
-
-                yield return BattleUIManager.Instance.WaitWhileBusy();
-
-                Assert.IsTrue(GrowthRateDB.ShouldLevelUp(this));
-                yield return LevelUp();
-            }
-            else
-            {
-                TotalExperiencePoints += exp;
-                BattleEvents.Instance.ExpGained(this, exp);
-                exp = 0;
-            }
-        }
+        TotalExperiencePoints += exp;
+        int maxExp = GrowthRateDB.Level2TotalExp(ScriptablePokemon.GrowthRate, MaxLevel);
+        TotalExperiencePoints = Mathf.Clamp(TotalExperiencePoints, 0, maxExp);
     }
 
     public void GainEVs(ScriptablePokemon defeatedPokemon)
@@ -273,37 +242,58 @@ public class Pokemon
         }
     }
     
-    public IEnumerator LevelUp()
+    public bool ShouldLevelUp()
     {
         if (Level >= MaxLevel)
-            yield break;
+            return false;
+        
+        return TotalExperiencePoints >= GrowthRateDB.Level2TotalExp(ScriptablePokemon.GrowthRate, Level + 1);
+    }
+
+    public void LevelUp()
+    {
+        if (Level >= MaxLevel)
+            return;
 
         // check for missing Exp, for example in the case of rare candies etc.
         if (TotalExperiencePoints < GrowthRateDB.Level2TotalExp(ScriptablePokemon.GrowthRate, Level + 1))
         {
             TotalExperiencePoints += GrowthRateDB.ExpBeforeLevelUp(this);
-        }   
+        }
 
         Level += 1;
         CalculateStats();
-        BattleEvents.Instance.LevelUp(this);
-
-        // yield return BattleUIManager.Instance.WaitWhileBusy();
-
-        yield return CheckForNewMoves();
-
-        // TODO
-        // Check for evolution
     }
 
-    public void ReplaceMove(int index)
+    public List<ScriptableMove> GetNewMovesAtCurrentLevel()
+    {
+        List<ScriptableMove> movesToLearn = new List<ScriptableMove>();
+        foreach (LearnableMove learnableMove in ScriptablePokemon.LearnableMoves)
+        {
+            if (learnableMove.Level == Level)
+            {
+                movesToLearn.Add(learnableMove.Move);
+            }
+        }
+        return movesToLearn;
+    }
+
+    public void LearnNewMove(ScriptableMove newMove)
+    {
+        if (Moves.Count < MaxNumberMoves)
+        {
+            Moves.Add(new Move(newMove));
+        }
+    }
+
+    public void ReplaceMove(int index, ScriptableMove newMove)
     {
         if (index < 0 || index >= Moves.Count)
             return;
-        Move oldMove = Moves[index];
-        Moves[index] = new Move(moveToLearn);
-        BattleEvents.Instance.MoveLearnt(this, oldMove.ScriptableMove, moveToLearn);
+        
+        Moves[index] = new Move(newMove);
     }
+    
     public void LoseMovePP(Move move)
     {
         foreach (Move m in Moves)
@@ -341,13 +331,13 @@ public class Pokemon
         if (status == StatusCondition.None)
             return;
 
-        if (StatusCondition != StatusCondition.None && !ConditionsDB.Conditions[status].IsVolatile)
+        if (StatusCondition != StatusCondition.None && !ConditionsDB.GetCondition(status).IsVolatile)
             return;
 
         if (VolatileStatusConditions.Contains(status))
             return;
 
-        if (ConditionsDB.Conditions[status].IsVolatile)
+        if (ConditionsDB.GetCondition(status).IsVolatile)
         {
             VolatileStatusConditions.Add(status);
         }
@@ -356,7 +346,7 @@ public class Pokemon
             StatusCondition = status;
         }
         StatusTimeCount[status] = 0;
-        ConditionsDB.Conditions[status].OnStart?.Invoke(this);
+        ConditionsDB.GetCondition(status).OnStart?.Invoke(this);
         BattleEvents.Instance.AppliedStatusCondition(status, this);
     }
 
@@ -459,12 +449,12 @@ public class Pokemon
     private void InitIVs()
     {
         IVs = new Dictionary<Stat, int>() {
-            {Stat.MaxHP, Random.Range(0, 32) },
-            {Stat.Attack, Random.Range(0, 32) },
-            {Stat.Defense, Random.Range(0, 32) },
-            {Stat.SpecialAttack, Random.Range(0, 32) },
-            {Stat.SpecialDefense, Random.Range(0, 32) },
-            {Stat.Speed, Random.Range(0, 32) },
+            {Stat.MaxHP, Random.Range(0, MaxIVs + 1) },
+            {Stat.Attack, Random.Range(0, MaxIVs + 1) },
+            {Stat.Defense, Random.Range(0, MaxIVs + 1) },
+            {Stat.SpecialAttack, Random.Range(0, MaxIVs + 1) },
+            {Stat.SpecialDefense, Random.Range(0, MaxIVs + 1) },
+            {Stat.Speed, Random.Range(0, MaxIVs + 1) },
         };
     }
 
@@ -492,39 +482,13 @@ public class Pokemon
             Dictionary<int, float> boostValues = (isCombatStat) ? combatStatsBoostValues : baseStatsBoostValues;
             statValue = statValue * boostValues[boost];
         }
-        if (ConditionsDB.Conditions[StatusCondition].OnGetStat != null)
-            statValue *= ConditionsDB.Conditions[StatusCondition].OnGetStat(this, stat);
+        if (ConditionsDB.GetCondition(StatusCondition).OnGetStat != null)
+            statValue *= ConditionsDB.GetCondition(StatusCondition).OnGetStat(this, stat);
         foreach (StatusCondition status in VolatileStatusConditions)
-            if (ConditionsDB.Conditions[status].OnGetStat != null)
-                statValue *= ConditionsDB.Conditions[status].OnGetStat(this, stat);
+            if (ConditionsDB.GetCondition(status).OnGetStat != null)
+                statValue *= ConditionsDB.GetCondition(status).OnGetStat(this, stat);
 
         return Mathf.FloorToInt(statValue);
-    }
-
-    private IEnumerator CheckForNewMoves()
-    {
-        foreach (LearnableMove learnableMove in ScriptablePokemon.LearnableMoves)
-        {
-            if (learnableMove.Level == Level)
-            {
-                moveToLearn = learnableMove.Move;
-                if (Moves.Count < MaxNumberMoves)
-                    LearnNewMove(learnableMove.Move);
-                else
-                    BattleEvents.Instance.ChooseMoveToForget(this, learnableMove.Move);
-            }
-            yield return new WaitUntil(() => !BattleUIManager.Instance.IsPaused);
-        }
-        yield break;
-    }
-
-    private void LearnNewMove(ScriptableMove newMove)
-    {
-        if (Moves.Count < MaxNumberMoves)
-        {
-            Moves.Add(new Move(newMove));
-            BattleEvents.Instance.MoveLearnt(this, null, newMove);
-        }
     }
 }
 

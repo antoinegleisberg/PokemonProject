@@ -17,11 +17,57 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PokemonPartyManager playerPartyManager;
     [SerializeField] private Transform player;
 
+    public BattleManager BattleManager { get => battleManager; }
     public Transform PlayerTransform { get => player; }
     public PlayerController PlayerController { get; private set; }
     public MapArea CurrentArea { get; private set; }
     public SceneDetails PreviousScene { get; private set; }
     public SceneDetails CurrentScene { get; private set; }
+
+
+    private void Awake()
+    {
+        Instance = this;
+
+        FreeRoamState = new GameManagerFreeRoamState();
+        BattleState = new GameManagerBattleState();
+        DialogueState = new GameManagerDialogueState();
+        CutsceneState = new GameManagerCutsceneState();
+
+        PlayerController = player.GetComponentInChildren<PlayerController>();
+
+        PokemonsDB.Init();
+        MovesDB.Init();
+        ConditionsDB.Init();
+    }
+
+    private void Start()
+    {
+        FreeRoamState.InitState(this);
+        BattleState.InitState(this);
+        DialogueState.InitState(this);
+        CutsceneState.InitState(this);
+
+        SceneEvents.Instance.OnCurrentSceneLoaded += UpdateMapArea;
+
+        currentState = FreeRoamState;
+        currentState.EnterState();
+    }
+
+    private void Update()
+    {
+        currentState.UpdateState();
+    }
+
+    private void OnDestroy()
+    {
+        FreeRoamState.OnDestroy();
+        BattleState.OnDestroy();
+        DialogueState.OnDestroy();
+        CutsceneState.OnDestroy();
+
+        SceneEvents.Instance.OnCurrentSceneLoaded -= UpdateMapArea;
+    }
 
     public void SwitchState(GameManagerBaseState newState)
     {
@@ -67,48 +113,5 @@ public class GameManager : MonoBehaviour
                 break;
             }
         }
-    }
-    
-    private void Awake()
-    {
-        Instance = this;
-
-        FreeRoamState = new GameManagerFreeRoamState();
-        BattleState = new GameManagerBattleState();
-        DialogueState = new GameManagerDialogueState();
-        CutsceneState = new GameManagerCutsceneState();
-
-        PlayerController = player.GetComponentInChildren<PlayerController>();
-
-        PokemonsDB.Init();
-        MovesDB.Init();
-    }
-
-    private void Start()
-    {
-        FreeRoamState.InitState(this);
-        BattleState.InitState(this);
-        DialogueState.InitState(this);
-        CutsceneState.InitState(this);
-
-        SceneEvents.Instance.OnCurrentSceneLoaded += UpdateMapArea;
-
-        currentState = FreeRoamState;
-        currentState.EnterState();
-    }
-
-    private void Update()
-    {
-        currentState.UpdateState();
-    }
-
-    private void OnDestroy()
-    {
-        FreeRoamState.OnDestroy();
-        BattleState.OnDestroy();
-        DialogueState.OnDestroy();
-        CutsceneState.OnDestroy();
-        
-        SceneEvents.Instance.OnCurrentSceneLoaded -= UpdateMapArea;
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -27,6 +28,64 @@ public class BattleManager : MonoBehaviour
     public BattleManagerEndTurnState EndTurnState;
     public BattleManagerEndBattleState EndBattleState;
 
+    [SerializeField] private BattleSceneUIManager battleSceneUIManager;
+    [SerializeField] private BattleDialogueUIManager battleDialogueUIManager;
+    [SerializeField] private BattleActionSelectorsUIManager battleActionSelectorsUIManager;
+
+    public BattleSceneUIManager BattleSceneUIManager { get => battleSceneUIManager; }
+    public BattleDialogueUIManager BattleDialogueUIManager { get => battleDialogueUIManager; }
+    public BattleActionSelectorsUIManager BattleActionSelectorsUIManager { get => battleActionSelectorsUIManager; }
+
+    
+    private ScriptableMove moveToLearn;
+
+
+    private void Awake()
+    {
+        OutOfBattleState = new BattleManagerOutOfBattleState();
+        StartBattleState = new BattleManagerStartBattleState();
+        StartTurnState = new BattleManagerStartTurnState();
+        ActionSelectionState = new BattleManagerActionSelectionState();
+        PerformMovesState = new BattleManagerPerformMovesState();
+        EndTurnState = new BattleManagerEndTurnState();
+        EndBattleState = new BattleManagerEndBattleState();
+    }
+
+    private void Start()
+    {
+        OutOfBattleState.InitState(this);
+        StartBattleState.InitState(this);
+        StartTurnState.InitState(this);
+        ActionSelectionState.InitState(this);
+        PerformMovesState.InitState(this);
+        EndTurnState.InitState(this);
+        EndBattleState.InitState(this);
+
+        currentState = OutOfBattleState;
+
+        BattleEvents.Instance.OnPokemonFainted += OnPokemonFainted;
+        BattleUIEvents.Instance.OnSelectMoveToForget += SelectedMoveToForget;
+    }
+
+    private void Update()
+    {
+        currentState.UpdateState();
+    }
+
+    private void OnDestroy()
+    {
+        OutOfBattleState.OnDestroy();
+        StartBattleState.OnDestroy();
+        StartTurnState.OnDestroy();
+        ActionSelectionState.OnDestroy();
+        PerformMovesState.OnDestroy();
+        EndTurnState.OnDestroy();
+        EndBattleState.OnDestroy();
+
+        BattleEvents.Instance.OnPokemonFainted -= OnPokemonFainted;
+        BattleUIEvents.Instance.OnSelectMoveToForget -= SelectedMoveToForget;
+    }
+
     public void StartBattle(PokemonParty playerParty, PokemonParty enemyParty)
     {
         PlayerParty = playerParty;
@@ -41,15 +100,34 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(SwitchStateCoroutine(newState));
     }
 
+    public void DamagePokemon(Pokemon target, float damage)
+    {
+        int roundedDamage = Mathf.Max(1, Mathf.RoundToInt(damage));
+
+        target.TakeDamage(roundedDamage);
+
+        BattleEvents.Instance.PokemonDamaged(target, roundedDamage);
+        if (target.IsFainted)
+        {
+            BattleEvents.Instance.PokemonFaints(target);
+        }
+    }
+
     public void SwitchPokemon(Pokemon oldPokemon, Pokemon newPokemon)
     {
         oldPokemon.OnPokemonSwitchedOut();
         if (!oldPokemon.IsFainted)
+        {
             BattleEvents.Instance.PokemonSwitchedOut(oldPokemon);
+        }
         if (newPokemon.Owner == PokemonOwner.Player)
+        {
             PlayerPokemon = newPokemon;
+        }
         else if (newPokemon.Owner == PokemonOwner.EnemyTrainer)
+        {
             EnemyPokemon = newPokemon;
+        }
         BattleEvents.Instance.PokemonSwitchedIn(newPokemon);
     }
 
@@ -75,7 +153,9 @@ public class BattleManager : MonoBehaviour
 
         // Apply damage
         if (move.ScriptableMove.Category != MoveCategory.Status)
-            targetPokemon.TakeDamage(attackInfo.damage);
+        {
+            DamagePokemon(targetPokemon, attackInfo.damage);
+        }
 
         // Apply effects
         if (move.ScriptableMove.MoveEffects != null)
@@ -86,24 +166,24 @@ public class BattleManager : MonoBehaviour
     {
         if (IsTrainerBattle)
         {
-            BattleEvents.Instance.AttemptRunFromTrainer();
+            BattleDialogueUIManager.OnAttemptRunFromTrainer();
             return false;
         }
 
-        BattleEvents.Instance.TryToRunAway();
+        BattleDialogueUIManager.OnTryToRunAway();
         if (PlayerPokemon.Speed >= EnemyPokemon.Speed)
         {
-            BattleEvents.Instance.RunAwaySuccess();
+            BattleDialogueUIManager.OnRunAwaySuccess();
             return true;
         }
 
         int odds = (Mathf.FloorToInt(PlayerPokemon.Speed * 128 / EnemyPokemon.Speed) + 30) % 256;
         if (Random.Range(0, 256) < odds)
         {
-            BattleEvents.Instance.RunAwaySuccess();
+            BattleDialogueUIManager.OnRunAwaySuccess();
             return true;
         }
-        BattleEvents.Instance.RunAwayFail();
+        BattleDialogueUIManager.OnRunAwayFail();
         return false;
     }
 
@@ -116,7 +196,7 @@ public class BattleManager : MonoBehaviour
         }
 
         float ballBonus = 1;
-        float statusBonus = ConditionsDB.Conditions[EnemyPokemon.StatusCondition].CatchRateModifier;
+        float statusBonus = ConditionsDB.GetCondition(EnemyPokemon.StatusCondition).CatchRateModifier;
         float baseCatchRate = 1 - 2.0f * EnemyPokemon.CurrentHP / (3.0f * EnemyPokemon.MaxHP);
         int catchRate = Mathf.FloorToInt(baseCatchRate * EnemyPokemon.ScriptablePokemon.CatchRate * ballBonus * statusBonus);
         bool caught = Random.Range(0, 256) <= catchRate;
@@ -133,7 +213,104 @@ public class BattleManager : MonoBehaviour
         }
         return caught;
     }
-    
+
+    private IEnumerator SwitchStateCoroutine(BattleManagerBaseState newState)
+    {
+        currentState.ExitState();
+        currentState = newState;
+
+        yield return BattleUIManager.Instance.WaitWhileBusy();
+
+        currentState.EnterState();
+    }
+
+    private void OnPokemonFainted(Pokemon faintedPokemon)
+    {
+        BattleDialogueUIManager.OnPokemonFainted(faintedPokemon);
+        BattleSceneUIManager.OnPokemonFainted(faintedPokemon);
+
+        if (faintedPokemon.Owner == PokemonOwner.Player || faintedPokemon.Owner == PokemonOwner.AllyTrainer)
+            return;
+        
+        PlayerPokemon.GainEVs(faintedPokemon.ScriptablePokemon);
+        StartCoroutine(GainExpCoroutine(PlayerPokemon, CalculateExpGained(faintedPokemon)));
+    }
+
+    private IEnumerator GainExpCoroutine(Pokemon pokemon, int exp)
+    {
+        battleDialogueUIManager.OnExpGained(pokemon, exp);
+
+        while (exp > 0 && pokemon.Level < Pokemon.MaxLevel)
+        {
+            int expBeforeLvUp = GrowthRateDB.ExpBeforeLevelUp(pokemon);
+            if (exp >= expBeforeLvUp)
+            {
+                exp -= expBeforeLvUp;
+
+                pokemon.GainExp(expBeforeLvUp);
+                
+                battleSceneUIManager.OnExpGained(pokemon, expBeforeLvUp);
+
+                yield return BattleUIManager.Instance.WaitWhileBusy();
+
+                if (pokemon.ShouldLevelUp())
+                {
+                    yield return LevelUpCoroutine(pokemon);
+                }
+            }
+            else
+            {
+                pokemon.GainExp(exp);
+                battleSceneUIManager.OnExpGained(pokemon, exp);
+                exp = 0;
+            }
+        }
+    }
+
+    public IEnumerator LevelUpCoroutine(Pokemon pokemon)
+    {
+        pokemon.LevelUp();
+
+        BattleEvents.Instance.LevelUp(pokemon);
+
+        // yield return BattleUIManager.Instance.WaitWhileBusy();
+
+        yield return CheckForNewMovesCoroutine(pokemon);
+
+        // TODO
+        // Check for evolution
+    }
+
+    public IEnumerator CheckForNewMovesCoroutine(Pokemon pokemon)
+    {
+        foreach (ScriptableMove scriptableMove in pokemon.GetNewMovesAtCurrentLevel())
+        {
+            if (pokemon.Moves.Count < Pokemon.MaxNumberMoves)
+            {
+                pokemon.LearnNewMove(scriptableMove);
+                BattleEvents.Instance.MoveLearnt(pokemon, null, scriptableMove);
+            }
+            else
+            {
+                moveToLearn = scriptableMove;
+                BattleDialogueUIManager.OnChooseMoveToForget(pokemon, moveToLearn);
+                BattleActionSelectorsUIManager.OnChooseMoveToForget(pokemon, moveToLearn);
+                BattleUIManager.Instance.Pause();
+            }
+            // This is no use ??
+            yield return new WaitUntil(() => !BattleUIManager.Instance.IsPaused);
+        }
+    }
+
+    private void SelectedMoveToForget(int index)
+    {
+        ScriptableMove oldMove = PlayerPokemon.Moves[index].ScriptableMove;
+        PlayerPokemon.ReplaceMove(index, moveToLearn);
+        BattleEvents.Instance.MoveLearnt(PlayerPokemon, oldMove, moveToLearn);
+        moveToLearn = null;
+        BattleUIManager.Instance.Unpause();
+    }
+
     private IEnumerator CanCatchPokemonCoroutine(bool caught)
     {
         BattleEvents.Instance.ThrowPokeball(EnemyPokemon);
@@ -144,82 +321,11 @@ public class BattleManager : MonoBehaviour
             BattleEvents.Instance.PokemonEscapes(EnemyPokemon);
     }
 
-    private void Awake()
-    {
-        OutOfBattleState = new BattleManagerOutOfBattleState();
-        StartBattleState = new BattleManagerStartBattleState();
-        StartTurnState = new BattleManagerStartTurnState();
-        ActionSelectionState = new BattleManagerActionSelectionState();
-        PerformMovesState = new BattleManagerPerformMovesState();
-        EndTurnState = new BattleManagerEndTurnState();
-        EndBattleState = new BattleManagerEndBattleState();
-    }
-
-    private void Start()
-    {
-        OutOfBattleState.InitState(this);
-        StartBattleState.InitState(this);
-        StartTurnState.InitState(this);
-        ActionSelectionState.InitState(this);
-        PerformMovesState.InitState(this);
-        EndTurnState.InitState(this);
-        EndBattleState.InitState(this);
-
-        currentState = OutOfBattleState;
-
-        BattleEvents.Instance.OnAfterPokemonFainted += AfterPokemonFainted;
-        BattleUIEvents.Instance.OnSelectMoveToForget += SelectedMoveToForget;
-    }
-
-    private void Update()
-    {
-        currentState.UpdateState();
-    }
-    
-    private void OnDestroy()
-    {
-        OutOfBattleState.OnDestroy();
-        StartBattleState.OnDestroy();
-        StartTurnState.OnDestroy();
-        ActionSelectionState.OnDestroy();
-        PerformMovesState.OnDestroy();
-        EndTurnState.OnDestroy();
-        EndBattleState.OnDestroy();
-
-        BattleEvents.Instance.OnAfterPokemonFainted -= AfterPokemonFainted;
-        BattleUIEvents.Instance.OnSelectMoveToForget -= SelectedMoveToForget;
-    }
-
-    private void AfterPokemonFainted(Pokemon faintedPokemon)
-    {
-        if (faintedPokemon.Owner == PokemonOwner.Player || faintedPokemon.Owner == PokemonOwner.AllyTrainer)
-            return;
-
-        Debug.Log("Start gain EXP coroutine");
-        StartCoroutine(PlayerPokemon.GainExp(CalculateExpGained(faintedPokemon)));
-        PlayerPokemon.GainEVs(faintedPokemon.ScriptablePokemon);
-    }
-
-    private void SelectedMoveToForget(int index)
-    {
-        PlayerPokemon.ReplaceMove(index);
-    }
-
     private int CalculateExpGained(Pokemon faintedPokemon)
     {
         int exp = Mathf.FloorToInt(faintedPokemon.ScriptablePokemon.ExperienceYield * faintedPokemon.Level / 7);
         float trainerBonus = (IsTrainerBattle) ? 1.5f : 1.0f;
         return Mathf.FloorToInt(exp * trainerBonus);
-    }
-
-    private IEnumerator SwitchStateCoroutine(BattleManagerBaseState newState)
-    {
-        currentState.ExitState();
-        currentState = newState;
-
-        yield return BattleUIManager.Instance.WaitWhileBusy();
-
-        currentState.EnterState();
     }
 
     private AttackInfo CalculateMoveInfo(Pokemon attackingPokemon, Pokemon targetPokemon, Move move, ConditionAttackModifier attackModifier)

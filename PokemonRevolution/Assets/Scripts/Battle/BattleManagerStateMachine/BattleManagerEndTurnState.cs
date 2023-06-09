@@ -5,8 +5,6 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
     public override void InitState(BattleManager battleManager)
     {
         this.battleManager = battleManager;
-
-        BattleUIEvents.Instance.OnReplacePokemonSelected += OnReplacingPokemonSelected;
     }
 
     public override void EnterState()
@@ -21,10 +19,7 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
 
     public override void ExitState() { }
 
-    public override void OnDestroy()
-    {
-        BattleUIEvents.Instance.OnReplacePokemonSelected -= OnReplacingPokemonSelected;
-    }
+    public override void OnDestroy() {  }
 
     private void CheckFaintedPokemons()
     {
@@ -37,7 +32,7 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
             }
             else
             {
-                BattleEvents.Instance.ReplaceFaintedPokemon();
+                battleManager.BattleActionSelectorsUIManager.OpenFaintedPokemonReplacementMenu(OnReplacingPokemonSelected);
             }
         }
         else

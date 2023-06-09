@@ -96,7 +96,7 @@ public class BattleSceneHUDManager : MonoBehaviour
             return;
         }
 
-        StatusConditionData conditionData = ConditionsDB.Conditions[pokemon.StatusCondition];
+        StatusConditionData conditionData = ConditionsDB.GetCondition(pokemon.StatusCondition);
 
         statusImage.gameObject.SetActive(true);
         statusImage.color = conditionData.HUDColor;

@@ -35,7 +35,6 @@ public class SceneDetails : MonoBehaviour
     {
         if (!IsLoaded)
         {
-            Debug.Log($"Loading scene {gameObject.name}");
             IsLoaded = true;
             AsyncOperation loadingOperation = SceneManager.LoadSceneAsync(gameObject.name, LoadSceneMode.Additive);
             while (!loadingOperation.isDone)
@@ -64,7 +63,6 @@ public class SceneDetails : MonoBehaviour
     {
         if (IsLoaded)
         {
-            Debug.Log($"Unloading scene {gameObject.name}");
             SceneEvents.Instance.UnloadingScene(this);
             IsLoaded = false;
             yield return SceneManager.UnloadSceneAsync(gameObject.name);

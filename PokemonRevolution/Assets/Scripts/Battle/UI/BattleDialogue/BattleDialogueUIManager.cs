@@ -6,11 +6,7 @@ public class BattleDialogueUIManager : MonoBehaviour
 {
     private void Start()
     {
-        BattleEvents.Instance.OnBattleStart += OnBattleStart;
-
-        BattleEvents.Instance.OnEnterActionSelection += OnEnterActionSelection;
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
-        BattleEvents.Instance.OnPokemonFainted += OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedOut += OnPokemonSwitchedOut;
         BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
 
@@ -23,25 +19,14 @@ public class BattleDialogueUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonEscaped += OnPokemonEscaped;
         BattleEvents.Instance.OnPokemonCaught += OnPokemonCaught;
         BattleEvents.Instance.OnAttemptCatchTrainerPokemon += OnAttemptCatchTrainerPokemon;
-
-        BattleEvents.Instance.OnTryToRunAway += OnTryToRunAway;
-        BattleEvents.Instance.OnRunAwaySuccess += OnRunAwaySuccess;
-        BattleEvents.Instance.OnRunAwayFail += OnRunAwayFail;
-        BattleEvents.Instance.OnAttemptRunFromTrainer += OnAttemptRunFromTrainer;
-
-        BattleEvents.Instance.OnExpGained += OnExpGained;
+        
         BattleEvents.Instance.OnLevelUp += OnLevelUp;
         BattleEvents.Instance.OnMoveLearnt += OnMoveLearnt;
-        BattleEvents.Instance.OnChooseMoveToForget += OnChooseMoveToForget;
     }
 
     private void OnDestroy()
     {
-        BattleEvents.Instance.OnBattleStart -= OnBattleStart;
-
-        BattleEvents.Instance.OnEnterActionSelection -= OnEnterActionSelection;
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
-        BattleEvents.Instance.OnPokemonFainted -= OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedOut -= OnPokemonSwitchedOut;
         BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
 
@@ -53,24 +38,17 @@ public class BattleDialogueUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokemonEscaped -= OnPokemonEscaped;
         BattleEvents.Instance.OnPokemonCaught -= OnPokemonCaught;
         BattleEvents.Instance.OnAttemptCatchTrainerPokemon -= OnAttemptCatchTrainerPokemon;
-
-        BattleEvents.Instance.OnTryToRunAway -= OnTryToRunAway;
-        BattleEvents.Instance.OnRunAwaySuccess -= OnRunAwaySuccess;
-        BattleEvents.Instance.OnRunAwayFail -= OnRunAwayFail;
-        BattleEvents.Instance.OnAttemptRunFromTrainer -= OnAttemptRunFromTrainer;
-
-        BattleEvents.Instance.OnExpGained -= OnExpGained;
+        
         BattleEvents.Instance.OnLevelUp -= OnLevelUp;
         BattleEvents.Instance.OnMoveLearnt -= OnMoveLearnt;
-        BattleEvents.Instance.OnChooseMoveToForget -= OnChooseMoveToForget;
     }
 
-    private void OnBattleStart(PokemonParty playerParty, PokemonParty enemyParty)
+    public void OnBattleStart(PokemonParty playerParty, PokemonParty enemyParty)
     {
         BattleUIManager.Instance.WriteDialogueText($"A wild {enemyParty.GetFirstPokemon().Name} appeared!");
     }
 
-    private void OnEnterActionSelection()
+    public void OnEnterActionSelection()
     {
         BattleUIManager.Instance.WriteDialogueText($"What will you do?");
     }
@@ -98,9 +76,13 @@ public class BattleDialogueUIManager : MonoBehaviour
         BattleUIManager.Instance.WriteDialogueTexts(messages);
     }
 
-    private void OnPokemonFainted(Pokemon pokemon)
+    public void OnPokemonFainted(Pokemon pokemon)
     {
         BattleUIManager.Instance.WriteDialogueText($"{pokemon.Name} fainted!");
+        if (pokemon.Owner == PokemonOwner.Player)
+        {
+            BattleUIManager.Instance.WriteDialogueText($"Who will you send in next ?");
+        }
     }
 
     private void OnPokemonSwitchedOut(Pokemon oldPokemon)
@@ -147,13 +129,13 @@ public class BattleDialogueUIManager : MonoBehaviour
 
     private void OnStatusConditionApplied(StatusCondition statusCondition, Pokemon pokemon)
     {
-        string msg = $"{pokemon.Name} {ConditionsDB.Conditions[statusCondition].StartMessage}";
+        string msg = $"{pokemon.Name} {ConditionsDB.GetCondition(statusCondition).StartMessage}";
         BattleUIManager.Instance.WriteDialogueText(msg);
     }
 
     private void OnStatusConditionRemoved(StatusCondition statusCondition, Pokemon pokemon)
     {
-        string msg = $"{pokemon.Name} {ConditionsDB.Conditions[statusCondition].EndMessage}";
+        string msg = $"{pokemon.Name} {ConditionsDB.GetCondition(statusCondition).EndMessage}";
         BattleUIManager.Instance.WriteDialogueText(msg);
     }
 
@@ -182,27 +164,27 @@ public class BattleDialogueUIManager : MonoBehaviour
         BattleUIManager.Instance.WriteDialogueText($"You can't catch a trainer's pokemon !");
     }
 
-    private void OnTryToRunAway()
+    public void OnTryToRunAway()
     {
         BattleUIManager.Instance.WriteDialogueText($"You run from the battle");
     }
 
-    private void OnRunAwaySuccess()
+    public void OnRunAwaySuccess()
     {
         BattleUIManager.Instance.WriteDialogueText($"Got away safely !");
     }
 
-    private void OnRunAwayFail()
+    public void OnRunAwayFail()
     {
         BattleUIManager.Instance.WriteDialogueText($"Can't escape !");
     }
 
-    private void OnAttemptRunFromTrainer()
+    public void OnAttemptRunFromTrainer()
     {
         BattleUIManager.Instance.WriteDialogueText($"You can't run from a trainer battle !");
     }
 
-    private void OnExpGained(Pokemon pokemon, int exp)
+    public void OnExpGained(Pokemon pokemon, int exp)
     {
         BattleUIManager.Instance.WriteDialogueText($"{pokemon.Name} gained {exp} exp !");
     }
@@ -220,7 +202,7 @@ public class BattleDialogueUIManager : MonoBehaviour
             BattleUIManager.Instance.WriteDialogueText($"{pokemon.Name} forgot {oldMove.Name} and learnt {newMove.Name} !");
     }
 
-    private void OnChooseMoveToForget(Pokemon pokemon, ScriptableMove newMove)
+    public void OnChooseMoveToForget(Pokemon pokemon, ScriptableMove newMove)
     {
         BattleUIManager.Instance.WriteDialogueText($"{pokemon.Name} is trying to learn {newMove.Name}, but it already knows {pokemon.Moves.Count} moves. Forget an old move ?");
     }

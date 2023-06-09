@@ -7,7 +7,10 @@ public class BattleManagerStartBattleState : BattleManagerBaseState
 
     public override void EnterState()
     {
-        BattleEvents.Instance.StartBattle(battleManager.PlayerParty, battleManager.EnemyParty);
+        battleManager.BattleActionSelectorsUIManager.OnBattleStart(battleManager.PlayerParty);
+        battleManager.BattleDialogueUIManager.OnBattleStart(battleManager.PlayerParty, battleManager.EnemyParty);
+        battleManager.BattleSceneUIManager.OnBattleStart(battleManager.PlayerParty, battleManager.EnemyParty);
+
         battleManager.SwitchState(battleManager.StartTurnState);
     }
 

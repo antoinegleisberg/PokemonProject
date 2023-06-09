@@ -18,7 +18,8 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
 
     public override void EnterState()
     {
-        BattleEvents.Instance.EnterActionSelectionState();
+        battleManager.BattleActionSelectorsUIManager.SetActiveSelectorToActionSelector();
+        battleManager.BattleDialogueUIManager.OnEnterActionSelection();
     }
 
     public override void UpdateState()
@@ -28,17 +29,32 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
 
     public override void ExitState()
     {
+        battleManager.NextEnemyAction = GetEnemyAction();
+        
+        battleManager.BattleActionSelectorsUIManager.DeactivateAllSelectors();
+    }
+
+    public override void OnDestroy()
+    {
+        BattleUIEvents.Instance.OnRunButtonPressed -= OnRunSelected;
+        BattleUIEvents.Instance.OnMoveSelected -= OnMoveSelected;
+        BattleUIEvents.Instance.OnSwitchPokemonSelected -= OnSwitchPokemonSelected;
+        BattleUIEvents.Instance.OnPokeballButtonPressed -= OnPokeballSelected;
+        BattleUIEvents.Instance.OnMedicineButtonPressed -= OnMedicineSelected;
+        BattleUIEvents.Instance.OnStatusHealerButtonPressed -= OnStatusHealerSelected;
+    }
+
+    private BattleActionInfo GetEnemyAction()
+    {
         int randomEnemyMove = GetRandomEnemyMove();
 
         if (randomEnemyMove == -1)
         {
-            battleManager.NextEnemyAction = new BattleActionInfo(BattleAction.Run);
             Debug.Log("The enemy pokemon ran !");
+            return new BattleActionInfo(BattleAction.Run);
         }
-        else
-            battleManager.NextEnemyAction = new BattleActionInfo(BattleAction.Attack, randomEnemyMove, battleManager.EnemyPokemon, 0);
-
-        BattleEvents.Instance.ExitActionSelectionState();
+        
+        return new BattleActionInfo(BattleAction.Attack, randomEnemyMove, battleManager.EnemyPokemon, 0);
     }
 
     private int GetRandomEnemyMove()
@@ -62,16 +78,6 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
             }
         }
         return randomEnemyMove;
-    }
-
-    public override void OnDestroy()
-    {
-        BattleUIEvents.Instance.OnRunButtonPressed -= OnRunSelected;
-        BattleUIEvents.Instance.OnMoveSelected -= OnMoveSelected;
-        BattleUIEvents.Instance.OnSwitchPokemonSelected -= OnSwitchPokemonSelected;
-        BattleUIEvents.Instance.OnPokeballButtonPressed -= OnPokeballSelected;
-        BattleUIEvents.Instance.OnMedicineButtonPressed -= OnMedicineSelected;
-        BattleUIEvents.Instance.OnStatusHealerButtonPressed -= OnStatusHealerSelected;
     }
 
     private void OnRunSelected()

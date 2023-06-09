@@ -46,23 +46,84 @@ public class NPCController : MonoBehaviour, IInteractable, ISaveable
     public void StopMoving()
     {
         if (movementPatternCoroutine != null)
-            StopCoroutine(movementPatternCoroutine);
-    }
-
-    public void LoadData(GameData data)
-    {
-        // TODO: Save FOV and dialogue index
+        {
+            StopAllCoroutines();
+            character.StopMoving();
+        }
     }
 
     public void SaveData(ref GameData data)
     {
+        Fov FOV = transform.parent.GetComponentInChildren<Fov>();
+        GuidHolder guidHolder = GetComponent<GuidHolder>();
+        string sceneName = gameObject.scene.name;
 
+        if (GetComponent<GuidHolder>() == null)
+        {
+            return;
+        }
+        if ((dialogues == null || dialogues.Count <= 1) && FOV == null)
+        {
+            return;
+        }
+
+
+        string uid = guidHolder.UniqueId;
+        bool fovIsEnabled = false;
+        if (FOV != null && FOV.isActiveAndEnabled)
+        {
+            fovIsEnabled = true;
+        }
+
+        if (!data.ScenesData.ContainsKey(sceneName))
+        {
+            data.ScenesData.Add(sceneName, new SceneSaveData(null));
+        }
+        if (data.ScenesData[sceneName].NPCsSaveData.ContainsKey(uid))
+        {
+            data.ScenesData[sceneName].NPCsSaveData.Remove(uid);
+        }
+        
+        data.ScenesData[sceneName].NPCsSaveData[uid] = new NPCSaveData(fovIsEnabled, dialogueIdx);
+    }
+
+    public void LoadData(GameData data)
+    {
+        if (GetComponent<GuidHolder>() == null)
+        {
+            return;
+        }
+
+        Fov FOV = transform.parent.GetComponentInChildren<Fov>();
+
+        string uid = GetComponent<GuidHolder>().UniqueId;
+        string sceneName = gameObject.scene.name;
+
+        if (!data.ScenesData.ContainsKey(sceneName))
+        {
+            return;
+        }
+        if (!data.ScenesData[sceneName].NPCsSaveData.ContainsKey(uid))
+        {
+            return;
+        }
+
+        NPCSaveData npcData = data.ScenesData[sceneName].NPCsSaveData[uid];
+
+        if (FOV != null)
+        {
+            FOV.enabled = npcData.FovIsEnabled;
+        }
+        dialogueIdx = npcData.DialogueIndex;
     }
 
     private void DeactivateFov()
     {
         Fov FOV = transform.parent.GetComponentInChildren<Fov>();
-        FOV?.gameObject.SetActive(false);
+        if (FOV != null)
+        {
+            FOV.enabled = false;
+        }
     }
 
     private IEnumerator MovementPatternCoroutine()

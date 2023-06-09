@@ -22870,6 +22870,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d1fa376ddd66e644a95b5297d18f01f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  battleSceneUIManager: {fileID: 1235493418}
+  battleDialogueUIManager: {fileID: 1235493417}
+  battleActionSelectorsUIManager: {fileID: 1235493416}
 --- !u!4 &1474659351
 Transform:
   m_ObjectHideFlags: 0

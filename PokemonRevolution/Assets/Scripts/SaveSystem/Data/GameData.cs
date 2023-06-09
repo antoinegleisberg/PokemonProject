@@ -61,10 +61,12 @@ public struct PlayerSaveData
 public struct SceneSaveData
 {
     public SerializableDictionary<string, TrainerSaveData> TrainersSaveData;
+    public SerializableDictionary<string, NPCSaveData> NPCsSaveData;
 
     public SceneSaveData(object _)
     {
         TrainersSaveData = new SerializableDictionary<string, TrainerSaveData>();
+        NPCsSaveData = new SerializableDictionary<string, NPCSaveData>();
     }
 }
 
@@ -76,6 +78,19 @@ public struct TrainerSaveData
     public TrainerSaveData(bool canBattle)
     {
         CanBattle = canBattle;
+    }
+}
+
+[System.Serializable]
+public struct NPCSaveData
+{
+    public bool FovIsEnabled;
+    public int DialogueIndex;
+
+    public NPCSaveData(bool fovIsActive, int dialogueIndex)
+    {
+        FovIsEnabled = fovIsActive;
+        DialogueIndex = dialogueIndex;
     }
 }
 

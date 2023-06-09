@@ -24,6 +24,8 @@ public class Fov : MonoBehaviour, IPlayerTriggerable
     {
         if (fovCoroutine != null)
             return;
+        if (enabled == false)
+            return;
         fovCoroutine = StartCoroutine(OnEnterFOVCoroutine(source));
     }
 
@@ -51,10 +53,11 @@ public class Fov : MonoBehaviour, IPlayerTriggerable
     {
         Vector3 diff = target.position - transform.position;
         Vector2 movement = new Vector2(Mathf.Round(diff.x), Mathf.Round(diff.y));
+        movement -= movement.normalized;
 
         yield return new WaitUntil(() => !character.IsMoving);
 
-        character.MoveAndStop(movement);
+        yield return character.MoveAndStop(movement);
 
         yield return new WaitUntil(() => !character.IsMoving);
     }

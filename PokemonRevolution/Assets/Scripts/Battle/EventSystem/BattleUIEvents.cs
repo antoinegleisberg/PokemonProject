@@ -19,7 +19,7 @@ public class BattleUIEvents : MonoBehaviour
     public event Action<int> OnTargetSelected; // TODO
     public event Action<int> OnSelectMoveToForget;
 
-    // Bag button events : TODO
+    // Bag button events
     public event Action OnPokeballsButtonPressed;
     public event Action OnBattleItemsButtonPressed;
     public event Action OnMedicinesButtonPressed;

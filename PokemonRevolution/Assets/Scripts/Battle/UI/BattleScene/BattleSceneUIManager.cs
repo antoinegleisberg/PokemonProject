@@ -27,11 +27,8 @@ public class BattleSceneUIManager : MonoBehaviour
     
     private void Start()
     {
-        BattleEvents.Instance.OnBattleStart += OnBattleStart;
-
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
         BattleEvents.Instance.OnPokemonDamaged += OnPokemonDamaged;
-        BattleEvents.Instance.OnPokemonFainted += OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedOut += OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
         BattleEvents.Instance.OnStatusConditionApplied += OnStatusConditionApplied;
@@ -40,18 +37,14 @@ public class BattleSceneUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokeballThrown += OnPokeballThrown;
         BattleEvents.Instance.OnPokemonCaught += OnPokemonCaught;
         BattleEvents.Instance.OnPokemonEscaped += OnPokemonEscaped;
-
-        BattleEvents.Instance.OnExpGained += OnExpGained;
+        
         BattleEvents.Instance.OnLevelUp += OnLevelUp;
     }
 
     private void OnDestroy()
     {
-        BattleEvents.Instance.OnBattleStart -= OnBattleStart;
-
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
         BattleEvents.Instance.OnPokemonDamaged -= OnPokemonDamaged;
-        BattleEvents.Instance.OnPokemonFainted -= OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedOut -= OnPokemonFainted;
         BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
         BattleEvents.Instance.OnStatusConditionApplied -= OnStatusConditionApplied;
@@ -60,12 +53,11 @@ public class BattleSceneUIManager : MonoBehaviour
         BattleEvents.Instance.OnPokeballThrown -= OnPokeballThrown;
         BattleEvents.Instance.OnPokemonCaught -= OnPokemonCaught;
         BattleEvents.Instance.OnPokemonEscaped -= OnPokemonEscaped;
-
-        BattleEvents.Instance.OnExpGained -= OnExpGained;
+        
         BattleEvents.Instance.OnLevelUp -= OnLevelUp;
     }
 
-    private void OnBattleStart(PokemonParty playerParty, PokemonParty enemyParty)
+    public void OnBattleStart(PokemonParty playerParty, PokemonParty enemyParty)
     {
         battleBackgroundImage.sprite = defaultBattleBackground;
         
@@ -88,7 +80,7 @@ public class BattleSceneUIManager : MonoBehaviour
             BattleUIManager.Instance.EnqueueAnimation(enemyHUD.UpdateHPBarSmooth(pokemon));
     }
 
-    private void OnPokemonFainted(Pokemon pokemon)
+    public void OnPokemonFainted(Pokemon pokemon)
     {
         BattleUIManager.Instance.EnqueueAnimation(AnimatePokemonFaints(pokemon));
     }
@@ -100,7 +92,7 @@ public class BattleSceneUIManager : MonoBehaviour
 
     private void OnStatusConditionApplied(StatusCondition status, Pokemon pokemon)
     {
-        if (ConditionsDB.Conditions[status].IsVolatile)
+        if (ConditionsDB.GetCondition(status).IsVolatile)
             return;
 
         if (pokemon.Owner == PokemonOwner.Player)
@@ -111,7 +103,7 @@ public class BattleSceneUIManager : MonoBehaviour
 
     private void OnStatusConditionRemoved(StatusCondition status, Pokemon pokemon)
     {
-        if (ConditionsDB.Conditions[status].IsVolatile)
+        if (ConditionsDB.GetCondition(status).IsVolatile)
             return;
 
         if (pokemon.Owner == PokemonOwner.Player)
@@ -135,7 +127,7 @@ public class BattleSceneUIManager : MonoBehaviour
         BattleUIManager.Instance.EnqueueAnimation(AnimatePokemonEscaped(pokemon));
     }
 
-    private void OnExpGained(Pokemon pokemon, int exp)
+    public void OnExpGained(Pokemon pokemon, int exp)
     {
         if (pokemon.Owner == PokemonOwner.Player)
             BattleUIManager.Instance.EnqueueAnimation(playerHUD.UpdateExpBarSmooth(pokemon, exp));

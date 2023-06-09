@@ -94,7 +94,6 @@ public class SaveManager : MonoBehaviour
 
     private void LoadSceneData(string sceneName)
     {
-        Debug.Log($"Loaded data of scene {sceneName}");
         foreach (ISaveable saveableObject in saveableObjects[sceneName])
         {
             saveableObject.LoadData(gameData);
@@ -103,7 +102,6 @@ public class SaveManager : MonoBehaviour
 
     private void SaveSceneData(string sceneName)
     {
-        Debug.Log($"Saved data of scene {sceneName}");
         foreach (ISaveable saveableObject in saveableObjects[sceneName])
         {
             saveableObject.SaveData(ref gameData);
@@ -130,15 +128,15 @@ public class SaveManager : MonoBehaviour
             .OfType<ISaveable>()
             .ToList();
 
-        if (saveables.Count > 0)
-        {
-            StringBuilder builder = new StringBuilder($"Found {saveables.Count} saveables in scene {sceneName}: ");
-            foreach (ISaveable saveableObject in saveables)
-            {
-                builder.AppendLine(saveableObject.ToString());
-            }
-            Debug.Log(builder.ToString());
-        }
+        //if (saveables.Count > 0)
+        //{
+        //    StringBuilder builder = new StringBuilder($"Found {saveables.Count} saveables in scene {sceneName}: ");
+        //    foreach (ISaveable saveableObject in saveables)
+        //    {
+        //        builder.AppendLine(saveableObject.ToString());
+        //    }
+        //    Debug.Log(builder.ToString());
+        //}
 
         return saveables;
     }
