@@ -236,7 +236,7 @@
             "actions": [
                 {
                     "name": "Navigate",
-                    "type": "PassThrough",
+                    "type": "Button",
                     "id": "d80155da-e831-4c3a-a7b2-1401f3b49813",
                     "expectedControlType": "Button",
                     "processors": "",

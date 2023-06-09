@@ -25,6 +25,16 @@ public class DialogueManager : MonoBehaviour
         IsBusy = false;
     }
 
+    public void HandleUISubmit()
+    {
+        ShowNextLine();
+    }
+
+    public void HandleUICancel()
+    {
+        ShowNextLine();
+    }
+
     public void ShowDialogue(Dialogue dialogue, Action onDialogueExited = null)
     {
         this.onDialogueExited = onDialogueExited;
@@ -32,11 +42,11 @@ public class DialogueManager : MonoBehaviour
         currentDialogue = dialogue;
         currentLine = 0;
         IsBusy = true;
-        GameEvents.Instance.EnterDialogue();
+        GameManager.Instance.SwitchState(GameManager.Instance.DialogueState);
         StartCoroutine(TypeDialogue(currentDialogue.Lines[currentLine]));
     }
 
-    public void ShowNextLine()
+    private void ShowNextLine()
     {
         if (isTyping)
             return;
@@ -46,15 +56,22 @@ public class DialogueManager : MonoBehaviour
 
         currentLine++;
         if (currentLine < currentDialogue.Lines.Count)
+        {
             StartCoroutine(TypeDialogue(currentDialogue.Lines[currentLine]));
+        }
         else
         {
-            dialogueBox.SetActive(false);
-            IsBusy = false;
-            currentDialogue = null;
-            GameEvents.Instance.ExitDialogue();
-            onDialogueExited?.Invoke();
+            ExitDialogue();
         }
+    }
+
+    private void ExitDialogue()
+    {
+        dialogueBox.SetActive(false);
+        IsBusy = false;
+        currentDialogue = null;
+        GameManager.Instance.SwitchState(GameManager.Instance.FreeRoamState);
+        onDialogueExited?.Invoke();
     }
 
     private IEnumerator TypeDialogue(string msg)

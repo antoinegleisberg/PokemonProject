@@ -114,4 +114,36 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    public void HandleUINavigation(Vector2Int input)
+    {
+        if (currentState == BattleState)
+        {
+            BattleManager.BattleActionSelectorsUIManager.HandleUINavigation(input);
+        }
+    }
+
+    public void HandleUISubmit()
+    {
+        if (currentState == BattleState)
+        {
+            BattleManager.BattleActionSelectorsUIManager.HandleUISubmit();
+        }
+        else if (currentState == DialogueState)
+        {
+            DialogueManager.Instance.HandleUISubmit();
+        }
+    }
+
+    public void HandleUICancel()
+    {
+        if (currentState == BattleState)
+        {
+            BattleManager.BattleActionSelectorsUIManager.HandleUICancel();
+        }
+        else if (currentState == DialogueState)
+        {
+            DialogueManager.Instance.HandleUICancel();
+        }
+    }
 }

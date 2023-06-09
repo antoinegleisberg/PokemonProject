@@ -77,20 +77,27 @@ public class InputManager : MonoBehaviour
 
     public void OnUINavigate(InputAction.CallbackContext context)
     {
-        Vector2 input = context.ReadValue<Vector2>();
-        Vector2Int input2Int = new Vector2Int((int)input.x, (int)input.y);
-        UIManager.Instance.HandleUINavigation(input2Int);
+        if (context.performed)
+        {
+            Vector2 input = context.ReadValue<Vector2>();
+            Vector2Int input2Int = new Vector2Int((int)input.x, (int)input.y);
+            GameManager.Instance.HandleUINavigation(input2Int);
+        }
     }
 
     public void OnUISubmit(InputAction.CallbackContext context)
     {
         if (context.performed)
-            UIManager.Instance.HandleUISubmit();
+        {
+            GameManager.Instance.HandleUISubmit();
+        }
     }
 
     public void OnUICancel(InputAction.CallbackContext context)
     {
         if (context.performed)
-            UIManager.Instance.HandleUICancel();
+        {
+            GameManager.Instance.HandleUICancel();
+        }
     }
 }
