@@ -30,6 +30,8 @@ public class InputManager : MonoBehaviour
         GameEvents.Instance.OnExitBattle += ActivatePlayerActionMap;
         GameEvents.Instance.OnEnterDialogue += ActivateUIActionMap;
         GameEvents.Instance.OnExitDialogue += ActivatePlayerActionMap;
+        GameEvents.Instance.OnEnterMenu += ActivateUIActionMap;
+        GameEvents.Instance.OnExitMenu += ActivatePlayerActionMap;
     }
     
     private void OnDestroy()
@@ -38,6 +40,8 @@ public class InputManager : MonoBehaviour
         GameEvents.Instance.OnExitBattle -= ActivatePlayerActionMap;
         GameEvents.Instance.OnEnterDialogue -= ActivateUIActionMap;
         GameEvents.Instance.OnExitDialogue -= ActivatePlayerActionMap;
+        GameEvents.Instance.OnEnterMenu -= ActivateUIActionMap;
+        GameEvents.Instance.OnExitMenu -= ActivatePlayerActionMap;
     }
 
     public void ActivatePlayerActionMap()
@@ -53,6 +57,8 @@ public class InputManager : MonoBehaviour
         playerActionMap.Disable();
         uiActionMap.Enable();
     }
+
+    #region PlayerActionMap
 
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -74,6 +80,16 @@ public class InputManager : MonoBehaviour
         if (context.started) IsRunning = true;
         else if (context.canceled) IsRunning = false;
     }
+
+    public void OnOpenMenu(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            GameManager.Instance.OpenMenu();
+        }
+    }
+
+    #endregion
 
     public void OnUINavigate(InputAction.CallbackContext context)
     {

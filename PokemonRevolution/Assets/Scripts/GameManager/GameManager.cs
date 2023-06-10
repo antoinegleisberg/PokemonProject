@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public GameManagerBattleState BattleState;
     public GameManagerDialogueState DialogueState;
     public GameManagerCutsceneState CutsceneState;
+    public GameManagerUINavigationState UINavigationState;
 
     [SerializeField] private BattleManager battleManager;
     [SerializeField] private PokemonPartyManager playerPartyManager;
@@ -33,6 +34,7 @@ public class GameManager : MonoBehaviour
         BattleState = new GameManagerBattleState();
         DialogueState = new GameManagerDialogueState();
         CutsceneState = new GameManagerCutsceneState();
+        UINavigationState = new GameManagerUINavigationState();
 
         PlayerController = player.GetComponentInChildren<PlayerController>();
 
@@ -47,6 +49,7 @@ public class GameManager : MonoBehaviour
         BattleState.InitState(this);
         DialogueState.InitState(this);
         CutsceneState.InitState(this);
+        UINavigationState.InitState(this);
 
         SceneEvents.Instance.OnCurrentSceneLoaded += UpdateMapArea;
 
@@ -65,6 +68,7 @@ public class GameManager : MonoBehaviour
         BattleState.OnDestroy();
         DialogueState.OnDestroy();
         CutsceneState.OnDestroy();
+        UINavigationState.OnDestroy();
 
         SceneEvents.Instance.OnCurrentSceneLoaded -= UpdateMapArea;
     }
@@ -94,6 +98,8 @@ public class GameManager : MonoBehaviour
         battleManager.StartBattle(playerPartyManager.PokemonParty, enemyParty);
     }
 
+
+
     public void SetCurrentScene(SceneDetails currentScene)
     {
         PreviousScene = CurrentScene;
@@ -101,17 +107,21 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Setting current scene to {CurrentScene.gameObject.name}");
     }
 
-    private void UpdateMapArea(SceneDetails sceneDetails)
+    public void OpenMenu()
     {
-        List<MapArea> loadedMapAreas = FindObjectsOfType<MapArea>().ToList();
-        foreach (MapArea mapArea in loadedMapAreas)
+        if (currentState == FreeRoamState)
         {
-            if (mapArea.gameObject.scene.name == CurrentScene.gameObject.name)
-            {
-                Debug.Log($"Setting current map area to {CurrentScene.gameObject.name}");
-                CurrentArea = mapArea;
-                break;
-            }
+            SwitchState(UINavigationState);
+            UIManager.Instance.OpenMenu();
+        }
+    }
+
+    public void CloseMenu()
+    {
+        if (currentState == UINavigationState)
+        {
+            SwitchState(FreeRoamState);
+            UIManager.Instance.CloseMenu();
         }
     }
 
@@ -120,6 +130,10 @@ public class GameManager : MonoBehaviour
         if (currentState == BattleState)
         {
             BattleManager.BattleActionSelectorsUIManager.HandleUINavigation(input);
+        }
+        else if (currentState == UINavigationState)
+        {
+            UIManager.Instance.HandleUINavigation(input);
         }
     }
 
@@ -133,6 +147,10 @@ public class GameManager : MonoBehaviour
         {
             DialogueManager.Instance.HandleUISubmit();
         }
+        else if (currentState == UINavigationState)
+        {
+            UIManager.Instance.HandleUISubmit();
+        }
     }
 
     public void HandleUICancel()
@@ -144,6 +162,24 @@ public class GameManager : MonoBehaviour
         else if (currentState == DialogueState)
         {
             DialogueManager.Instance.HandleUICancel();
+        }
+        else if (currentState == UINavigationState)
+        {
+            UIManager.Instance.HandleUICancel();
+        }
+    }
+
+    private void UpdateMapArea(SceneDetails sceneDetails)
+    {
+        List<MapArea> loadedMapAreas = FindObjectsOfType<MapArea>().ToList();
+        foreach (MapArea mapArea in loadedMapAreas)
+        {
+            if (mapArea.gameObject.scene.name == CurrentScene.gameObject.name)
+            {
+                Debug.Log($"Setting current map area to {CurrentScene.gameObject.name}");
+                CurrentArea = mapArea;
+                break;
+            }
         }
     }
 }
