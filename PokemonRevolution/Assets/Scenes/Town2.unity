@@ -183,12 +183,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6278a617da323f4b86f40c7330299d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wildEncounters:
-  - pokemon: {fileID: 11400000, guid: 733a767d247b01d438f5d167a866eae7, type: 2}
-    minLevel: 6
-    maxLevel: 8
-    probability: 40
-  encounterRate: 10
+  _wildEncounters:
+  - Pokemon: {fileID: 11400000, guid: 733a767d247b01d438f5d167a866eae7, type: 2}
+    MinLevel: 6
+    MaxLevel: 7
+    Probability: 1
+  _encounterRate: 10
 --- !u!1 &367857016
 GameObject:
   m_ObjectHideFlags: 0

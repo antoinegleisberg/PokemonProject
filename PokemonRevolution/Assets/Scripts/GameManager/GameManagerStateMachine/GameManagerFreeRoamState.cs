@@ -1,17 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class GameManagerFreeRoamState : GameManagerBaseState
 {
     public override void InitState(GameManager gameManager)
     {
-        this.gameManager = gameManager;
+        _gameManager = gameManager;
     }
 
     public override void EnterState()
     {
-
+        GameEvents.Instance.EnterFreeRoam();
     }
 
     public override void UpdateState()
@@ -22,7 +18,7 @@ public class GameManagerFreeRoamState : GameManagerBaseState
 
     public override void ExitState()
     {
-
+        GameEvents.Instance.ExitFreeRoam();
     }
 
     public override void OnDestroy()

@@ -6,11 +6,11 @@ using System.IO;
 
 public static class FileDataHandler
 {
-    private static readonly string dataDirectoryPath = Application.persistentDataPath;
+    private static readonly string _dataDirectoryPath = Application.persistentDataPath;
 
     public static void SaveData(string filePath, GameData data)
     {
-        string fullPath = Path.Combine(dataDirectoryPath, filePath);
+        string fullPath = Path.Combine(_dataDirectoryPath, filePath);
         
         try
         {
@@ -34,7 +34,7 @@ public static class FileDataHandler
 
     public static GameData LoadData(string filePath)
     {
-        string fullPath = Path.Combine(dataDirectoryPath, filePath);
+        string fullPath = Path.Combine(_dataDirectoryPath, filePath);
 
         GameData loadedData = null;
         if (File.Exists(fullPath))

@@ -5,12 +5,12 @@ using UnityEngine.SceneManagement;
 
 public class Portal : MonoBehaviour, IPlayerTriggerable
 {
-    [SerializeField] private DestinationId destinationPortalId;
-    [SerializeField] private Transform spawnPoint;
+    [SerializeField] private DestinationId _destinationPortalId;
+    [SerializeField] private Transform _spawnPoint;
     
     private SceneFader sceneFader;
 
-    public Transform SpawnPoint { get => spawnPoint; }
+    public Transform SpawnPoint { get => _spawnPoint; }
 
     private void Start()
     {
@@ -26,7 +26,7 @@ public class Portal : MonoBehaviour, IPlayerTriggerable
     {
         yield return sceneFader.FadeIn(0.5f);
 
-        Portal destinationPortal = FindObjectsOfType<Portal>().First(x => x != this && x.destinationPortalId == destinationPortalId);
+        Portal destinationPortal = FindObjectsOfType<Portal>().First(x => x != this && x._destinationPortalId == _destinationPortalId);
         player.transform.parent.transform.position = destinationPortal.SpawnPoint.position;
 
         yield return sceneFader.FadeOut(0.5f);

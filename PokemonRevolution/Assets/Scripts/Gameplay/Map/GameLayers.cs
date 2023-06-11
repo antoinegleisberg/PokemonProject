@@ -6,20 +6,20 @@ public class GameLayers : MonoBehaviour
 {
     public static GameLayers Instance { get; private set; }
 
-    [SerializeField] private LayerMask solidObjectsCollidersLayer;
-    [SerializeField] private LayerMask tallGrassLayer;
-    [SerializeField] private LayerMask interactableLayer;
-    [SerializeField] private LayerMask fovLayer;
-    [SerializeField] private LayerMask portalLayer;
+    [SerializeField] private LayerMask _solidObjectsCollidersLayer;
+    [SerializeField] private LayerMask _tallGrassLayer;
+    [SerializeField] private LayerMask _interactableLayer;
+    [SerializeField] private LayerMask _fovLayer;
+    [SerializeField] private LayerMask _portalLayer;
 
-    public LayerMask SolidObjectsCollidersLayer { get => solidObjectsCollidersLayer; }
-    public LayerMask TallGrassLayer { get => tallGrassLayer; }
-    public LayerMask InteractableLayer { get => interactableLayer; }
-    public LayerMask FovLayer { get => fovLayer; }
-    public LayerMask PortalLayer { get => portalLayer; }
+    public LayerMask SolidObjectsCollidersLayer { get => _solidObjectsCollidersLayer; }
+    public LayerMask TallGrassLayer { get => _tallGrassLayer; }
+    public LayerMask InteractableLayer { get => _interactableLayer; }
+    public LayerMask FovLayer { get => _fovLayer; }
+    public LayerMask PortalLayer { get => _portalLayer; }
 
     public LayerMask TriggerableLayers {
-        get => tallGrassLayer | fovLayer | portalLayer;
+        get => _tallGrassLayer | _fovLayer | _portalLayer;
     }
 
     private void Awake() => Instance = this;

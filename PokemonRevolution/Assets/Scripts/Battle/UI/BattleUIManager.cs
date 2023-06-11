@@ -5,33 +5,34 @@ using UnityEngine;
 
 public class BattleUIManager : MonoBehaviour
 {
-    public static BattleUIManager Instance;
+    public static BattleUIManager Instance { get; private set; }
 
-    [SerializeField] private int textSpeed;
-    private Queue<string> messagesQueue;
+    [SerializeField] private int _textSpeed;
+    private Queue<string> _messagesQueue;
     
-    [SerializeField] private TextMeshProUGUI battleSystemDialogue;
+    [SerializeField] private TextMeshProUGUI _battleSystemDialogue;
 
-    [SerializeField] private float timeBetweenAnimations = 0.25f;
-    private Queue<IEnumerator> animationsQueue;
+    [SerializeField] private float _timeBetweenAnimations = 0.25f;
+    private Queue<IEnumerator> _animationsQueue;
+
+    private bool _isWriting;
+    private bool _isRunningAnimations;
+    private bool _isPaused;
 
     public bool IsBusy
     {
-        get { return isWriting || isRunningAnimations || isPaused; }
+        get { return _isWriting || _isRunningAnimations || _isPaused; }
     }
-    private bool isWriting;
-    private bool isRunningAnimations;
 
-    public bool IsPaused { get => isPaused; }
-    private bool isPaused;
-
+    public bool IsPaused { get => _isPaused; }
+    
 
     private void Awake()
     {
         Instance = this;
-        isPaused = false;
-        messagesQueue = new Queue<string>();
-        animationsQueue = new Queue<IEnumerator>();
+        _isPaused = false;
+        _messagesQueue = new Queue<string>();
+        _animationsQueue = new Queue<IEnumerator>();
         StartCoroutine(DialogueManager());
         StartCoroutine(AnimationManager());
     }
@@ -44,12 +45,12 @@ public class BattleUIManager : MonoBehaviour
 
     public void Pause()
     {
-        isPaused = true;
+        _isPaused = true;
     }
 
     public void Unpause()
     {
-        isPaused = false;
+        _isPaused = false;
     }
 
     public IEnumerator WaitWhileBusy()
@@ -63,36 +64,36 @@ public class BattleUIManager : MonoBehaviour
 
     public void WriteDialogueText(string text)
     {
-        messagesQueue.Enqueue(text);
+        _messagesQueue.Enqueue(text);
     }
     
     public void WriteDialogueTexts(List<string> texts)
     {
         foreach (string msg in texts)
         {
-            messagesQueue.Enqueue(msg);
+            _messagesQueue.Enqueue(msg);
         }
     }
     
     public void EnqueueAnimation(IEnumerator animation)
     {
-        animationsQueue.Enqueue(animation);
+        _animationsQueue.Enqueue(animation);
     }
 
     private IEnumerator DialogueManager()
     {
         while (true)
         {
-            while (messagesQueue.Count > 0)
+            while (_messagesQueue.Count > 0)
             {
-                isWriting = true;
+                _isWriting = true;
 
-                string nextMessage = messagesQueue.Dequeue();
-                battleSystemDialogue.text = "";
+                string nextMessage = _messagesQueue.Dequeue();
+                _battleSystemDialogue.text = "";
                 foreach (var letter in nextMessage.ToCharArray())
                 {
-                    battleSystemDialogue.text += letter;
-                    yield return new WaitForSeconds(1.0f / textSpeed);
+                    _battleSystemDialogue.text += letter;
+                    yield return new WaitForSeconds(1.0f / _textSpeed);
                 }
 
                 yield return new WaitForSeconds(0.5f);
@@ -100,7 +101,7 @@ public class BattleUIManager : MonoBehaviour
                 // yield return new WaitUntil(() => !isPaused);
             }
 
-            isWriting = false;
+            _isWriting = false;
 
             yield return null;
         }
@@ -110,18 +111,18 @@ public class BattleUIManager : MonoBehaviour
     {
         while (true)
         {
-            while (animationsQueue.Count > 0)
+            while (_animationsQueue.Count > 0)
             {
-                isRunningAnimations = true;
+                _isRunningAnimations = true;
                 
-                yield return animationsQueue.Dequeue();
+                yield return _animationsQueue.Dequeue();
                 
-                yield return new WaitForSeconds(timeBetweenAnimations);
+                yield return new WaitForSeconds(_timeBetweenAnimations);
 
                 // yield return new WaitUntil(() => !isPaused);
             }
 
-            isRunningAnimations = false;
+            _isRunningAnimations = false;
 
             yield return null;
         }

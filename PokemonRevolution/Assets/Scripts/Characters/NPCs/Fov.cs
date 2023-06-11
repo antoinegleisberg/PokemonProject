@@ -3,15 +3,15 @@ using UnityEngine;
 
 public class Fov : MonoBehaviour, IPlayerTriggerable
 {
-    [SerializeField] private NPCController npcController;
-    [SerializeField] private Character character;
-    [SerializeField] private GameObject exclamation;
+    [SerializeField] private NPCController _npcController;
+    [SerializeField] private Character _character;
+    [SerializeField] private GameObject _exclamation;
 
-    private Coroutine fovCoroutine;
+    private Coroutine _fovCoroutine;
     
     private void Start()
     {
-        exclamation.SetActive(false);
+        _exclamation.SetActive(false);
     }
 
     public void OnPlayerTriggered(PlayerController playerController)
@@ -22,30 +22,30 @@ public class Fov : MonoBehaviour, IPlayerTriggerable
 
     public void OnEnterFOV(Transform source)
     {
-        if (fovCoroutine != null)
+        if (_fovCoroutine != null)
             return;
         if (enabled == false)
             return;
-        fovCoroutine = StartCoroutine(OnEnterFOVCoroutine(source));
+        _fovCoroutine = StartCoroutine(OnEnterFOVCoroutine(source));
     }
 
     private IEnumerator OnEnterFOVCoroutine(Transform source)
     {
         InputManager.Instance.ActivateUIActionMap();
-        npcController.StopMoving();
+        _npcController.StopMoving();
 
         yield return ShowExclamation();
 
         yield return MoveToTarget(source);
 
-        npcController.Interact(source);
+        _npcController.Interact(source);
     }
 
     private IEnumerator ShowExclamation()
     {
-        exclamation.SetActive(true);
+        _exclamation.SetActive(true);
         yield return new WaitForSeconds(0.5f);
-        exclamation.SetActive(false);
+        _exclamation.SetActive(false);
         yield return new WaitForSeconds(0.5f);
     }
 
@@ -55,10 +55,10 @@ public class Fov : MonoBehaviour, IPlayerTriggerable
         Vector2 movement = new Vector2(Mathf.Round(diff.x), Mathf.Round(diff.y));
         movement -= movement.normalized;
 
-        yield return new WaitUntil(() => !character.IsMoving);
+        yield return new WaitUntil(() => !_character.IsMoving);
 
-        yield return character.MoveAndStop(movement);
+        yield return _character.MoveAndStop(movement);
 
-        yield return new WaitUntil(() => !character.IsMoving);
+        yield return new WaitUntil(() => !_character.IsMoving);
     }
 }

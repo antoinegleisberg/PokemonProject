@@ -3,16 +3,16 @@ using UnityEngine;
 
 public static class ConditionsDB
 {
-    private static Dictionary<StatusCondition, StatusConditionData> conditions;
+    private static Dictionary<StatusCondition, StatusConditionData> _conditions;
 
     public static StatusConditionData GetCondition(StatusCondition status)
     {
-        return conditions[status];
+        return _conditions[status];
     }
 
     public static void Init()
     {
-        conditions = new Dictionary<StatusCondition, StatusConditionData>()
+        _conditions = new Dictionary<StatusCondition, StatusConditionData>()
         {
             // None
             {

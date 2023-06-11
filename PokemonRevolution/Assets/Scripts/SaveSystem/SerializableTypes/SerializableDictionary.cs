@@ -5,8 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
 {
-    [SerializeField] private List<TKey> keys = new List<TKey>();
-    [SerializeField] private List<TValue> values = new List<TValue>();
+    [SerializeField] private List<TKey> _keys = new List<TKey>();
+    [SerializeField] private List<TValue> _values = new List<TValue>();
 
     public static SerializableDictionary<TKey, TValue> FromDictionary(Dictionary<TKey, TValue> dict)
     {
@@ -20,25 +20,25 @@ public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IS
 
     public void OnBeforeSerialize()
     {
-        keys.Clear();
-        values.Clear();
+        _keys.Clear();
+        _values.Clear();
         foreach (KeyValuePair<TKey, TValue> pair in this)
         {
-            keys.Add(pair.Key);
-            values.Add(pair.Value);
+            _keys.Add(pair.Key);
+            _values.Add(pair.Value);
         }
     }
     
     public void OnAfterDeserialize()
     {
-        this.Clear();
-        if (keys.Count != values.Count)
+        Clear();
+        if (_keys.Count != _values.Count)
         {
             Debug.LogError("Keys and values have different sizes");
         }
-        for (int i = 0; i < keys.Count; i++)
+        for (int i = 0; i < _keys.Count; i++)
         {
-            this.Add(keys[i], values[i]);
+            Add(_keys[i], _values[i]);
         }
     }
 }

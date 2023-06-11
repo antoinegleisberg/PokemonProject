@@ -6,36 +6,36 @@ using UnityEngine.UI;
 public class BattleSceneHUDManager : MonoBehaviour
 {
 
-    [SerializeField] private Image pokemonImage;
+    [SerializeField] private Image _pokemonImage;
 
-    [SerializeField] private TextMeshProUGUI pokemonName;
-    [SerializeField] private TextMeshProUGUI pokemonLevelText;
+    [SerializeField] private TextMeshProUGUI _pokemonName;
+    [SerializeField] private TextMeshProUGUI _pokemonLevelText;
 
-    [SerializeField] private GameObject healthBar;
-    [SerializeField] private TextMeshProUGUI healthText;
+    [SerializeField] private RectTransform _healthBar;
+    [SerializeField] private TextMeshProUGUI _healthText;
 
-    [SerializeField] private Image statusImage;
-    [SerializeField] private TextMeshProUGUI statusText;
+    [SerializeField] private Image _statusImage;
+    [SerializeField] private TextMeshProUGUI _statusText;
 
-    [SerializeField] private GameObject expBar;
+    [SerializeField] private RectTransform _expBar;
 
     public void UpdateHUD(Pokemon pokemon)
     {
         Sprite sprite = (pokemon.Owner == PokemonOwner.Player) ? 
             pokemon.ScriptablePokemon.BackSprite : pokemon.ScriptablePokemon.FrontSprite;
-        pokemonImage.sprite = sprite;
+        _pokemonImage.sprite = sprite;
 
-        pokemonName.text = $"{pokemon.Name}";
-        pokemonLevelText.text = $"Lv {pokemon.Level}";
+        _pokemonName.text = $"{pokemon.Name}";
+        _pokemonLevelText.text = $"Lv {pokemon.Level}";
 
         float fillAmount = (float)pokemon.CurrentHP / (float)pokemon.MaxHP;
-        healthBar.transform.localScale = new Vector3(fillAmount, 1, 1);
-        healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHP}";
+        _healthBar.localScale = new Vector3(fillAmount, 1, 1);
+        _healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHP}";
 
         if (pokemon.Owner == PokemonOwner.Player)
         {
             float targetExpFillAmount = 1.0f - (float)GrowthRateDB.ExpBeforeLevelUp(pokemon) / GrowthRateDB.Exp2NextLevel(pokemon.ScriptablePokemon.GrowthRate, pokemon.Level);
-            expBar.transform.localScale = new Vector3(targetExpFillAmount, 1, 1);
+            _expBar.localScale = new Vector3(targetExpFillAmount, 1, 1);
         }
 
         UpdateStatusCondition(pokemon);
@@ -44,7 +44,7 @@ public class BattleSceneHUDManager : MonoBehaviour
     public IEnumerator UpdateHPBarSmooth(Pokemon pokemon)
     {
         float pokemonCurrentHP = (float)pokemon.CurrentHP / pokemon.MaxHP;
-        float currentHpDisplayed = healthBar.transform.localScale.x;
+        float currentHpDisplayed = _healthBar.localScale.x;
         float changeAmount = currentHpDisplayed - pokemonCurrentHP;
 
         float hpLost = currentHpDisplayed * pokemon.MaxHP - pokemon.CurrentHP;
@@ -56,21 +56,21 @@ public class BattleSceneHUDManager : MonoBehaviour
             float normalizedTime = t / animationTime;
             currentHpDisplayed = pokemonCurrentHP + (1 - normalizedTime) * changeAmount;
 
-            healthBar.transform.localScale = new Vector3(currentHpDisplayed, 1, 1);
-            healthText.text = $"{Mathf.Round(currentHpDisplayed * pokemon.MaxHP)} / {pokemon.MaxHP}";
+            _healthBar.localScale = new Vector3(currentHpDisplayed, 1, 1);
+            _healthText.text = $"{Mathf.Round(currentHpDisplayed * pokemon.MaxHP)} / {pokemon.MaxHP}";
 
             yield return null;
         }
 
-        healthBar.transform.localScale = new Vector3(pokemonCurrentHP, 1, 1);
-        healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHP}";
+        _healthBar.localScale = new Vector3(pokemonCurrentHP, 1, 1);
+        _healthText.text = $"{pokemon.CurrentHP} / {pokemon.MaxHP}";
     }
 
     public IEnumerator UpdateExpBarSmooth(Pokemon pokemon, int exp)
     {
         float targetExpFillAmount = 1.0f - (float)GrowthRateDB.ExpBeforeLevelUp(pokemon) / GrowthRateDB.Exp2NextLevel(pokemon.ScriptablePokemon.GrowthRate, pokemon.Level);
         targetExpFillAmount = Mathf.Clamp01(targetExpFillAmount);
-        float currentExpDisplayed = expBar.transform.localScale.x;
+        float currentExpDisplayed = _expBar.localScale.x;
         float changeAmount = targetExpFillAmount - currentExpDisplayed;
 
         float animationTime = 0.5f;
@@ -80,26 +80,26 @@ public class BattleSceneHUDManager : MonoBehaviour
             float normalizedTime = t / animationTime;
             currentExpDisplayed = targetExpFillAmount - (1 - normalizedTime) * changeAmount;
 
-            expBar.transform.localScale = new Vector3(currentExpDisplayed, 1, 1);
+            _expBar.localScale = new Vector3(currentExpDisplayed, 1, 1);
 
             yield return null;
         }
 
-        expBar.transform.localScale = new Vector3(currentExpDisplayed, 1, 1);
+        _expBar.localScale = new Vector3(currentExpDisplayed, 1, 1);
     }
 
     public void UpdateStatusCondition(Pokemon pokemon)
     {
         if (pokemon.StatusCondition == StatusCondition.None)
         {
-            statusImage.gameObject.SetActive(false);
+            _statusImage.gameObject.SetActive(false);
             return;
         }
 
         StatusConditionData conditionData = ConditionsDB.GetCondition(pokemon.StatusCondition);
 
-        statusImage.gameObject.SetActive(true);
-        statusImage.color = conditionData.HUDColor;
-        statusText.text = conditionData.HUDName;
+        _statusImage.gameObject.SetActive(true);
+        _statusImage.color = conditionData.HUDColor;
+        _statusText.text = conditionData.HUDName;
     }
 }

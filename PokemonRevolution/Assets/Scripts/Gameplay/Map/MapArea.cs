@@ -3,28 +3,28 @@ using UnityEngine;
 
 public class MapArea : MonoBehaviour
 {    
-    [SerializeField] private List<WildEncounter> wildEncounters;
-    [SerializeField] private int encounterRate = 10;
+    [SerializeField] private List<WildEncounter> _wildEncounters;
+    [SerializeField] private int _encounterRate = 10;
 
-    public int EncounterRate { get => encounterRate; }
+    public int EncounterRate { get => _encounterRate; }
 
     public Pokemon GetRandomWildPokemon()
     {
         int totalProbability = 0;
-        foreach (WildEncounter wildEncounter in wildEncounters)
+        foreach (WildEncounter wildEncounter in _wildEncounters)
         {
-            totalProbability += wildEncounter.probability;
+            totalProbability += wildEncounter.Probability;
         }
 
         int randomValue = Random.Range(0, totalProbability);
         int currentProbability = 0;
-        foreach (WildEncounter wildEncounter in wildEncounters)
+        foreach (WildEncounter wildEncounter in _wildEncounters)
         {
-            currentProbability += wildEncounter.probability;
+            currentProbability += wildEncounter.Probability;
             if (randomValue < currentProbability)
             {
-                int level = Random.Range(wildEncounter.minLevel, wildEncounter.maxLevel + 1);
-                return new Pokemon(wildEncounter.pokemon, level, PokemonOwner.Wild);
+                int level = Random.Range(wildEncounter.MinLevel, wildEncounter.MaxLevel + 1);
+                return new Pokemon(wildEncounter.Pokemon, level, PokemonOwner.Wild);
             }
         }
 

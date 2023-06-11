@@ -8,7 +8,7 @@ public enum Direction
     Right,
 }
 
-public class DirectionUtils
+public static class DirectionUtils
 {
     public static Direction GetDirection(Vector2 vector)
     {

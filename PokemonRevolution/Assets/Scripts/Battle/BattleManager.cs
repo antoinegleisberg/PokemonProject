@@ -19,7 +19,7 @@ public class BattleManager : MonoBehaviour
     public BattleActionInfo NextPlayerAction { get; set; }
     public BattleActionInfo NextEnemyAction { get; set; }
 
-    private BattleManagerBaseState currentState;
+    private BattleManagerBaseState _currentState;
     public BattleManagerOutOfBattleState OutOfBattleState;
     public BattleManagerStartBattleState StartBattleState;
     public BattleManagerStartTurnState StartTurnState;
@@ -28,16 +28,16 @@ public class BattleManager : MonoBehaviour
     public BattleManagerEndTurnState EndTurnState;
     public BattleManagerEndBattleState EndBattleState;
 
-    [SerializeField] private BattleSceneUIManager battleSceneUIManager;
-    [SerializeField] private BattleDialogueUIManager battleDialogueUIManager;
-    [SerializeField] private BattleActionSelectorsUIManager battleActionSelectorsUIManager;
+    [SerializeField] private BattleSceneUIManager _battleSceneUIManager;
+    [SerializeField] private BattleDialogueUIManager _battleDialogueUIManager;
+    [SerializeField] private BattleActionSelectorsUIManager _battleActionSelectorsUIManager;
 
-    public BattleSceneUIManager BattleSceneUIManager { get => battleSceneUIManager; }
-    public BattleDialogueUIManager BattleDialogueUIManager { get => battleDialogueUIManager; }
-    public BattleActionSelectorsUIManager BattleActionSelectorsUIManager { get => battleActionSelectorsUIManager; }
+    public BattleSceneUIManager BattleSceneUIManager { get => _battleSceneUIManager; }
+    public BattleDialogueUIManager BattleDialogueUIManager { get => _battleDialogueUIManager; }
+    public BattleActionSelectorsUIManager BattleActionSelectorsUIManager { get => _battleActionSelectorsUIManager; }
 
     
-    private ScriptableMove moveToLearn;
+    private ScriptableMove _moveToLearn;
 
 
     private void Awake()
@@ -61,7 +61,7 @@ public class BattleManager : MonoBehaviour
         EndTurnState.InitState(this);
         EndBattleState.InitState(this);
 
-        currentState = OutOfBattleState;
+        _currentState = OutOfBattleState;
 
         BattleEvents.Instance.OnPokemonFainted += OnPokemonFainted;
         BattleUIEvents.Instance.OnSelectMoveToForget += SelectedMoveToForget;
@@ -69,7 +69,7 @@ public class BattleManager : MonoBehaviour
 
     private void Update()
     {
-        currentState.UpdateState();
+        _currentState.UpdateState();
     }
 
     private void OnDestroy()
@@ -134,30 +134,24 @@ public class BattleManager : MonoBehaviour
     public void PerformMove(Pokemon attackingPokemon, Pokemon targetPokemon, Move move)
     {
         // Check if the move can be performed, depending on status conditions
-        ConditionAttackModifier attackModifier = attackingPokemon.OnBeforeMove(move);
+        ConditionAttackModifier attackModifier = attackingPokemon.GetStatusAttackModifier(move);
         if (!attackModifier.CanPerformMove)
             return;
-
-        // Apply PP loss
+        
         attackingPokemon.LoseMovePP(move);
-
-        // Calculate attack info
+        
         AttackInfo attackInfo = CalculateMoveInfo(attackingPokemon, targetPokemon, move, attackModifier);
-
-        // Raise attack event
+        
         BattleEvents.Instance.PokemonAttacks(attackingPokemon, targetPokemon, move, attackInfo);
-
-        // If the move misses, don't apply damage or effects
-        if (!attackInfo.moveHits)
+        
+        if (!attackInfo.MoveHits)
             return;
-
-        // Apply damage
+        
         if (move.ScriptableMove.Category != MoveCategory.Status)
         {
-            DamagePokemon(targetPokemon, attackInfo.damage);
+            DamagePokemon(targetPokemon, attackInfo.Damage);
         }
-
-        // Apply effects
+        
         if (move.ScriptableMove.MoveEffects != null)
             move.ScriptableMove.MoveEffects.ApplyEffects(attackingPokemon, targetPokemon);
     }
@@ -216,12 +210,12 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator SwitchStateCoroutine(BattleManagerBaseState newState)
     {
-        currentState.ExitState();
-        currentState = newState;
+        _currentState.ExitState();
+        _currentState = newState;
 
         yield return BattleUIManager.Instance.WaitWhileBusy();
 
-        currentState.EnterState();
+        _currentState.EnterState();
     }
 
     private void OnPokemonFainted(Pokemon faintedPokemon)
@@ -238,7 +232,7 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator GainExpCoroutine(Pokemon pokemon, int exp)
     {
-        battleDialogueUIManager.OnExpGained(pokemon, exp);
+        _battleDialogueUIManager.OnExpGained(pokemon, exp);
 
         while (exp > 0 && pokemon.Level < Pokemon.MaxLevel)
         {
@@ -249,7 +243,7 @@ public class BattleManager : MonoBehaviour
 
                 pokemon.GainExp(expBeforeLvUp);
                 
-                battleSceneUIManager.OnExpGained(pokemon, expBeforeLvUp);
+                _battleSceneUIManager.OnExpGained(pokemon, expBeforeLvUp);
 
                 yield return BattleUIManager.Instance.WaitWhileBusy();
 
@@ -261,7 +255,7 @@ public class BattleManager : MonoBehaviour
             else
             {
                 pokemon.GainExp(exp);
-                battleSceneUIManager.OnExpGained(pokemon, exp);
+                _battleSceneUIManager.OnExpGained(pokemon, exp);
                 exp = 0;
             }
         }
@@ -292,22 +286,23 @@ public class BattleManager : MonoBehaviour
             }
             else
             {
-                moveToLearn = scriptableMove;
-                BattleDialogueUIManager.OnChooseMoveToForget(pokemon, moveToLearn);
-                BattleActionSelectorsUIManager.OnChooseMoveToForget(pokemon, moveToLearn);
+                _moveToLearn = scriptableMove;
+                BattleDialogueUIManager.OnChooseMoveToForget(pokemon, _moveToLearn);
+                BattleActionSelectorsUIManager.OnChooseMoveToForget(pokemon, _moveToLearn);
                 BattleUIManager.Instance.Pause();
             }
-            // This is no use ??
+            
             yield return new WaitUntil(() => !BattleUIManager.Instance.IsPaused);
         }
+        yield return new WaitForSeconds(0.5f);
     }
 
     private void SelectedMoveToForget(int index)
     {
         ScriptableMove oldMove = PlayerPokemon.Moves[index].ScriptableMove;
-        PlayerPokemon.ReplaceMove(index, moveToLearn);
-        BattleEvents.Instance.MoveLearnt(PlayerPokemon, oldMove, moveToLearn);
-        moveToLearn = null;
+        PlayerPokemon.ReplaceMove(index, _moveToLearn);
+        BattleEvents.Instance.MoveLearnt(PlayerPokemon, oldMove, _moveToLearn);
+        _moveToLearn = null;
         BattleUIManager.Instance.Unpause();
     }
 
@@ -331,7 +326,7 @@ public class BattleManager : MonoBehaviour
     private AttackInfo CalculateMoveInfo(Pokemon attackingPokemon, Pokemon targetPokemon, Move move, ConditionAttackModifier attackModifier)
     {
         AttackInfo attackInfo = CalculateMoveDamage(attackingPokemon, targetPokemon, move, attackModifier);
-        attackInfo.moveHits = MoveHits(attackingPokemon, targetPokemon, move);
+        attackInfo.MoveHits = MoveHits(attackingPokemon, targetPokemon, move);
         return attackInfo;
     }
 

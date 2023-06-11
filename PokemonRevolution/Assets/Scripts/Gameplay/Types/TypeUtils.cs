@@ -3,20 +3,20 @@ using UnityEngine;
 
 public static class TypeUtils
 {
-    private static Dictionary<PokemonType, ScriptableType> types;
+    private static Dictionary<PokemonType, ScriptableType> _types;
 
     public static ScriptableType TypeInfo(PokemonType type)
     {
-        if (types == null)
+        if (_types == null)
         {
-            types = new Dictionary<PokemonType, ScriptableType>();
+            _types = new Dictionary<PokemonType, ScriptableType>();
             ScriptableType[] typesList = Resources.LoadAll<ScriptableType>("Types");
             foreach (ScriptableType t in typesList)
             {
-                types[t.Type] = t;
+                _types[t.Type] = t;
             }
         }
-        return types[type];
+        return _types[type];
     }
 
     public static float TypeModifier(ScriptableMove attackingMove, ScriptablePokemon defendingPokemon)

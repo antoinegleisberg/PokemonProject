@@ -58,15 +58,15 @@ public class BattleDialogueUIManager : MonoBehaviour
         List<string> messages = new List<string>();
         string msg = $"{attacker.Name} used {move.ScriptableMove.Name}!";
         messages.Add(msg);
-        if (attackInfo.moveHits)
+        if (attackInfo.MoveHits)
         {
-            if (attackInfo.criticalHit)
+            if (attackInfo.CriticalHit)
                 messages.Add("It's a critical hit!");
-            if ((Mathf.Abs(attackInfo.typeEffectiveness - 0.5f) < Mathf.Epsilon) || (Mathf.Abs(attackInfo.typeEffectiveness - 0.25f) < Mathf.Epsilon))
+            if ((Mathf.Abs(attackInfo.TypeEffectiveness - 0.5f) < Mathf.Epsilon) || (Mathf.Abs(attackInfo.TypeEffectiveness - 0.25f) < Mathf.Epsilon))
                 messages.Add("It's not very effective...");
-            else if ((Mathf.Abs(attackInfo.typeEffectiveness - 2.0f) < Mathf.Epsilon) || (Mathf.Abs(attackInfo.typeEffectiveness - 4.0f) < Mathf.Epsilon))
+            else if ((Mathf.Abs(attackInfo.TypeEffectiveness - 2.0f) < Mathf.Epsilon) || (Mathf.Abs(attackInfo.TypeEffectiveness - 4.0f) < Mathf.Epsilon))
                 messages.Add("It's super effective!");
-            else if (Mathf.Abs(attackInfo.typeEffectiveness) < Mathf.Epsilon)
+            else if (Mathf.Abs(attackInfo.TypeEffectiveness) < Mathf.Epsilon)
                 messages.Add($"It doesn't affect {defender.Name} ...");
         }
         else

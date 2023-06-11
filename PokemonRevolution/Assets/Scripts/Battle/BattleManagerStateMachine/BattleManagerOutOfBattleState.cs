@@ -2,7 +2,7 @@ public class BattleManagerOutOfBattleState : BattleManagerBaseState
 {
     public override void InitState(BattleManager battleManager)
     {
-        this.battleManager = battleManager;
+        _battleManager = battleManager;
     }
 
     public override void EnterState()

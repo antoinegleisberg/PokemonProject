@@ -4,56 +4,55 @@ using UnityEngine.UI;
 
 public class UISelectorNavigationManager : MonoBehaviour
 {
-    [SerializeField] private List<Button> buttons;
+    [SerializeField] private List<Button> _buttons;
 
+    [SerializeField] private List<Pair<Button, Button>> _overrideNavigationOrderRight;
+    [SerializeField] private List<Pair<Button, Button>> _overrideNavigationOrderLeft;
+    [SerializeField] private List<Pair<Button, Button>> _overrideNavigationOrderUp;
+    [SerializeField] private List<Pair<Button, Button>> _overrideNavigationOrderDown;
 
-    [SerializeField] private List<Pair<Button, Button>> overrideNavigationOrderRight;
-    [SerializeField] private List<Pair<Button, Button>> overrideNavigationOrderLeft;
-    [SerializeField] private List<Pair<Button, Button>> overrideNavigationOrderUp;
-    [SerializeField] private List<Pair<Button, Button>> overrideNavigationOrderDown;
+    private Dictionary<Button, Button> _overrideNavigationOrderRightMapping;
+    private Dictionary<Button, Button> _overrideNavigationOrderLeftMapping;
+    private Dictionary<Button, Button> _overrideNavigationOrderUpMapping;
+    private Dictionary<Button, Button> _overrideNavigationOrderDownMapping;
 
-    private Dictionary<Button, Button> overrideNavigationOrderRightMapping;
-    private Dictionary<Button, Button> overrideNavigationOrderLeftMapping;
-    private Dictionary<Button, Button> overrideNavigationOrderUpMapping;
-    private Dictionary<Button, Button> overrideNavigationOrderDownMapping;
+    [SerializeField] private bool _canCancel;
 
-    [SerializeField] private bool canCancel;
-
-    private int currentSelection;
-    private RectTransform selectionIndicator;
+    private int _currentSelection;
+    private RectTransform _selectionIndicator;
 
     private void Awake()
     {
-        currentSelection = -1;
+        _currentSelection = -1;
 
-        overrideNavigationOrderRightMapping = BuildNavigationMapping(overrideNavigationOrderRight);
-        overrideNavigationOrderLeftMapping = BuildNavigationMapping(overrideNavigationOrderLeft);
-        overrideNavigationOrderUpMapping = BuildNavigationMapping(overrideNavigationOrderUp);
-        overrideNavigationOrderDownMapping = BuildNavigationMapping(overrideNavigationOrderDown);
+        _overrideNavigationOrderRightMapping = BuildNavigationMapping(_overrideNavigationOrderRight);
+        _overrideNavigationOrderLeftMapping = BuildNavigationMapping(_overrideNavigationOrderLeft);
+        _overrideNavigationOrderUpMapping = BuildNavigationMapping(_overrideNavigationOrderUp);
+        _overrideNavigationOrderDownMapping = BuildNavigationMapping(_overrideNavigationOrderDown);
     }
 
     private void OnEnable()
     {
-        if (currentSelection != -1)
+        if (_currentSelection != -1)
         {
-            selectionIndicator.gameObject.SetActive(true);
+            _selectionIndicator.gameObject.SetActive(true);
             UpdateUI();
         }
     }
 
     private void OnDisable()
     {
-        selectionIndicator.gameObject.SetActive(false);
+        _selectionIndicator.gameObject.SetActive(false);
     }
 
     public void SetSelectionIndicator(RectTransform selectionIndicator)
     {
-        this.selectionIndicator = selectionIndicator;
+        _selectionIndicator = selectionIndicator;
     }
 
     public void HandleUINavigation(Vector2Int input)
     {
-        if (currentSelection == -1)
+        if (_currentSelection == -1)
         {
             UpdateSelection(0);
             return;
@@ -61,69 +60,69 @@ public class UISelectorNavigationManager : MonoBehaviour
 
         Dictionary<Button, Button> activeOverriding = GetActiveOverriding(input);
 
-        if (activeOverriding != null && activeOverriding.ContainsKey(buttons[currentSelection]))
+        if (activeOverriding != null && activeOverriding.ContainsKey(_buttons[_currentSelection]))
         {
-            int newSelection = buttons.IndexOf(activeOverriding[buttons[currentSelection]]);
+            int newSelection = _buttons.IndexOf(activeOverriding[_buttons[_currentSelection]]);
             UpdateSelection(newSelection);
             return;
         }
 
         int offset = InputToOffset(input);
-        UpdateSelection(currentSelection + offset);
+        UpdateSelection(_currentSelection + offset);
     }
 
     public void HandleUISubmit()
     {
-        if (currentSelection == -1)
+        if (_currentSelection == -1)
         {
             UpdateSelection(0);
         }
-        else if (buttons[currentSelection].interactable)
+        else if (_buttons[_currentSelection].interactable)
         {
-            buttons[currentSelection].onClick.Invoke();
+            _buttons[_currentSelection].onClick.Invoke();
         }
     }
 
     public void HandleUICancel()
     {
-        if (canCancel)
+        if (_canCancel)
         {
-            buttons[buttons.Count - 1].onClick.Invoke();
+            _buttons[_buttons.Count - 1].onClick.Invoke();
         }
     }
 
     private void UpdateSelection(int newSelection)
     {
-        newSelection = Mathf.Clamp(newSelection, 0, buttons.Count - 1);
+        newSelection = Mathf.Clamp(newSelection, 0, _buttons.Count - 1);
 
-        bool selectionIncreased = Mathf.Sign(newSelection - currentSelection) > 0;
+        bool selectionIncreased = Mathf.Sign(newSelection - _currentSelection) > 0;
         int offset = selectionIncreased ? 1 : -1;
-        while (0 <= newSelection && newSelection < buttons.Count && !buttons[newSelection].isActiveAndEnabled)
+        while (0 <= newSelection && newSelection < _buttons.Count && !_buttons[newSelection].isActiveAndEnabled)
         {
             newSelection += offset;
         }
-        if (newSelection < 0 || newSelection >= buttons.Count)
+        if (newSelection < 0 || newSelection >= _buttons.Count)
         {
             offset = -offset;
-            while (0 <= newSelection && newSelection < buttons.Count && !buttons[newSelection].isActiveAndEnabled)
+            while (0 <= newSelection && newSelection < _buttons.Count && !_buttons[newSelection].isActiveAndEnabled)
             {
                 newSelection += offset;
             }
         }
 
-        currentSelection = newSelection;
+        _currentSelection = newSelection;
         UpdateUI();
     }
 
     private void UpdateUI()
     {
-        if (!selectionIndicator.gameObject.activeSelf)
+        if (!_selectionIndicator.gameObject.activeSelf)
         {
-            selectionIndicator.gameObject.SetActive(true);
+            _selectionIndicator.gameObject.SetActive(true);
         }
-        RectTransform currentButtonTranform = buttons[currentSelection].GetComponent<RectTransform>();
-        selectionIndicator.position = currentButtonTranform.position;
-        selectionIndicator.sizeDelta = currentButtonTranform.sizeDelta + new Vector2(15, 15);
+        RectTransform currentButtonTranform = _buttons[_currentSelection].GetComponent<RectTransform>();
+        _selectionIndicator.position = currentButtonTranform.position;
+        _selectionIndicator.sizeDelta = currentButtonTranform.sizeDelta + new Vector2(15, 15);
     }
 
     private Dictionary<Button, Button> BuildNavigationMapping(List<Pair<Button, Button>> pairs)
@@ -131,7 +130,7 @@ public class UISelectorNavigationManager : MonoBehaviour
         Dictionary<Button, Button> dict = new Dictionary<Button, Button>();
         foreach (Pair<Button, Button> pair in pairs)
         {
-            dict.Add(pair.first, pair.second);
+            dict.Add(pair.First, pair.Second);
         }
         return dict;
     }
@@ -158,13 +157,13 @@ public class UISelectorNavigationManager : MonoBehaviour
         switch (input)
         {
             case Vector2Int value when value == Vector2Int.left:
-                return overrideNavigationOrderLeftMapping;
+                return _overrideNavigationOrderLeftMapping;
             case Vector2Int value when value == Vector2Int.right:
-                return overrideNavigationOrderRightMapping;
+                return _overrideNavigationOrderRightMapping;
             case Vector2Int value when value == Vector2Int.up:
-                return overrideNavigationOrderUpMapping;
+                return _overrideNavigationOrderUpMapping;
             case Vector2Int value when value == Vector2Int.down:
-                return overrideNavigationOrderDownMapping;
+                return _overrideNavigationOrderDownMapping;
             default:
                 return null;
         }

@@ -1,5 +1,3 @@
-using JetBrains.Annotations;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,17 +20,17 @@ public class GameData
 
         PokemonBuilder pokemon1 = new PokemonBuilder()
         {
-            scriptablePokemonId = 1,
-            level = 14,
-            name = "Bulb",
-            owner = PokemonOwner.Player,
+            ScriptablePokemonId = 1,
+            Level = 14,
+            Name = "Bulb",
+            Owner = PokemonOwner.Player,
         };
         PokemonBuilder pokemon2 = new PokemonBuilder()
         {
-            scriptablePokemonId = 4,
-            level = 14,
-            name = "Charmy",
-            owner = PokemonOwner.Player,
+            ScriptablePokemonId = 4,
+            Level = 14,
+            Name = "Charmy",
+            Owner = PokemonOwner.Player,
         };
 
 

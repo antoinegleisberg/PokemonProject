@@ -2,16 +2,16 @@ public class BattleManagerStartBattleState : BattleManagerBaseState
 {
     public override void InitState(BattleManager battleManager)
     {
-        this.battleManager = battleManager;
+        _battleManager = battleManager;
     }
 
     public override void EnterState()
     {
-        battleManager.BattleActionSelectorsUIManager.OnBattleStart(battleManager.PlayerParty);
-        battleManager.BattleDialogueUIManager.OnBattleStart(battleManager.PlayerParty, battleManager.EnemyParty);
-        battleManager.BattleSceneUIManager.OnBattleStart(battleManager.PlayerParty, battleManager.EnemyParty);
+        _battleManager.BattleActionSelectorsUIManager.OnBattleStart(_battleManager.PlayerParty);
+        _battleManager.BattleDialogueUIManager.OnBattleStart(_battleManager.PlayerParty, _battleManager.EnemyParty);
+        _battleManager.BattleSceneUIManager.OnBattleStart(_battleManager.PlayerParty, _battleManager.EnemyParty);
 
-        battleManager.SwitchState(battleManager.StartTurnState);
+        _battleManager.SwitchState(_battleManager.StartTurnState);
     }
 
     public override void UpdateState()

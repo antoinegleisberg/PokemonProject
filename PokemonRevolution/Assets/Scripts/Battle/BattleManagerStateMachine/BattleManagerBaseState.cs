@@ -1,6 +1,6 @@
 public abstract class BattleManagerBaseState
 {
-    protected BattleManager battleManager;
+    protected BattleManager _battleManager;
     public abstract void InitState(BattleManager battleManager);
     public abstract void EnterState();
     public abstract void UpdateState();

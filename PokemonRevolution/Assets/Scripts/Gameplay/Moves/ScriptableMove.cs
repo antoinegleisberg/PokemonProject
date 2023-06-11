@@ -5,26 +5,26 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Move", menuName = "Pokemon/Create new Move")]
 public class ScriptableMove : ScriptableObject
 {
-    [SerializeField] string moveName;
+    [SerializeField] private string moveName;
 
     [TextArea]
-    [SerializeField] string description;
+    [SerializeField] private string description;
 
-    [SerializeField] PokemonType type;
+    [SerializeField] private PokemonType type;
 
-    [SerializeField] MoveCategory category;
+    [SerializeField] private MoveCategory category;
 
-    [SerializeField] int power;
-    [SerializeField] int accuracy;
-    [SerializeField] int pp;
-    [SerializeField] int priority;
-    [SerializeField] bool alwaysHits;
+    [SerializeField] private int power;
+    [SerializeField] private int accuracy;
+    [SerializeField] private int pp;
+    [SerializeField] private int priority;
+    [SerializeField] private bool alwaysHits;
 
-    [SerializeField] bool makesContact;
+    [SerializeField] private bool makesContact;
 
-    [SerializeField] List<MoveTarget> moveTargets;
+    [SerializeField] private List<MoveTarget> moveTargets;
     
-    [SerializeField] MoveEffects moveEffects;
+    [SerializeField] private MoveEffects moveEffects;
 
     public string Name { get => moveName; }
     public string Description { get => description; }

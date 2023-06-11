@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class SceneFader : MonoBehaviour
 {
-    [SerializeField] private Image image;
+    [SerializeField] private Image _image;
 
     public IEnumerator FadeIn(float durationInSeconds)
     {
@@ -14,10 +14,10 @@ public class SceneFader : MonoBehaviour
         for (float t = 0; t < durationInSeconds; t += Time.deltaTime)
         {
             float normalizedTime = t / durationInSeconds;
-            image.color = Color.Lerp(startColor, targetColor, normalizedTime);
+            _image.color = Color.Lerp(startColor, targetColor, normalizedTime);
             yield return null;
         }
-        image.color = targetColor;
+        _image.color = targetColor;
     }
 
     public IEnumerator FadeOut(float durationInSeconds)
@@ -27,9 +27,9 @@ public class SceneFader : MonoBehaviour
         for (float t = 0; t < durationInSeconds; t += Time.deltaTime)
         {
             float normalizedTime = t / durationInSeconds;
-            image.color = Color.Lerp(startColor, targetColor, normalizedTime);
+            _image.color = Color.Lerp(startColor, targetColor, normalizedTime);
             yield return null;
         }
-        image.color = targetColor;
+        _image.color = targetColor;
     }
 }

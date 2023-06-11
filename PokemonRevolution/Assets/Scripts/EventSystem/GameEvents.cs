@@ -16,6 +16,12 @@ public class GameEvents : MonoBehaviour
     public event Action OnEnterMenu;
     public event Action OnExitMenu;
 
+    public event Action OnEnterCutscene;
+    public event Action OnExitCutscene;
+
+    public event Action OnEnterFreeRoam;
+    public event Action OnExitFreeRoam;
+
     public void EnterBattle() => OnEnterBattle?.Invoke();
     public void ExitBattle() => OnExitBattle?.Invoke();
 
@@ -24,4 +30,10 @@ public class GameEvents : MonoBehaviour
 
     public void EnterMenu() => OnEnterMenu?.Invoke();
     public void ExitMenu() => OnExitMenu?.Invoke();
+
+    public void EnterCutscene() => OnEnterCutscene?.Invoke();
+    public void ExitCutscene() => OnExitCutscene?.Invoke();
+
+    public void EnterFreeRoam() => OnEnterFreeRoam?.Invoke();
+    public void ExitFreeRoam() => OnExitFreeRoam?.Invoke();
 }

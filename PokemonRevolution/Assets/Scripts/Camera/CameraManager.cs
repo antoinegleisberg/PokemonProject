@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] private Camera mainCamera;
-    [SerializeField] private Camera battleCamera;
+    [SerializeField] private Camera _mainCamera;
+    [SerializeField] private Camera _battleCamera;
 
     private void Start()
     {
-        mainCamera.enabled = true;
-        battleCamera.enabled = false;
+        _mainCamera.enabled = true;
+        _battleCamera.enabled = false;
 
         GameEvents.Instance.OnEnterBattle += OnEnterBattle;
         GameEvents.Instance.OnExitBattle += OnExitBattle;
@@ -22,13 +22,13 @@ public class CameraManager : MonoBehaviour
 
     private void OnEnterBattle()
     {
-        mainCamera.enabled = false;
-        battleCamera.enabled = true;
+        _mainCamera.enabled = false;
+        _battleCamera.enabled = true;
     }
 
     private void OnExitBattle()
     {
-        mainCamera.enabled = true;
-        battleCamera.enabled = false;
+        _mainCamera.enabled = true;
+        _battleCamera.enabled = false;
     }
 }

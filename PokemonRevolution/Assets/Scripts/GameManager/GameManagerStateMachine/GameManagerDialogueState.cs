@@ -1,12 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class GameManagerDialogueState : GameManagerBaseState
 {
     public override void InitState(GameManager gameManager)
     {
-        this.gameManager = gameManager;
+        _gameManager = gameManager;
     }
 
     public override void EnterState()

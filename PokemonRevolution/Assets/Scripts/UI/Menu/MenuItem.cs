@@ -5,24 +5,30 @@ using UnityEngine.UI;
 
 public class MenuItem : MonoBehaviour
 {
-    [SerializeField] private Button button;
-    [SerializeField] private Image icon;
+    private Button _button;
+    private Image _icon;
 
-    [SerializeField] private Sprite unselectedSprite;
-    [SerializeField] private Sprite selectedSprite;
+    [SerializeField] private Sprite _unselectedSprite;
+    [SerializeField] private Sprite _selectedSprite;
+
+    private void Awake()
+    {
+        _button = GetComponent<Button>();
+        _icon = GetComponentInChildren<Image>();
+    }
 
     public void Select()
     {
-        icon.sprite = selectedSprite;
+        _icon.sprite = _selectedSprite;
     }
 
     public void Unselect()
     {
-        icon.sprite = unselectedSprite;
+        _icon.sprite = _unselectedSprite;
     }
 
     public void Click()
     {
-        button.onClick.Invoke();
+        _button.onClick.Invoke();
     }
 }

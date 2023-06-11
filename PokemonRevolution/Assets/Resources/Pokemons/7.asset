@@ -35,11 +35,11 @@ MonoBehaviour:
   catchRate: 45
   experienceYield: 66
   evYield:
-  - stat: 2
-    value: 1
+  - Stat: 2
+    Value: 1
   learnableMoves:
-  - move: {fileID: 11400000, guid: 131c8166196cf57489d05750114c76df, type: 2}
-    level: 1
+  - _move: {fileID: 11400000, guid: 131c8166196cf57489d05750114c76df, type: 2}
+    _level: 1
   eggMoves: []
   tmMoves: []
   ability1: {fileID: 0}

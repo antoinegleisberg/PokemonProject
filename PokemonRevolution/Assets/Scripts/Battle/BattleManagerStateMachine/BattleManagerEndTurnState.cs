@@ -4,13 +4,14 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
 {
     public override void InitState(BattleManager battleManager)
     {
-        this.battleManager = battleManager;
+        _battleManager = battleManager;
+        BattleUIEvents.Instance.OnReplacePokemonSelected += OnFaintedPokemonReplacementSelected;
     }
 
     public override void EnterState()
     {
-        battleManager.PlayerPokemon.OnBattleTurnEnd();
-        battleManager.EnemyPokemon.OnBattleTurnEnd();
+        _battleManager.PlayerPokemon.OnBattleTurnEnd();
+        _battleManager.EnemyPokemon.OnBattleTurnEnd();
 
         CheckFaintedPokemons();
     }
@@ -19,20 +20,23 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
 
     public override void ExitState() { }
 
-    public override void OnDestroy() {  }
+    public override void OnDestroy()
+    {
+        BattleUIEvents.Instance.OnReplacePokemonSelected -= OnFaintedPokemonReplacementSelected;
+    }
 
     private void CheckFaintedPokemons()
     {
-        bool playerPokemonFainted = battleManager.PlayerPokemon.IsFainted;
+        bool playerPokemonFainted = _battleManager.PlayerPokemon.IsFainted;
         if (playerPokemonFainted)
         {
-            if (battleManager.PlayerParty.GetFirstPokemon() == null)
+            if (_battleManager.PlayerParty.GetFirstPokemon() == null)
             {
-                battleManager.SwitchState(battleManager.EndBattleState);
+                _battleManager.SwitchState(_battleManager.EndBattleState);
             }
             else
             {
-                battleManager.BattleActionSelectorsUIManager.OpenFaintedPokemonReplacementMenu(OnReplacingPokemonSelected);
+                _battleManager.BattleActionSelectorsUIManager.OpenFaintedPokemonReplacementMenu();
             }
         }
         else
@@ -43,24 +47,29 @@ public class BattleManagerEndTurnState : BattleManagerBaseState
 
     private void OnReplacingPokemonSelected(int pokemonIndex)
     {
-        Pokemon nextPokemon = battleManager.PlayerParty.Pokemons[pokemonIndex];
-        battleManager.SwitchPokemon(battleManager.PlayerPokemon, nextPokemon);
+        Pokemon nextPokemon = _battleManager.PlayerParty.Pokemons[pokemonIndex];
+        _battleManager.SwitchPokemon(_battleManager.PlayerPokemon, nextPokemon);
 
         ReplaceEnemyFaintedPokemon();
     }
 
     private void ReplaceEnemyFaintedPokemon()
     {
-        if (battleManager.EnemyPokemon.IsFainted)
+        if (_battleManager.EnemyPokemon.IsFainted)
         {
-            Pokemon nextPokemon = battleManager.EnemyParty.GetFirstPokemon();
+            Pokemon nextPokemon = _battleManager.EnemyParty.GetFirstPokemon();
             if (nextPokemon == null)
             {
-                battleManager.SwitchState(battleManager.EndBattleState);
+                _battleManager.SwitchState(_battleManager.EndBattleState);
                 return;
             }
-            battleManager.SwitchPokemon(battleManager.EnemyPokemon, nextPokemon);
+            _battleManager.SwitchPokemon(_battleManager.EnemyPokemon, nextPokemon);
         }
-        battleManager.SwitchState(battleManager.StartTurnState);
+        _battleManager.SwitchState(_battleManager.StartTurnState);
+    }
+
+    private void OnFaintedPokemonReplacementSelected(int pokemonIndex)
+    {
+        OnReplacingPokemonSelected(pokemonIndex);
     }
 }

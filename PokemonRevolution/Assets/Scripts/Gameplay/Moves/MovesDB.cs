@@ -3,26 +3,26 @@ using UnityEngine;
 
 public static class MovesDB
 {
-    private static Dictionary<string, ScriptableMove> moves;
+    private static Dictionary<string, ScriptableMove> _moves;
     
     public static void Init()
     {
         string path = "Moves";
         ScriptableMove[] scriptableMoves = Resources.LoadAll<ScriptableMove>(path);
-        moves = new Dictionary<string, ScriptableMove>();
+        _moves = new Dictionary<string, ScriptableMove>();
         foreach (ScriptableMove scriptableMove in scriptableMoves)
         {
-            moves.Add(scriptableMove.Name, scriptableMove);
+            _moves.Add(scriptableMove.Name, scriptableMove);
         }
     }
 
     public static ScriptableMove GetScriptableMoveByName(string name)
     {
-        if (!moves.ContainsKey(name))
+        if (!_moves.ContainsKey(name))
         {
             Debug.LogError($"Couldn't find move {name}");
         }
 
-        return moves[name];
+        return _moves[name];
     }
 }

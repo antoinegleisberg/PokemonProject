@@ -3,116 +3,116 @@ using UnityEngine;
 
 public class CharacterAnimator : MonoBehaviour
 {
-    [SerializeField] private List<AnimationFrame> walkDownSprites;
-    [SerializeField] private List<AnimationFrame> walkUpSprites;
-    [SerializeField] private List<AnimationFrame> walkLeftSprites;
-    [SerializeField] private List<AnimationFrame> walkRightSprites;
+    [SerializeField] private List<AnimationFrame> _walkDownSprites;
+    [SerializeField] private List<AnimationFrame> _walkUpSprites;
+    [SerializeField] private List<AnimationFrame> _walkLeftSprites;
+    [SerializeField] private List<AnimationFrame> _walkRightSprites;
 
-    private Direction facingDirection;
-    private bool isMoving;
-    private bool isRunning;
+    private Direction _facingDirection;
+    private bool _isMoving;
+    private bool _isRunning;
 
-    private float runningSpeedup = 1.5f;
+    private float _runningSpeedup = 1.5f;
 
-    private SpriteRenderer spriteRenderer;
+    private SpriteRenderer _spriteRenderer;
 
-    private SpriteAnimator currentAnimator;
-    private SpriteAnimator IdleDown;
-    private SpriteAnimator IdleUp;
-    private SpriteAnimator IdleLeft;
-    private SpriteAnimator IdleRight;
-    private SpriteAnimator WalkDown;
-    private SpriteAnimator WalkUp;
-    private SpriteAnimator WalkLeft;
-    private SpriteAnimator WalkRight;
+    private SpriteAnimator _currentAnimator;
+    private SpriteAnimator _idleDown;
+    private SpriteAnimator _idleUp;
+    private SpriteAnimator _idleLeft;
+    private SpriteAnimator _idleRight;
+    private SpriteAnimator _walkDown;
+    private SpriteAnimator _walkUp;
+    private SpriteAnimator _walkLeft;
+    private SpriteAnimator _walkRight;
 
-    private Dictionary<Direction, SpriteAnimator> walkAnimations;
-    private Dictionary<Direction, SpriteAnimator> idleAnimations;
+    private Dictionary<Direction, SpriteAnimator> _walkAnimations;
+    private Dictionary<Direction, SpriteAnimator> _idleAnimations;
 
     public Direction FacingDirection {
-        get { return facingDirection; }
+        get { return _facingDirection; }
         set {
-            if (facingDirection == value)
+            if (_facingDirection == value)
                 return;
-            facingDirection = value;
-            UpdateAnim();
+            _facingDirection = value;
+            UpdateAnimator();
         }
     }
     
     public bool IsMoving {
-        get { return isMoving; }
+        get { return _isMoving; }
         set
         {
-            if (isMoving == value)
+            if (_isMoving == value)
                 return;
-            isMoving = value;
-            UpdateAnim();
+            _isMoving = value;
+            UpdateAnimator();
         }
     }
 
     public bool IsRunning {
-        get { return isRunning; }
+        get { return _isRunning; }
         set
         {
-            if (isRunning == value)
+            if (_isRunning == value)
                 return;
-            isRunning = value;
-            if (isRunning)
-                currentAnimator.FrameRate /= runningSpeedup;
+            _isRunning = value;
+            if (_isRunning)
+                _currentAnimator.FrameRate /= _runningSpeedup;
             else
-                currentAnimator.FrameRate *= runningSpeedup;
+                _currentAnimator.FrameRate *= _runningSpeedup;
         }
     }
 
-    private void Start()
+    private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        IdleDown = new SpriteAnimator(spriteRenderer, new List<AnimationFrame>() { walkDownSprites[0] });
-        IdleUp = new SpriteAnimator(spriteRenderer, new List<AnimationFrame>() { walkUpSprites[0] });
-        IdleLeft = new SpriteAnimator(spriteRenderer, new List<AnimationFrame>() { walkLeftSprites[0] });
-        IdleRight = new SpriteAnimator(spriteRenderer, new List<AnimationFrame>() { walkRightSprites[0] });
-        WalkDown = new SpriteAnimator(spriteRenderer, walkDownSprites);
-        WalkUp = new SpriteAnimator(spriteRenderer, walkUpSprites);
-        WalkLeft = new SpriteAnimator(spriteRenderer, walkLeftSprites);
-        WalkRight = new SpriteAnimator(spriteRenderer, walkRightSprites);
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _idleDown = new SpriteAnimator(_spriteRenderer, new List<AnimationFrame>() { _walkDownSprites[0] });
+        _idleUp = new SpriteAnimator(_spriteRenderer, new List<AnimationFrame>() { _walkUpSprites[0] });
+        _idleLeft = new SpriteAnimator(_spriteRenderer, new List<AnimationFrame>() { _walkLeftSprites[0] });
+        _idleRight = new SpriteAnimator(_spriteRenderer, new List<AnimationFrame>() { _walkRightSprites[0] });
+        _walkDown = new SpriteAnimator(_spriteRenderer, _walkDownSprites);
+        _walkUp = new SpriteAnimator(_spriteRenderer, _walkUpSprites);
+        _walkLeft = new SpriteAnimator(_spriteRenderer, _walkLeftSprites);
+        _walkRight = new SpriteAnimator(_spriteRenderer, _walkRightSprites);
 
-        walkAnimations = new Dictionary<Direction, SpriteAnimator>()
+        _walkAnimations = new Dictionary<Direction, SpriteAnimator>()
         {
-            { Direction.Down, WalkDown },
-            { Direction.Up, WalkUp },
-            { Direction.Left, WalkLeft },
-            { Direction.Right, WalkRight }
+            { Direction.Down, _walkDown },
+            { Direction.Up, _walkUp },
+            { Direction.Left, _walkLeft },
+            { Direction.Right, _walkRight }
         };
 
-        idleAnimations = new Dictionary<Direction, SpriteAnimator>()
+        _idleAnimations = new Dictionary<Direction, SpriteAnimator>()
         {
-            { Direction.Down, IdleDown },
-            { Direction.Up, IdleUp },
-            { Direction.Left, IdleLeft },
-            { Direction.Right, IdleRight }
+            { Direction.Down, _idleDown },
+            { Direction.Up, _idleUp },
+            { Direction.Left, _idleLeft },
+            { Direction.Right, _idleRight }
         };
 
         FacingDirection = Direction.Down;
-        UpdateAnim();
+        UpdateAnimator();
     }
 
     private void Update()
     {
-        currentAnimator.Update();
+        _currentAnimator.Update();
     }
     
-    private void UpdateAnim()
+    private void UpdateAnimator()
     {
         bool wasRunning = IsRunning;
         // Reset the frame rate to the default value
         IsRunning = false;
         if (IsMoving)
-            currentAnimator = walkAnimations[FacingDirection];
+            _currentAnimator = _walkAnimations[FacingDirection];
         else
-            currentAnimator = idleAnimations[FacingDirection];
+            _currentAnimator = _idleAnimations[FacingDirection];
         // Restore the frame rate to the running value if necessary
         IsRunning = wasRunning;
 
-        currentAnimator.Init();
+        _currentAnimator.Init();
     }
 }

@@ -5,50 +5,50 @@ using UnityEngine.Windows;
 
 public class MenuSelector : MonoBehaviour
 {
-    [SerializeField] private List<MenuItem> items;
-    [SerializeField] private RectTransform selector;
+    [SerializeField] private List<MenuItem> _items;
+    [SerializeField] private RectTransform _selector;
 
-    private int currentSelection;
+    private int _currentSelection;
 
 
     private void Awake()
     {
-        currentSelection = 0;
+        _currentSelection = 0;
         UpdateSelection(0);
     }
 
     private void OnEnable()
     {
-        selector.gameObject.SetActive(true);
+        _selector.gameObject.SetActive(true);
     }
 
     private void OnDisable()
     {
-        selector.gameObject.SetActive(false);
+        _selector.gameObject.SetActive(false);
     }
 
     public void HandleUINavigate(Vector2Int input)
     {
-        UpdateSelection(currentSelection - input.y);
+        UpdateSelection(_currentSelection - input.y);
     }
 
     public void HandleUISubmit()
     {
-        items[currentSelection].Click();
+        _items[_currentSelection].Click();
     }
 
     public void HandleUICancel()
     {
-        items[items.Count - 1].Click();
+        _items[_items.Count - 1].Click();
     }
 
     private void UpdateSelection(int newSelection)
     {
-        items[currentSelection].Unselect();
-        currentSelection = Mathf.Clamp(newSelection, 0, items.Count - 1);
-        items[currentSelection].Select();
-        RectTransform selectedItem = items[currentSelection].GetComponent<RectTransform>();
-        selector.position = selectedItem.position;
-        selector.sizeDelta = selectedItem.sizeDelta;
+        _items[_currentSelection].Unselect();
+        _currentSelection = Mathf.Clamp(newSelection, 0, _items.Count - 1);
+        _items[_currentSelection].Select();
+        RectTransform selectedItem = _items[_currentSelection].GetComponent<RectTransform>();
+        _selector.position = selectedItem.position;
+        _selector.sizeDelta = selectedItem.sizeDelta;
     }
 }

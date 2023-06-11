@@ -3,43 +3,43 @@ using UnityEngine;
 
 public class SpriteAnimator
 {
-    private SpriteRenderer spriteRenderer;
-    private List<AnimationFrame> frames;
+    private SpriteRenderer _spriteRenderer;
+    private List<AnimationFrame> _frames;
 
-    private int currentFrame;
-    private float timer;
+    private int _currentFrame;
+    private float _timer;
 
     public float FrameRate { get; set; }
 
     public SpriteAnimator(SpriteRenderer spriteRenderer, List<AnimationFrame> frames, float frameRate = 0.16f)
     {
-        this.spriteRenderer = spriteRenderer;
-        this.frames = frames;
+        _spriteRenderer = spriteRenderer;
+        _frames = frames;
         FrameRate = frameRate;
     }
 
     public void Init()
     {
-        currentFrame = 0;
-        timer = 0.0f;
+        _currentFrame = 0;
+        _timer = 0.0f;
         UpdateFrame();
     }
 
     public void Update()
     {
-        timer += Time.deltaTime;
-        if (timer >= FrameRate)
+        _timer += Time.deltaTime;
+        if (_timer >= FrameRate)
         {
-            timer -= FrameRate;
-            currentFrame = (currentFrame + 1) % frames.Count;
+            _timer -= FrameRate;
+            _currentFrame = (_currentFrame + 1) % _frames.Count;
             UpdateFrame();
         }
     }
     
     private void UpdateFrame()
     {
-        spriteRenderer.sprite = frames[currentFrame].sprite;
-        spriteRenderer.flipX = frames[currentFrame].flipX;
-        spriteRenderer.flipY = frames[currentFrame].flipY;
+        _spriteRenderer.sprite = _frames[_currentFrame].Sprite;
+        _spriteRenderer.flipX = _frames[_currentFrame].FlipX;
+        _spriteRenderer.flipY = _frames[_currentFrame].FlipY;
     }
 }

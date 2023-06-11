@@ -348,9 +348,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6297861afd0641345a5b296a34768a85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  npcController: {fileID: 484131691}
-  character: {fileID: 484131690}
-  exclamation: {fileID: 945909484}
+  _npcController: {fileID: 484131691}
+  _character: {fileID: 484131690}
+  _exclamation: {fileID: 945909484}
 --- !u!1 &232899252
 GameObject:
   m_ObjectHideFlags: 0
@@ -411,16 +411,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6278a617da323f4b86f40c7330299d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wildEncounters:
-  - pokemon: {fileID: 11400000, guid: 1ac035d07a2074043b8cf1e03f0b7fb0, type: 2}
-    minLevel: 10
-    maxLevel: 10
-    probability: 70
-  - pokemon: {fileID: 11400000, guid: 188d7911fdecf0043b9c2f985a49825d, type: 2}
-    minLevel: 10
-    maxLevel: 10
-    probability: 30
-  encounterRate: 10
+  _wildEncounters:
+  - Pokemon: {fileID: 11400000, guid: 1ac035d07a2074043b8cf1e03f0b7fb0, type: 2}
+    MinLevel: 4
+    MaxLevel: 5
+    Probability: 80
+  - Pokemon: {fileID: 11400000, guid: 188d7911fdecf0043b9c2f985a49825d, type: 2}
+    MinLevel: 7
+    MaxLevel: 8
+    Probability: 20
+  _encounterRate: 10
 --- !u!1 &367857016
 GameObject:
   m_ObjectHideFlags: 0
@@ -4707,10 +4707,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c1dd9d7ac62b2a4b9e03d12a27fc64a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterTransform: {fileID: 1517716061}
-  baseMoveSpeed: 5
-  runningMoveSpeed: 8
-  characterAnimator: {fileID: 1636233972}
+  _characterTransform: {fileID: 1517716061}
+  _baseMoveSpeed: 5
+  _runningMoveSpeed: 8
+  _characterAnimator: {fileID: 1636233972}
 --- !u!114 &484131691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4723,20 +4723,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aec919c6fd7d474f9df32bbda15a390, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultFacingDirection: 0
-  dialogues:
-  - lines:
-    - Did you know that fire types are strong against grass types?
-  character: {fileID: 484131690}
-  movementPatterns:
-  - lookTowards: 0
-    movement: {x: 0, y: -3}
-    run: 0
-    waitTime: 0
-  - lookTowards: 0
-    movement: {x: 0, y: 3}
-    run: 0
-    waitTime: 0.5
+  _defaultFacingDirection: 0
+  _dialogues:
+  - _lines:
+    - Did you know that grass types are weak to fire types ?
+  - _lines:
+    - In return, fire is weak to water and water is weak to grass!
+  _character: {fileID: 484131690}
+  _movementPatterns: []
+  _fov: {fileID: 207789553}
 --- !u!114 &484131692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4749,7 +4744,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f66eda809684a0469744d86297be55d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uid: 4e2755ba-7ccf-4196-8f03-fd34dc9d9359
+  _uid: 28f4d438-ac39-4cdc-8df2-9d0433fcc7cb
 --- !u!1 &611507682
 GameObject:
   m_ObjectHideFlags: 0
@@ -4776,7 +4771,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 611507682}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4795,58 +4790,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77ee69b8cf0d48f41bddc7f9d81d15c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkDownSprites:
-  - sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 2094225343, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 2094225343, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  walkUpSprites:
-  - sprite: {fileID: -1402772120, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1825677956, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1402772120, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1825677956, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  walkLeftSprites:
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -863349301, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 724152987, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  walkRightSprites:
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: -863349301, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: 724152987, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
+  _walkDownSprites:
+  - Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 581630236, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1339765545, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkUpSprites:
+  - Sprite: {fileID: -1419072537, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -1656434252, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -1419072537, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1171792450, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkLeftSprites:
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 2012556894, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -2053747661, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkRightSprites:
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: 2012556894, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: -2053747661, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
 --- !u!212 &611507685
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4888,12 +4883,12 @@ SpriteRenderer:
   m_SortingLayerID: -1425481659
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
+  m_Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1.875}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -4911,8 +4906,8 @@ GameObject:
   - component: {fileID: 637285603}
   - component: {fileID: 637285604}
   - component: {fileID: 637285602}
-  - component: {fileID: 637285601}
   - component: {fileID: 637285605}
+  - component: {fileID: 637285601}
   m_Layer: 10
   m_Name: Controller
   m_TagString: Untagged
@@ -4973,10 +4968,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c1dd9d7ac62b2a4b9e03d12a27fc64a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterTransform: {fileID: 2001886146}
-  baseMoveSpeed: 5
-  runningMoveSpeed: 8
-  characterAnimator: {fileID: 611507684}
+  _characterTransform: {fileID: 2001886146}
+  _baseMoveSpeed: 5
+  _runningMoveSpeed: 8
+  _characterAnimator: {fileID: 611507684}
 --- !u!114 &637285603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4989,15 +4984,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aec919c6fd7d474f9df32bbda15a390, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultFacingDirection: 0
-  dialogues:
-  - lines:
-    - My Pokemon are strong.
+  _defaultFacingDirection: 0
+  _dialogues:
+  - _lines:
+    - I've cought some strong pokemon!
     - Let me show you!
-  - lines:
-    - Oh, I lost. I will train some more and beat you next time!
-  character: {fileID: 637285602}
-  movementPatterns: []
+  - _lines:
+    - You too are strong...
+  _character: {fileID: 637285602}
+  _movementPatterns: []
+  _fov: {fileID: 2120673912}
 --- !u!114 &637285604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5010,7 +5006,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 851684f2e24f8dd468441ebcfe023328, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pokemonPartyManager: {fileID: 1978340038}
+  _pokemonPartyManager: {fileID: 1978340038}
 --- !u!114 &637285605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5023,7 +5019,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f66eda809684a0469744d86297be55d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uid: 4a2b167d-4bac-4d86-84d3-d0e87e59001e
+  _uid: c8767756-7ff0-49a0-98bc-f713fdfdcd73
 --- !u!1 &765300255
 GameObject:
   m_ObjectHideFlags: 0
@@ -5083,7 +5079,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 945909484}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0, y: 1.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5128,8 +5124,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1425481659
-  m_SortingLayer: 2
+  m_SortingLayerID: -1073304493
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9d17c792fc7f2c94eaa7eaa72ec79ec1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -5798,30 +5794,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aec919c6fd7d474f9df32bbda15a390, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultFacingDirection: 0
-  dialogues:
-  - lines:
-    - So? Have you cought any Pokemon?
-  - lines:
-    - Unfortunately, I haven't. Otherwise you would have to fight me!
-  character: {fileID: 1497454922}
-  movementPatterns:
-  - lookTowards: 0
-    movement: {x: 0, y: -2}
-    run: 0
-    waitTime: 1
-  - lookTowards: 0
-    movement: {x: -4, y: 0}
-    run: 0
-    waitTime: 0
-  - lookTowards: 0
-    movement: {x: 0, y: 2}
-    run: 0
-    waitTime: 3
-  - lookTowards: 0
-    movement: {x: 4, y: 0}
-    run: 1
-    waitTime: 3
+  _defaultFacingDirection: 0
+  _dialogues:
+  - _lines:
+    - So, have you cought any pokemon ?
+    - Unfortunately, I havent...
+  _character: {fileID: 1497454922}
+  _movementPatterns:
+  - LookTowards: 0
+    Movement: {x: 0, y: -2}
+    Run: 0
+    WaitTime: 2
+  - LookTowards: 0
+    Movement: {x: -4, y: 0}
+    Run: 1
+    WaitTime: 0
+  - LookTowards: 0
+    Movement: {x: 0, y: 2}
+    Run: 0
+    WaitTime: 1
+  - LookTowards: 0
+    Movement: {x: 4, y: 0}
+    Run: 1
+    WaitTime: 4
+  _fov: {fileID: 0}
 --- !u!61 &1497454921
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5860,10 +5856,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c1dd9d7ac62b2a4b9e03d12a27fc64a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterTransform: {fileID: 983037365}
-  baseMoveSpeed: 5
-  runningMoveSpeed: 8
-  characterAnimator: {fileID: 1668699689}
+  _characterTransform: {fileID: 983037365}
+  _baseMoveSpeed: 5
+  _runningMoveSpeed: 8
+  _characterAnimator: {fileID: 1668699689}
 --- !u!114 &1497454923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5876,7 +5872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f66eda809684a0469744d86297be55d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uid: fe00e2e7-a9d5-441e-bda3-9efac030be6b
+  _uid: 341bfa7a-1d6e-49fc-821c-a68f03e3a438
 --- !u!1 &1517716060
 GameObject:
   m_ObjectHideFlags: 0
@@ -5939,7 +5935,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1636233970}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5958,58 +5954,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77ee69b8cf0d48f41bddc7f9d81d15c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkDownSprites:
-  - sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 2094225343, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 2094225343, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  walkUpSprites:
-  - sprite: {fileID: -1402772120, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1825677956, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1402772120, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1825677956, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  walkLeftSprites:
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -863349301, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 724152987, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  walkRightSprites:
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: -863349301, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: 724152987, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
+  _walkDownSprites:
+  - Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 581630236, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1339765545, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkUpSprites:
+  - Sprite: {fileID: -1419072537, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -1656434252, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -1419072537, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1171792450, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkLeftSprites:
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 2012556894, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -2053747661, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkRightSprites:
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: 2012556894, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: -2053747661, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
 --- !u!212 &1636233973
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -6051,12 +6047,12 @@ SpriteRenderer:
   m_SortingLayerID: -1425481659
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
+  m_Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1.875}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -6088,7 +6084,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1668699686}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6136,12 +6132,12 @@ SpriteRenderer:
   m_SortingLayerID: -1425481659
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
+  m_Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1.875}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -6159,58 +6155,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77ee69b8cf0d48f41bddc7f9d81d15c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkDownSprites:
-  - sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 2094225343, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 2094225343, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  walkUpSprites:
-  - sprite: {fileID: -1402772120, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1825677956, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1402772120, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1825677956, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  walkLeftSprites:
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -863349301, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 724152987, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  walkRightSprites:
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: -863349301, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: 724152987, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
+  _walkDownSprites:
+  - Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 581630236, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1339765545, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkUpSprites:
+  - Sprite: {fileID: -1419072537, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -1656434252, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -1419072537, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1171792450, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkLeftSprites:
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 2012556894, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -2053747661, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkRightSprites:
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: 2012556894, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: -2053747661, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
 --- !u!1 &1978340036
 GameObject:
   m_ObjectHideFlags: 0
@@ -6255,15 +6251,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 830345e59bdfd314a94c53b3e220337b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pokemonBuilders:
-  - scriptablePokemonId: 7
-    level: 7
-    name: Baby Turtle
-    owner: 1
-  - scriptablePokemonId: 7
-    level: 7
-    name: Baby Turtle
-    owner: 1
+  _pokemonBuilders:
+  - ScriptablePokemonId: 1
+    Level: 4
+    Name: Bulbasaur
+    Owner: 1
+  - ScriptablePokemonId: 1
+    Level: 5
+    Name: Bulbasaur
+    Owner: 1
 --- !u!1 &2001886145
 GameObject:
   m_ObjectHideFlags: 0
@@ -6326,7 +6322,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2059046045}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0, y: 1.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7980,6 +7976,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6297861afd0641345a5b296a34768a85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  npcController: {fileID: 637285603}
-  character: {fileID: 637285602}
-  exclamation: {fileID: 2059046045}
+  _npcController: {fileID: 637285603}
+  _character: {fileID: 637285602}
+  _exclamation: {fileID: 2059046045}

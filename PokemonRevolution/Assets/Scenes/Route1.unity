@@ -168,8 +168,8 @@ GameObject:
   - component: {fileID: 181156779}
   - component: {fileID: 181156778}
   - component: {fileID: 181156775}
-  - component: {fileID: 181156777}
   - component: {fileID: 181156776}
+  - component: {fileID: 181156777}
   m_Layer: 10
   m_Name: Controller
   m_TagString: Untagged
@@ -189,10 +189,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c1dd9d7ac62b2a4b9e03d12a27fc64a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  characterTransform: {fileID: 1564822509}
-  baseMoveSpeed: 5
-  runningMoveSpeed: 8
-  characterAnimator: {fileID: 1528822909}
+  _characterTransform: {fileID: 1564822509}
+  _baseMoveSpeed: 5
+  _runningMoveSpeed: 8
+  _characterAnimator: {fileID: 1528822909}
 --- !u!114 &181156776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -205,7 +205,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f66eda809684a0469744d86297be55d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uid: 0728d410-ede2-403b-96df-42a249ff31f8
+  _uid: b56517e0-198b-4059-92b5-0e3b5662be9e
 --- !u!61 &181156777
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 851684f2e24f8dd468441ebcfe023328, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pokemonPartyManager: {fileID: 1433358745}
+  _pokemonPartyManager: {fileID: 1433358745}
 --- !u!114 &181156779
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,15 +257,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aec919c6fd7d474f9df32bbda15a390, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultFacingDirection: 0
-  dialogues:
-  - lines:
-    - I cought some new pokemon on this route !
-    - Let's try them out in a battle !
-  - lines:
-    - I guess you too cought some good pokemon...
-  character: {fileID: 181156775}
-  movementPatterns: []
+  _defaultFacingDirection: 0
+  _dialogues:
+  - _lines:
+    - I found some new pokemon on this route...
+    - Let's battle !
+  - _lines:
+    - You fought well... You are strong enough to go to the next town.
+  _character: {fileID: 181156775}
+  _movementPatterns: []
+  _fov: {fileID: 924023213}
 --- !u!4 &181156780
 Transform:
   m_ObjectHideFlags: 0
@@ -6036,9 +6037,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6297861afd0641345a5b296a34768a85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  npcController: {fileID: 181156779}
-  character: {fileID: 181156775}
-  exclamation: {fileID: 1136887776}
+  _npcController: {fileID: 181156779}
+  _character: {fileID: 181156775}
+  _exclamation: {fileID: 1136887776}
 --- !u!61 &924023214
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6113,16 +6114,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6278a617da323f4b86f40c7330299d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  wildEncounters:
-  - pokemon: {fileID: 11400000, guid: 1ac035d07a2074043b8cf1e03f0b7fb0, type: 2}
-    minLevel: 10
-    maxLevel: 10
-    probability: 30
-  - pokemon: {fileID: 11400000, guid: 188d7911fdecf0043b9c2f985a49825d, type: 2}
-    minLevel: 10
-    maxLevel: 10
-    probability: 70
-  encounterRate: 10
+  _wildEncounters:
+  - Pokemon: {fileID: 11400000, guid: 1ac035d07a2074043b8cf1e03f0b7fb0, type: 2}
+    MinLevel: 5
+    MaxLevel: 6
+    Probability: 50
+  - Pokemon: {fileID: 11400000, guid: 188d7911fdecf0043b9c2f985a49825d, type: 2}
+    MinLevel: 5
+    MaxLevel: 6
+    Probability: 50
+  _encounterRate: 10
 --- !u!156049354 &1038101918
 Grid:
   m_ObjectHideFlags: 0
@@ -7769,7 +7770,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1136887776}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0, y: 1.8, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7814,8 +7815,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1425481659
-  m_SortingLayer: 2
+  m_SortingLayerID: -1073304493
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 9d17c792fc7f2c94eaa7eaa72ec79ec1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -7888,15 +7889,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 830345e59bdfd314a94c53b3e220337b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pokemonBuilders:
-  - scriptablePokemonId: 1
-    level: 5
-    name: Bulbasaur
-    owner: 1
-  - scriptablePokemonId: 7
-    level: 9
-    name: Baby Turtle
-    owner: 1
+  _pokemonBuilders:
+  - ScriptablePokemonId: 7
+    Level: 6
+    Name: Squirle Boy !
+    Owner: 1
 --- !u!4 &1433358746
 Transform:
   m_ObjectHideFlags: 0
@@ -7942,58 +7939,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77ee69b8cf0d48f41bddc7f9d81d15c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkDownSprites:
-  - sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 2094225343, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 2094225343, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  walkUpSprites:
-  - sprite: {fileID: -1402772120, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1825677956, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1402772120, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -1825677956, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  walkLeftSprites:
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: -863349301, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  - sprite: {fileID: 724152987, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 0
-    flipY: 0
-  walkRightSprites:
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: -863349301, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: 1044590021, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
-  - sprite: {fileID: 724152987, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
-    flipX: 1
-    flipY: 0
+  _walkDownSprites:
+  - Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 581630236, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1339765545, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkUpSprites:
+  - Sprite: {fileID: -1419072537, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -1656434252, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -1419072537, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1171792450, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkLeftSprites:
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 2012556894, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  - Sprite: {fileID: -2053747661, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 0
+    FlipY: 0
+  _walkRightSprites:
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: 2012556894, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: 1419683600, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
+  - Sprite: {fileID: -2053747661, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
+    FlipX: 1
+    FlipY: 0
 --- !u!212 &1528822910
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8035,12 +8032,12 @@ SpriteRenderer:
   m_SortingLayerID: -1425481659
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1082184383, guid: 8cc1d899dd861014fba73cb825403073, type: 3}
+  m_Sprite: {fileID: 897038620, guid: 3ba0308e61d741f4789759dd2af008a2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1.875}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -8054,7 +8051,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1528822908}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

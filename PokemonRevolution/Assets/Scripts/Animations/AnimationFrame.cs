@@ -3,7 +3,7 @@ using UnityEngine;
 [System.Serializable]
 public struct AnimationFrame
 {
-    public Sprite sprite;
-    public bool flipX;
-    public bool flipY;
+    public Sprite Sprite;
+    public bool FlipX;
+    public bool FlipY;
 }

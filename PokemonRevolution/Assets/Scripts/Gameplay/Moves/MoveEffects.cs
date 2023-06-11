@@ -4,23 +4,23 @@ using UnityEngine;
 [System.Serializable]
 public class MoveEffects
 {
-    [SerializeField] private List<StatBoost> statBoosts;
-    [SerializeField] private List<MoveStatusConditionEffect> conditionEffects;
+    [SerializeField] private List<StatBoost> _statBoosts;
+    [SerializeField] private List<MoveStatusConditionEffect> _conditionEffects;
 
-    public List<StatBoost> StatBoosts { get => statBoosts; }
-    public List<MoveStatusConditionEffect> ConditionEffects { get => conditionEffects; }
+    public List<StatBoost> StatBoosts { get => _statBoosts; }
+    public List<MoveStatusConditionEffect> ConditionEffects { get => _conditionEffects; }
     
     public void ApplyEffects(Pokemon attackingPokemon, Pokemon defendingPokemon)
     {
         foreach (StatBoost statBoost in StatBoosts)
         {
-            if (Random.Range(0, 100) >= statBoost.probability)
+            if (Random.Range(0, 100) >= statBoost.Probability)
                 continue;
 
             List<Pokemon> targetPokemons = new List<Pokemon>();
-            if (statBoost.statBoostTargets.Contains(MoveTarget.Self))
+            if (statBoost.StatBoostTargets.Contains(MoveTarget.Self))
                 targetPokemons.Add(attackingPokemon);
-            if (statBoost.statBoostTargets.Contains(MoveTarget.Enemy))
+            if (statBoost.StatBoostTargets.Contains(MoveTarget.Enemy))
                 targetPokemons.Add(defendingPokemon);
 
             foreach (Pokemon target in targetPokemons)
@@ -29,17 +29,17 @@ public class MoveEffects
         
         foreach (MoveStatusConditionEffect statusEffect in ConditionEffects)
         {
-            if (Random.Range(0, 100) >= statusEffect.probability)
+            if (Random.Range(0, 100) >= statusEffect.Probability)
                 continue;
 
             List<Pokemon> targetPokemons = new List<Pokemon>();
-            if (statusEffect.statusEffectTargets.Contains(MoveTarget.Self))
+            if (statusEffect.StatusEffectTargets.Contains(MoveTarget.Self))
                 targetPokemons.Add(attackingPokemon);
-            if (statusEffect.statusEffectTargets.Contains(MoveTarget.Enemy))
+            if (statusEffect.StatusEffectTargets.Contains(MoveTarget.Enemy))
                 targetPokemons.Add(defendingPokemon);
 
             foreach (Pokemon target in targetPokemons)
-                target.ApplyStatus(statusEffect.statusCondition);
+                target.ApplyStatus(statusEffect.StatusCondition);
         }
     }
 }
@@ -48,16 +48,16 @@ public class MoveEffects
 [System.Serializable]
 public struct MoveStatusConditionEffect
 {
-    public int probability;
-    public StatusCondition statusCondition;
-    public List<MoveTarget> statusEffectTargets;
+    public int Probability;
+    public StatusCondition StatusCondition;
+    public List<MoveTarget> StatusEffectTargets;
 }
 
 [System.Serializable]
 public struct StatBoost
 {
-    public int probability;
-    public Stat stat;
-    public int boostValue;
-    public List<MoveTarget> statBoostTargets;
+    public int Probability;
+    public Stat Stat;
+    public int BoostValue;
+    public List<MoveTarget> StatBoostTargets;
 }

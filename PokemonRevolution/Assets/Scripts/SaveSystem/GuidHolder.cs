@@ -7,10 +7,10 @@ using UnityEngine;
 [ExecuteAlways]
 public class GuidHolder : MonoBehaviour
 {
-    [SerializeField] string uid = "";
-    static Dictionary<string, GuidHolder> GlobalLookup = new Dictionary<string, GuidHolder>();
+    [SerializeField] private string _uid = "";
+    private static Dictionary<string, GuidHolder> _globalLookup = new Dictionary<string, GuidHolder>();
 
-    public string UniqueId => uid;
+    public string UniqueId => _uid;
 
 
 #if UNITY_EDITOR
@@ -24,7 +24,7 @@ public class GuidHolder : MonoBehaviour
         if (String.IsNullOrEmpty(gameObject.scene.path)) return;
 
         SerializedObject serializedObject = new SerializedObject(this);
-        SerializedProperty property = serializedObject.FindProperty("uid");
+        SerializedProperty property = serializedObject.FindProperty("_uid");
 
         while (string.IsNullOrEmpty(property.stringValue) || !IsUnique(property.stringValue))
         {
@@ -32,27 +32,27 @@ public class GuidHolder : MonoBehaviour
             serializedObject.ApplyModifiedProperties();
         }
 
-        GlobalLookup[property.stringValue] = this;
+        _globalLookup[property.stringValue] = this;
     }
 #endif
 
     private bool IsUnique(string candidate)
     {
-        if (!GlobalLookup.ContainsKey(candidate)) return true;
+        if (!_globalLookup.ContainsKey(candidate)) return true;
 
-        if (GlobalLookup[candidate] == this) return true;
+        if (_globalLookup[candidate] == this) return true;
 
         // Handle scene unloading cases
-        if (GlobalLookup[candidate] == null)
+        if (_globalLookup[candidate] == null)
         {
-            GlobalLookup.Remove(candidate);
+            _globalLookup.Remove(candidate);
             return true;
         }
 
         // Handle edge cases like designer manually changing the UUID
-        if (GlobalLookup[candidate].UniqueId != candidate)
+        if (_globalLookup[candidate].UniqueId != candidate)
         {
-            GlobalLookup.Remove(candidate);
+            _globalLookup.Remove(candidate);
             return true;
         }
 

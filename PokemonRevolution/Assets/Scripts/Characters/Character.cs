@@ -4,37 +4,37 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    [SerializeField] private Transform characterTransform;
-    [SerializeField] private float baseMoveSpeed = 5.0f;
-    [SerializeField] private float runningMoveSpeed = 8.0f;
-    [SerializeField] private CharacterAnimator characterAnimator;
+    [SerializeField] private Transform _characterTransform;
+    [SerializeField] private float _baseMoveSpeed = 5.0f;
+    [SerializeField] private float _runningMoveSpeed = 8.0f;
+    [SerializeField] private CharacterAnimator _characterAnimator;
 
-    private float moveSpeed;
-    private bool isMoving;
-    private bool isRunning;
-    private bool isRunningMovementCoroutine;
-    private bool stopAfterCurrentMovement;
+    private float _moveSpeed;
+    private bool _isMoving;
+    private bool _isRunning;
+    private bool _isRunningMovementCoroutine;
+    private bool _stopAfterCurrentMovement;
 
     public bool IsMoving {
-        get { return isMoving; }
+        get { return _isMoving; }
         set
         {
-            if (isMoving == value)
+            if (_isMoving == value)
                 return;
-            isMoving = value;
-            characterAnimator.IsMoving = value;
+            _isMoving = value;
+            _characterAnimator.IsMoving = value;
         }
     }
 
     public bool IsRunning {
-        get { return isRunning; }
+        get { return _isRunning; }
         set
         {
-            if (isRunning == value)
+            if (_isRunning == value)
                 return;
-            isRunning = value;
-            characterAnimator.IsRunning = value;
-            moveSpeed = (isRunning) ? runningMoveSpeed : baseMoveSpeed;
+            _isRunning = value;
+            _characterAnimator.IsRunning = value;
+            _moveSpeed = (_isRunning) ? _runningMoveSpeed : _baseMoveSpeed;
         }
     }
 
@@ -42,12 +42,12 @@ public class Character : MonoBehaviour
     {
         IsRunning = false;
         IsMoving = false;
-        moveSpeed = baseMoveSpeed;
+        _moveSpeed = _baseMoveSpeed;
     }
     
     public void FaceTowards(Direction facingDirection)
     {
-        characterAnimator.FacingDirection = facingDirection;
+        _characterAnimator.FacingDirection = facingDirection;
         UpdateFOV(facingDirection);
     }
 
@@ -62,14 +62,14 @@ public class Character : MonoBehaviour
         IsMoving = false;
         IsRunning = false;
         StopAllCoroutines();
-        isRunningMovementCoroutine = false;
+        _isRunningMovementCoroutine = false;
     }
 
     public IEnumerator MoveAndStop(Vector2 moveVector, bool run = false, Action onAfterMovement = null)
     {
-        stopAfterCurrentMovement = true;
+        _stopAfterCurrentMovement = true;
         IsRunning = run;
-        if (!isRunningMovementCoroutine)
+        if (!_isRunningMovementCoroutine)
         {
             yield return MoveCoroutine(moveVector, onAfterMovement);
         }
@@ -79,21 +79,21 @@ public class Character : MonoBehaviour
     {
         if (moveVector == Vector2.zero)
         {
-            if (!isRunningMovementCoroutine)
+            if (!_isRunningMovementCoroutine)
                 IsMoving = false;
-            stopAfterCurrentMovement = true;
+            _stopAfterCurrentMovement = true;
             return;
         }
 
-        stopAfterCurrentMovement = false;
+        _stopAfterCurrentMovement = false;
         IsRunning = run;
-        if (!isRunningMovementCoroutine)
+        if (!_isRunningMovementCoroutine)
             StartCoroutine(MoveCoroutine(moveVector, onAfterMovement));
     }
 
     private IEnumerator MoveCoroutine(Vector2 moveVector, Action onAfterMovement = null)
     {
-        isRunningMovementCoroutine = true;
+        _isRunningMovementCoroutine = true;
 
         Vector2Int moveDir = GetMoveDirection(moveVector);
         int moveLength = GetMoveDistance(moveVector);
@@ -102,33 +102,33 @@ public class Character : MonoBehaviour
 
         for (int i = 0; i < moveLength; i++)
         {
-            Vector3 targetPosition = characterTransform.position;
+            Vector3 targetPosition = _characterTransform.position;
             targetPosition.x += moveDir.x;
             targetPosition.y += moveDir.y;
 
             if (!IsWalkable(targetPosition))
             {
-                isRunningMovementCoroutine = false;
+                _isRunningMovementCoroutine = false;
                 IsMoving = false;
                 yield break;
             }
 
             IsMoving = true;
 
-            while ((targetPosition - characterTransform.position).sqrMagnitude > Mathf.Epsilon)
+            while ((targetPosition - _characterTransform.position).sqrMagnitude > Mathf.Epsilon)
             {
-                characterTransform.position = Vector3.MoveTowards(characterTransform.position, targetPosition, moveSpeed * Time.deltaTime);
+                _characterTransform.position = Vector3.MoveTowards(_characterTransform.position, targetPosition, _moveSpeed * Time.deltaTime);
                 yield return null;
             }
 
-            characterTransform.position = targetPosition;
+            _characterTransform.position = targetPosition;
 
             onAfterMovement?.Invoke();
             yield return new WaitForEndOfFrame();
         }
 
-        isRunningMovementCoroutine = false;
-        if (stopAfterCurrentMovement)
+        _isRunningMovementCoroutine = false;
+        if (_stopAfterCurrentMovement)
             IsMoving = false;
     }
     

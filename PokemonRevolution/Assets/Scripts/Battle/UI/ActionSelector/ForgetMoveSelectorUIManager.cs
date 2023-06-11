@@ -6,22 +6,53 @@ using UnityEngine.UI;
 
 public class ForgetMoveSelectorUIManager : MonoBehaviour
 {
-    [SerializeField] private List<Button> moveButtons;
-    [SerializeField] private Button newMoveButton;
+    [SerializeField] private List<Button> _moveButtons;
+    [SerializeField] private Button _newMoveButton;
+
+    private List<TextMeshProUGUI> _moveTexts;
+    private List<Image> _typeIcons;
+    private List<TextMeshProUGUI> _ppTexts;
+    private List<Image> _buttonImages;
+
+    private TextMeshProUGUI _newMoveText;
+    private Image _newMoveTypeIcon;
+    private TextMeshProUGUI _newMovePPText;
+    private Image _newMoveButtonImage;
+
+    private void Awake()
+    {
+        _moveTexts = new List<TextMeshProUGUI>();
+        _typeIcons = new List<Image>();
+        _ppTexts = new List<TextMeshProUGUI>();
+        _buttonImages = new List<Image>();
+
+        foreach (Button button in _moveButtons)
+        {
+            _moveTexts.Add(button.transform.Find("MoveName").GetComponent<TextMeshProUGUI>());
+            _typeIcons.Add(button.transform.Find("Image").GetComponent<Image>());
+            _ppTexts.Add(button.transform.Find("PPText").GetComponent<TextMeshProUGUI>());
+            _buttonImages.Add(button.GetComponent<Image>());
+        }
+
+        _newMoveText = _newMoveButton.transform.Find("MoveName").GetComponent<TextMeshProUGUI>();
+        _newMoveTypeIcon = _newMoveButton.transform.Find("Image").GetComponent<Image>();
+        _newMovePPText = _newMoveButton.transform.Find("PPText").GetComponent<TextMeshProUGUI>();
+        _newMoveButtonImage = _newMoveButton.GetComponent<Image>();
+    }
 
     public void UpdateUI(Pokemon pokemon, ScriptableMove newMove)
     {
         for (int i = 0; i < pokemon.Moves.Count; i++)
         {
-            moveButtons[i].transform.Find("MoveName").GetComponent<TextMeshProUGUI>().text = pokemon.Moves[i].ScriptableMove.Name;
-            moveButtons[i].transform.Find("Image").GetComponent<Image>().sprite = TypeUtils.TypeInfo(pokemon.Moves[i].ScriptableMove.Type).TypeIcon;
-            moveButtons[i].transform.Find("PPText").GetComponent<TextMeshProUGUI>().text = "PP " + pokemon.Moves[i].CurrentPP + "/" + pokemon.Moves[i].ScriptableMove.PP;
-            moveButtons[i].GetComponent<Image>().color = TypeUtils.TypeInfo(pokemon.Moves[i].ScriptableMove.Type).TypeColor;
+            _moveTexts[i].text = pokemon.Moves[i].ScriptableMove.Name;
+            _typeIcons[i].sprite = TypeUtils.TypeInfo(pokemon.Moves[i].ScriptableMove.Type).TypeIcon;
+            _ppTexts[i].text = "PP " + pokemon.Moves[i].CurrentPP + "/" + pokemon.Moves[i].ScriptableMove.PP;
+            _buttonImages[i].color = TypeUtils.TypeInfo(pokemon.Moves[i].ScriptableMove.Type).TypeColor;
         }
 
-        newMoveButton.transform.Find("MoveName").GetComponent<TextMeshProUGUI>().text = newMove.Name;
-        newMoveButton.transform.Find("Image").GetComponent<Image>().sprite = TypeUtils.TypeInfo(newMove.Type).TypeIcon;
-        newMoveButton.transform.Find("PPText").GetComponent<TextMeshProUGUI>().text = "PP : " + newMove.PP;
-        newMoveButton.GetComponent<Image>().color = TypeUtils.TypeInfo(newMove.Type).TypeColor;
+        _newMoveText.text = newMove.Name;
+        _newMoveTypeIcon.sprite = TypeUtils.TypeInfo(newMove.Type).TypeIcon;
+        _newMovePPText.text = "PP : " + newMove.PP;
+        _newMoveButtonImage.color = TypeUtils.TypeInfo(newMove.Type).TypeColor;
     }
 }

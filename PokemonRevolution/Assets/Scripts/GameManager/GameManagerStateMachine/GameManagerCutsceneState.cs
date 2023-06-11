@@ -1,17 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class GameManagerCutsceneState : GameManagerBaseState
 {
     public override void InitState(GameManager gameManager)
     {
-        this.gameManager = gameManager;
+        _gameManager = gameManager;
     }
 
     public override void EnterState()
     {
-        
+        GameEvents.Instance.EnterCutscene();
     }
 
     public override void UpdateState()
@@ -21,7 +17,7 @@ public class GameManagerCutsceneState : GameManagerBaseState
 
     public override void ExitState()
     {
-        
+        GameEvents.Instance.ExitCutscene();
     }
 
     public override void OnDestroy()

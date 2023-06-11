@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class BattleManagerPerformMovesState : BattleManagerBaseState
 {
-    public override void InitState(BattleManager battleManager) => this.battleManager = battleManager;
+    public override void InitState(BattleManager battleManager)
+    {
+        _battleManager = battleManager;
+    }
 
     public override void EnterState()
     {
@@ -21,7 +24,7 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
     {
         Queue<BattleActionInfo> actions = GetBattleActionsInOrder();
 
-        battleManager.StartCoroutine(PerformTurnActions(actions));
+        _battleManager.StartCoroutine(PerformTurnActions(actions));
     }
 
     private Queue<BattleActionInfo> GetBattleActionsInOrder()
@@ -29,28 +32,28 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
         Queue<BattleActionInfo> actions = new Queue<BattleActionInfo>();
 
         // Check for action priorities
-        if (battleManager.NextPlayerAction.BattleAction != BattleAction.Attack)
+        if (_battleManager.NextPlayerAction.BattleAction != BattleAction.Attack)
         {
-            actions.Enqueue(battleManager.NextPlayerAction);
-            actions.Enqueue(battleManager.NextEnemyAction);
+            actions.Enqueue(_battleManager.NextPlayerAction);
+            actions.Enqueue(_battleManager.NextEnemyAction);
         }
-        else if (battleManager.NextEnemyAction.BattleAction != BattleAction.Attack)
+        else if (_battleManager.NextEnemyAction.BattleAction != BattleAction.Attack)
         {
-            actions.Enqueue(battleManager.NextEnemyAction);
-            actions.Enqueue(battleManager.NextPlayerAction);
+            actions.Enqueue(_battleManager.NextEnemyAction);
+            actions.Enqueue(_battleManager.NextPlayerAction);
         }
         // None of the teams used priority action; check for pokemon speed
         else
         {
-            int playerSpeed = battleManager.NextPlayerAction.SourcePokemon.Speed;
-            int enemySpeed = battleManager.NextEnemyAction.SourcePokemon.Speed;
+            int playerSpeed = _battleManager.NextPlayerAction.SourcePokemon.Speed;
+            int enemySpeed = _battleManager.NextEnemyAction.SourcePokemon.Speed;
 
-            int playerMoveIndex = battleManager.NextPlayerAction.ActionParameter;
-            Move playerMove = battleManager.NextPlayerAction.SourcePokemon.Moves[playerMoveIndex];
+            int playerMoveIndex = _battleManager.NextPlayerAction.ActionParameter;
+            Move playerMove = _battleManager.NextPlayerAction.SourcePokemon.Moves[playerMoveIndex];
             int playerPriority = playerMove.ScriptableMove.Priority;
 
-            int enemyMoveIndex = battleManager.NextEnemyAction.ActionParameter;
-            Move enemyMove = battleManager.NextEnemyAction.SourcePokemon.Moves[enemyMoveIndex];
+            int enemyMoveIndex = _battleManager.NextEnemyAction.ActionParameter;
+            Move enemyMove = _battleManager.NextEnemyAction.SourcePokemon.Moves[enemyMoveIndex];
             int enemyPriority = enemyMove.ScriptableMove.Priority;
 
             bool playerGoesFirst;
@@ -69,13 +72,13 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
 
             if (playerGoesFirst)
             {
-                actions.Enqueue(battleManager.NextPlayerAction);
-                actions.Enqueue(battleManager.NextEnemyAction);
+                actions.Enqueue(_battleManager.NextPlayerAction);
+                actions.Enqueue(_battleManager.NextEnemyAction);
             }
             else
             {
-                actions.Enqueue(battleManager.NextEnemyAction);
-                actions.Enqueue(battleManager.NextPlayerAction);
+                actions.Enqueue(_battleManager.NextEnemyAction);
+                actions.Enqueue(_battleManager.NextPlayerAction);
             }
         }
 
@@ -96,46 +99,55 @@ public class BattleManagerPerformMovesState : BattleManagerBaseState
                 continue;
             }
 
-            continueBattle = PerformAction(nextAction);
+            continueBattle = PerformAction(nextAction).ContinueBattle;
 
             yield return BattleUIManager.Instance.WaitWhileBusy();
         }
 
         if (continueBattle)
-            battleManager.SwitchState(battleManager.EndTurnState);
+            _battleManager.SwitchState(_battleManager.EndTurnState);
         else
-            battleManager.SwitchState(battleManager.EndBattleState);
+            _battleManager.SwitchState(_battleManager.EndBattleState);
     }
-
-    // return wether the battle continues or not
-    private bool PerformAction(BattleActionInfo battleActionInfo)
+    
+    private PerformedActionInfo PerformAction(BattleActionInfo battleActionInfo)
     {
         switch (battleActionInfo.BattleAction)
         {
             case BattleAction.Attack:
                 int moveIndex = battleActionInfo.ActionParameter;
                 Move move = battleActionInfo.SourcePokemon.Moves[moveIndex];
-                Pokemon targetPokemon = (battleActionInfo.TargetPokemonPosition == 0) ? battleManager.PlayerPokemon : battleManager.EnemyPokemon;
-                battleManager.PerformMove(battleActionInfo.SourcePokemon, targetPokemon, move);
-                return true;
+                Pokemon targetPokemon = (battleActionInfo.TargetPokemonPosition == 0) ? _battleManager.PlayerPokemon : _battleManager.EnemyPokemon;
+                _battleManager.PerformMove(battleActionInfo.SourcePokemon, targetPokemon, move);
+                return new PerformedActionInfo(true);
 
             case BattleAction.SwitchPokemon:
                 int pokemonIndex = battleActionInfo.ActionParameter;
-                Pokemon newPokemon = battleManager.PlayerParty.Pokemons[pokemonIndex];
-                battleManager.SwitchPokemon(battleManager.PlayerPokemon, newPokemon);
-                return true;
+                Pokemon newPokemon = _battleManager.PlayerParty.Pokemons[pokemonIndex];
+                _battleManager.SwitchPokemon(_battleManager.PlayerPokemon, newPokemon);
+                return new PerformedActionInfo(true);
 
             case BattleAction.Run:
-                bool succededToRun = battleManager.CanRunFromBattle();
-                return !succededToRun;
+                bool succededToRun = _battleManager.CanRunFromBattle();
+                return new PerformedActionInfo(!succededToRun);
 
             case BattleAction.UsePokeball:
-                bool coughtPokemon = battleManager.CanCatchPokemon();
-                return !coughtPokemon;
+                bool coughtPokemon = _battleManager.CanCatchPokemon();
+                return new PerformedActionInfo(!coughtPokemon);
 
             default:
                 Debug.Log("Used something else than attack, switch , pokeball or run : not implemented yet");
-                return true;
+                return new PerformedActionInfo(true);
         }
+    }
+}
+
+public struct PerformedActionInfo
+{
+    public bool ContinueBattle;
+
+    public PerformedActionInfo(bool continueBattle)
+    {
+        ContinueBattle = continueBattle;
     }
 }

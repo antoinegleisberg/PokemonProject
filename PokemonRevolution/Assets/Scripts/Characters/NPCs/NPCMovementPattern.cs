@@ -4,8 +4,8 @@ using UnityEngine;
 [System.Serializable]
 public struct NPCMovementPattern
 {
-    public Direction lookTowards;
-    public Vector2Int movement;
-    public bool run;
-    public float waitTime;
+    public Direction LookTowards;
+    public Vector2Int Movement;
+    public bool Run;
+    public float WaitTime;
 }

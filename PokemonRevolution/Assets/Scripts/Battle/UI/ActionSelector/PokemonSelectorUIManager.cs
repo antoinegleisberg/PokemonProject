@@ -5,53 +5,68 @@ using TMPro;
 
 public class PokemonSelectorUIManager : MonoBehaviour
 {
-    [SerializeField] private RectTransform pokemonButtonsContainer;
+    [SerializeField] private RectTransform _pokemonButtonsContainer;
 
-    [SerializeField] private Color defaultColor;
-    [SerializeField] private Color faintedColor;
+    [SerializeField] private Color _defaultColor;
+    [SerializeField] private Color _faintedColor;
 
-    private List<Button> pokemonButtons;
-
+    private List<Button> _pokemonButtons;
+    private List<TextMeshProUGUI> _pokemonNames;
+    private List<TextMeshProUGUI> _pokemonLevelTexts;
+    private List<Image> _pokemonIcons;
+    private List<TextMeshProUGUI> _pokemonHealthTexts;
+    private List<Transform> _pokemonHealthBars;
+    
     private void InitButtonsList()
     {
-        pokemonButtons = new List<Button>();
-        foreach (Button button in pokemonButtonsContainer.GetComponentsInChildren<Button>())
+        _pokemonButtons = new List<Button>();
+        _pokemonNames = new List<TextMeshProUGUI>();
+        _pokemonLevelTexts = new List<TextMeshProUGUI>();
+        _pokemonIcons = new List<Image>();
+        _pokemonHealthTexts = new List<TextMeshProUGUI>();
+        _pokemonHealthBars = new List<Transform>();
+        foreach (Button button in _pokemonButtonsContainer.GetComponentsInChildren<Button>())
         {
-            pokemonButtons.Add(button);
+            _pokemonButtons.Add(button);
+            _pokemonNames.Add(button.transform.Find("PokemonName").GetComponent<TextMeshProUGUI>());
+            _pokemonLevelTexts.Add(button.transform.Find("LevelText").GetComponent<TextMeshProUGUI>());
+            _pokemonIcons.Add(button.transform.Find("PokemonIcon").GetComponent<Image>());
+            _pokemonHealthTexts.Add(button.transform.Find("HealthBar").Find("HealthText").GetComponent<TextMeshProUGUI>());
+            _pokemonHealthBars.Add(button.transform.Find("HealthBar").Find("HealthBarForeground"));
         }
     }
 
     public void UpdatePokemonButtons(PokemonParty playerParty)
     {
-        if (pokemonButtons == null)
+        if (_pokemonButtons == null)
             InitButtonsList();
 
-        for (int i = 0; i < pokemonButtons.Count; i++)
+        for (int i = 0; i < _pokemonButtons.Count; i++)
         {
             if (i < playerParty.Pokemons.Count)
             {
-                pokemonButtons[i].gameObject.SetActive(true);
-                pokemonButtons[i].transform.Find("PokemonName").GetComponent<TextMeshProUGUI>().text = playerParty.Pokemons[i].Name;
-                pokemonButtons[i].transform.Find("LevelText").GetComponent<TextMeshProUGUI>().text = $"Lv. {playerParty.Pokemons[i].Level}";
-                pokemonButtons[i].transform.Find("PokemonIcon").GetComponent<Image>().sprite = playerParty.Pokemons[i].ScriptablePokemon.IconSprite;
-                pokemonButtons[i].transform.Find("HealthBar").Find("HealthText").GetComponent<TextMeshProUGUI>().text = $"{playerParty.Pokemons[i].CurrentHP}/{playerParty.Pokemons[i].MaxHP}";
+                _pokemonButtons[i].gameObject.SetActive(true);
+                _pokemonNames[i].text = playerParty.Pokemons[i].Name;
+                _pokemonLevelTexts[i].text = $"Lv. {playerParty.Pokemons[i].Level}";
+                _pokemonIcons[i].sprite = playerParty.Pokemons[i].ScriptablePokemon.IconSprite;
+                _pokemonHealthTexts[i].text = $"{playerParty.Pokemons[i].CurrentHP}/{playerParty.Pokemons[i].MaxHP}";
                 float healthPercentage = (float)playerParty.Pokemons[i].CurrentHP / (float)playerParty.Pokemons[i].MaxHP;
-                pokemonButtons[i].transform.Find("HealthBar").Find("HealthBarForeground").localScale = new Vector3(healthPercentage, 1, 1);
-            
+                _pokemonHealthBars[i].localScale = new Vector3(healthPercentage, 1, 1);
+
                 if (playerParty.Pokemons[i].IsFainted)
                 {
-                    pokemonButtons[i].interactable = false;
-                    pokemonButtons[i].GetComponent<Image>().color = faintedColor;
+                    _pokemonButtons[i].interactable = false;
+                    _pokemonButtons[i].GetComponent<Image>().color = _faintedColor;
                 }
                 else
                 {
-                    pokemonButtons[i].interactable = true;
-                    pokemonButtons[i].GetComponent<Image>().color = defaultColor;
+                    _pokemonButtons[i].interactable = true;
+                    _pokemonButtons[i].GetComponent<Image>().color = _defaultColor;
                 }
             }
             else
             {
-                pokemonButtons[i].gameObject.SetActive(false);
+                _pokemonButtons[i].gameObject.SetActive(false);
             }
         }
     }

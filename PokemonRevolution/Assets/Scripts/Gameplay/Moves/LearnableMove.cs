@@ -4,9 +4,9 @@ using UnityEngine;
 [Serializable]
 public class LearnableMove
 {
-    [SerializeField] private ScriptableMove move;
-    [SerializeField] private int level;
+    [SerializeField] private ScriptableMove _move;
+    [SerializeField] private int _level;
 
-    public ScriptableMove Move { get => move; }
-    public int Level { get => level; }
+    public ScriptableMove Move { get => _move; }
+    public int Level { get => _level; }
 }

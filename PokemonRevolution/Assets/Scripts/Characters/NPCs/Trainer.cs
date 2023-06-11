@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class Trainer : MonoBehaviour, ISaveable
 {
-    [SerializeField] private PokemonPartyManager pokemonPartyManager;
+    [SerializeField] private PokemonPartyManager _pokemonPartyManager;
 
     public bool CanBattle { get; set; }
 
-    public PokemonPartyManager PokemonPartyManager { get => pokemonPartyManager; }
+    public PokemonPartyManager PokemonPartyManager { get => _pokemonPartyManager; }
 
     private void Awake()
     {

@@ -5,9 +5,9 @@ public class InputManager : MonoBehaviour
 {
     public static InputManager Instance { get; private set; }
     
-    [SerializeField] private InputActionAsset inputActions;
-    private InputActionMap playerActionMap;
-    private InputActionMap uiActionMap;
+    [SerializeField] private InputActionAsset _inputActions;
+    private InputActionMap _playerActionMap;
+    private InputActionMap _uiActionMap;
     
     public Vector2Int MovementInput { get; private set; }
     public bool IsRunning { get; private set; }
@@ -15,10 +15,10 @@ public class InputManager : MonoBehaviour
     private void Awake()
     {
         if (Instance == null) Instance = this;
-        playerActionMap = inputActions.FindActionMap("Player");
-        uiActionMap = inputActions.FindActionMap("UI");
-        playerActionMap.Enable();
-        uiActionMap.Disable();
+        _playerActionMap = _inputActions.FindActionMap("Player");
+        _uiActionMap = _inputActions.FindActionMap("UI");
+        _playerActionMap.Enable();
+        _uiActionMap.Disable();
     }
 
     private void Start()
@@ -46,16 +46,16 @@ public class InputManager : MonoBehaviour
 
     public void ActivatePlayerActionMap()
     {
-        playerActionMap.Enable();
-        uiActionMap.Disable();
+        _playerActionMap.Enable();
+        _uiActionMap.Disable();
     }
 
     public void ActivateUIActionMap()
     {
         MovementInput = Vector2Int.zero;
         IsRunning = false;
-        playerActionMap.Disable();
-        uiActionMap.Enable();
+        _playerActionMap.Disable();
+        _uiActionMap.Enable();
     }
 
     #region PlayerActionMap
@@ -89,7 +89,17 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    public void OnShortcut(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            
+        }
+    }
+
     #endregion
+
+    #region UIActionMap
 
     public void OnUINavigate(InputAction.CallbackContext context)
     {
@@ -116,4 +126,6 @@ public class InputManager : MonoBehaviour
             GameManager.Instance.HandleUICancel();
         }
     }
+
+    #endregion
 }

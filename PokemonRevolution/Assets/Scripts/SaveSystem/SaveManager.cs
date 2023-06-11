@@ -6,10 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class SaveManager : MonoBehaviour
 {
-    [SerializeField] private string filePath;
+    [SerializeField] private string _filePath;
 
-    private GameData gameData;
-    private Dictionary<string, List<ISaveable>> saveableObjects;
+    private GameData _gameData;
+    private Dictionary<string, List<ISaveable>> _saveableObjects;
 
     public static SaveManager Instance { get; private set; }
 
@@ -20,7 +20,7 @@ public class SaveManager : MonoBehaviour
 
     private void Start()
     {
-        saveableObjects = new Dictionary<string, List<ISaveable>>();
+        _saveableObjects = new Dictionary<string, List<ISaveable>>();
         AddSaveableObjects("Gameplay");
 
         LoadSave();
@@ -37,14 +37,14 @@ public class SaveManager : MonoBehaviour
 
     public void NewSave()
     {
-        gameData = new GameData(null);
+        _gameData = new GameData(null);
     }
 
     public void LoadSave()
     {
-        gameData = FileDataHandler.LoadData(filePath);
+        _gameData = FileDataHandler.LoadData(_filePath);
 
-        if (gameData == null)
+        if (_gameData == null)
         {
             // No save is available at given location, load default save
             NewSave();
@@ -63,19 +63,19 @@ public class SaveManager : MonoBehaviour
 
     public void SaveGame()
     {
-        if (gameData == null)
+        if (_gameData == null)
         {
             // Create save to store the data to
             NewSave();
         }
 
-        foreach (KeyValuePair<string, List<ISaveable>> kvp in saveableObjects)
+        foreach (KeyValuePair<string, List<ISaveable>> kvp in _saveableObjects)
         {
             string sceneName = kvp.Key;
             SaveSceneData(sceneName);
         }
 
-        FileDataHandler.SaveData(filePath, gameData);
+        FileDataHandler.SaveData(_filePath, _gameData);
     }
 
     private void OnSceneLoaded(SceneDetails sceneDetails)
@@ -94,30 +94,30 @@ public class SaveManager : MonoBehaviour
 
     private void LoadSceneData(string sceneName)
     {
-        foreach (ISaveable saveableObject in saveableObjects[sceneName])
+        foreach (ISaveable saveableObject in _saveableObjects[sceneName])
         {
-            saveableObject.LoadData(gameData);
+            saveableObject.LoadData(_gameData);
         }
     }
 
     private void SaveSceneData(string sceneName)
     {
-        foreach (ISaveable saveableObject in saveableObjects[sceneName])
+        foreach (ISaveable saveableObject in _saveableObjects[sceneName])
         {
-            saveableObject.SaveData(ref gameData);
+            saveableObject.SaveData(ref _gameData);
         }
     }
 
     private void AddSaveableObjects(string sceneName)
     {
         RemoveSaveableObjects(sceneName);
-        saveableObjects.Add(sceneName, FindSaveableObjects(sceneName));
+        _saveableObjects.Add(sceneName, FindSaveableObjects(sceneName));
     }
     
     private void RemoveSaveableObjects(string sceneName)
     {
-        if (saveableObjects.ContainsKey(sceneName))
-            saveableObjects.Remove(sceneName);
+        if (_saveableObjects.ContainsKey(sceneName))
+            _saveableObjects.Remove(sceneName);
     }
 
     private List<ISaveable> FindSaveableObjects(string sceneName)

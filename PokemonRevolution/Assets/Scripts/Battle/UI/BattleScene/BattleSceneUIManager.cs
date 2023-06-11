@@ -4,22 +4,22 @@ using UnityEngine.UI;
 
 public class BattleSceneUIManager : MonoBehaviour
 {
-    [SerializeField] private GameObject battleScene;
+    [SerializeField] private Transform _battleScene;
 
-    [SerializeField] private Sprite defaultBattleBackground;
+    [SerializeField] private Sprite _defaultBattleBackground;
 
-    [SerializeField] private Image battleBackgroundImage;
+    [SerializeField] private Image _battleBackgroundImage;
 
-    [SerializeField] private BattleSceneHUDManager playerHUD;
-    [SerializeField] private BattleSceneHUDManager enemyHUD;
+    [SerializeField] private BattleSceneHUDManager _playerHUD;
+    [SerializeField] private BattleSceneHUDManager _enemyHUD;
 
-    [SerializeField] private Image playerPokemonImage;
-    [SerializeField] private Image enemyPokemonImage;
+    [SerializeField] private Image _playerPokemonImage;
+    [SerializeField] private Image _enemyPokemonImage;
 
-    [SerializeField] private float switchInAnimationDuration = 1.0f;
-    [SerializeField] private float attackAnimationDuration = 0.1f;
-    [SerializeField] private float hitAnimationDuration = 0.08f;
-    [SerializeField] private float faintAnimationDuration = 0.8f;
+    [SerializeField] private float _switchInAnimationDuration = 1.0f;
+    [SerializeField] private float _attackAnimationDuration = 0.1f;
+    [SerializeField] private float _hitAnimationDuration = 0.08f;
+    [SerializeField] private float _faintAnimationDuration = 0.8f;
 
     // TODO: move this out of here to player inventory
     [SerializeField] private GameObject pokeballPrefab;
@@ -59,14 +59,14 @@ public class BattleSceneUIManager : MonoBehaviour
 
     public void OnBattleStart(PokemonParty playerParty, PokemonParty enemyParty)
     {
-        battleBackgroundImage.sprite = defaultBattleBackground;
+        _battleBackgroundImage.sprite = _defaultBattleBackground;
         
         BattleUIManager.Instance.EnqueueAnimation(AnimatePokemonEnterBattle(playerParty.GetFirstPokemon(), enemyParty.GetFirstPokemon()));
     }
 
     private void OnPokemonAttack(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo)
     {
-        if (attackInfo.moveHits && move.ScriptableMove.Category != MoveCategory.Status)
+        if (attackInfo.MoveHits && move.ScriptableMove.Category != MoveCategory.Status)
             BattleUIManager.Instance.EnqueueAnimation(AnimatePokemonAttackAndHit(attacker, defender));
         else
             BattleUIManager.Instance.EnqueueAnimation(AnimatePokemonAttack(attacker));
@@ -75,9 +75,9 @@ public class BattleSceneUIManager : MonoBehaviour
     private void OnPokemonDamaged(Pokemon pokemon, int damage)
     {
         if (pokemon.Owner == PokemonOwner.Player)
-            BattleUIManager.Instance.EnqueueAnimation(playerHUD.UpdateHPBarSmooth(pokemon));
+            BattleUIManager.Instance.EnqueueAnimation(_playerHUD.UpdateHPBarSmooth(pokemon));
         else
-            BattleUIManager.Instance.EnqueueAnimation(enemyHUD.UpdateHPBarSmooth(pokemon));
+            BattleUIManager.Instance.EnqueueAnimation(_enemyHUD.UpdateHPBarSmooth(pokemon));
     }
 
     public void OnPokemonFainted(Pokemon pokemon)
@@ -96,9 +96,9 @@ public class BattleSceneUIManager : MonoBehaviour
             return;
 
         if (pokemon.Owner == PokemonOwner.Player)
-            playerHUD.UpdateStatusCondition(pokemon);
+            _playerHUD.UpdateStatusCondition(pokemon);
         else
-            enemyHUD.UpdateStatusCondition(pokemon);
+            _enemyHUD.UpdateStatusCondition(pokemon);
     }
 
     private void OnStatusConditionRemoved(StatusCondition status, Pokemon pokemon)
@@ -107,9 +107,9 @@ public class BattleSceneUIManager : MonoBehaviour
             return;
 
         if (pokemon.Owner == PokemonOwner.Player)
-            playerHUD.UpdateStatusCondition(pokemon);
+            _playerHUD.UpdateStatusCondition(pokemon);
         else
-            enemyHUD.UpdateStatusCondition(pokemon);
+            _enemyHUD.UpdateStatusCondition(pokemon);
     }
 
     private void OnPokeballThrown(Pokemon pokemon)
@@ -130,13 +130,13 @@ public class BattleSceneUIManager : MonoBehaviour
     public void OnExpGained(Pokemon pokemon, int exp)
     {
         if (pokemon.Owner == PokemonOwner.Player)
-            BattleUIManager.Instance.EnqueueAnimation(playerHUD.UpdateExpBarSmooth(pokemon, exp));
+            BattleUIManager.Instance.EnqueueAnimation(_playerHUD.UpdateExpBarSmooth(pokemon, exp));
     }
 
     private void OnLevelUp(Pokemon pokemon)
     {
         if (pokemon.Owner == PokemonOwner.Player)
-            playerHUD.UpdateHUD(pokemon);
+            _playerHUD.UpdateHUD(pokemon);
     }
 
     private IEnumerator AnimatePokemonEnterBattle(Pokemon playerPokemon, Pokemon enemyPokemon)
@@ -158,37 +158,37 @@ public class BattleSceneUIManager : MonoBehaviour
     private IEnumerator AnimatePokemonAttack(Pokemon attacker)
     {
         Image image =
-            attacker.Owner == PokemonOwner.Player ? playerPokemonImage : enemyPokemonImage;
+            attacker.Owner == PokemonOwner.Player ? _playerPokemonImage : _enemyPokemonImage;
         Vector3 originalPosition = image.rectTransform.localPosition;
         Vector3 offset =
             attacker.Owner == PokemonOwner.Player ? new Vector3(40, 0, 0) : new Vector3(-40, 0, 0);
 
-        yield return MoveImage(image, originalPosition, offset, attackAnimationDuration);
-        yield return MoveImage(image, originalPosition + offset, -offset, attackAnimationDuration);
+        yield return MoveImage(image, originalPosition, offset, _attackAnimationDuration);
+        yield return MoveImage(image, originalPosition + offset, -offset, _attackAnimationDuration);
     }
 
     private IEnumerator AnimatePokemonHit(Pokemon defender)
     {
-        yield return new WaitForSeconds(attackAnimationDuration);
+        yield return new WaitForSeconds(_attackAnimationDuration);
 
         Image image =
-            defender.Owner == PokemonOwner.Player ? playerPokemonImage : enemyPokemonImage;
+            defender.Owner == PokemonOwner.Player ? _playerPokemonImage : _enemyPokemonImage;
         Color hitColor = Color.grey;
 
-        yield return ColorImage(image, hitColor, hitAnimationDuration);
-        yield return ColorImage(image, Color.white, hitAnimationDuration);
+        yield return ColorImage(image, hitColor, _hitAnimationDuration);
+        yield return ColorImage(image, Color.white, _hitAnimationDuration);
     }
 
     private IEnumerator AnimatePokemonFaints(Pokemon pokemon)
     {
         Image image =
-            pokemon.Owner == PokemonOwner.Player ? playerPokemonImage : enemyPokemonImage;
+            pokemon.Owner == PokemonOwner.Player ? _playerPokemonImage : _enemyPokemonImage;
         Vector3 originalPosition = image.rectTransform.localPosition;
         Vector3 offset = new Vector3(0, -150, 0);
         Color targetColor = new Color(0.5f, 0.5f, 0.5f, 0.0f);
 
-        Coroutine moveAnimation = StartCoroutine(MoveImage(image, originalPosition, offset, faintAnimationDuration));
-        Coroutine fadeAnimation = StartCoroutine(ColorImage(image, targetColor, faintAnimationDuration));
+        Coroutine moveAnimation = StartCoroutine(MoveImage(image, originalPosition, offset, _faintAnimationDuration));
+        Coroutine fadeAnimation = StartCoroutine(ColorImage(image, targetColor, _faintAnimationDuration));
 
         yield return moveAnimation;
         yield return fadeAnimation;
@@ -203,31 +203,31 @@ public class BattleSceneUIManager : MonoBehaviour
 
         if (newPokemon.Owner == PokemonOwner.Player || newPokemon.Owner == PokemonOwner.AllyTrainer)
         {
-            Vector3 playerInitPos = playerPokemonImage.rectTransform.localPosition + playerOffset;
-            playerPokemonImage.color = Color.white;
-            playerHUD.UpdateHUD(newPokemon);
-            Coroutine playerAnim = StartCoroutine(MoveImage(playerPokemonImage, playerInitPos, -playerOffset, switchInAnimationDuration));
+            Vector3 playerInitPos = _playerPokemonImage.rectTransform.localPosition + playerOffset;
+            _playerPokemonImage.color = Color.white;
+            _playerHUD.UpdateHUD(newPokemon);
+            Coroutine playerAnim = StartCoroutine(MoveImage(_playerPokemonImage, playerInitPos, -playerOffset, _switchInAnimationDuration));
             yield return playerAnim;
         }
         else if (newPokemon.Owner == PokemonOwner.EnemyTrainer || newPokemon.Owner == PokemonOwner.Wild)
         {
-            Vector3 enemyInitPos = enemyPokemonImage.rectTransform.localPosition - playerOffset;
-            enemyPokemonImage.color = Color.white;
-            enemyHUD.UpdateHUD(newPokemon);
-            Coroutine enemyAnim = StartCoroutine(MoveImage(enemyPokemonImage, enemyInitPos, playerOffset, switchInAnimationDuration));
+            Vector3 enemyInitPos = _enemyPokemonImage.rectTransform.localPosition - playerOffset;
+            _enemyPokemonImage.color = Color.white;
+            _enemyHUD.UpdateHUD(newPokemon);
+            Coroutine enemyAnim = StartCoroutine(MoveImage(_enemyPokemonImage, enemyInitPos, playerOffset, _switchInAnimationDuration));
             yield return enemyAnim;
         }
     }
 
     private IEnumerator AnimateThrowPokeball(Pokemon pokemon)
     {
-        pokeball = Instantiate(pokeballPrefab, battleScene.transform);
-        Vector3 startPos = playerPokemonImage.rectTransform.localPosition + new Vector3(0, 100, 0);
-        Vector3 targetPos = enemyPokemonImage.rectTransform.localPosition;
+        pokeball = Instantiate(pokeballPrefab, _battleScene);
+        Vector3 startPos = _playerPokemonImage.rectTransform.localPosition + new Vector3(0, 100, 0);
+        Vector3 targetPos = _enemyPokemonImage.rectTransform.localPosition;
         Vector3 offset = targetPos - startPos;
         yield return MoveImage(pokeball.GetComponent<Image>(), startPos, offset, 0.3f);
         yield return new WaitForSeconds(0.2f);
-        enemyPokemonImage.color = Color.clear;
+        _enemyPokemonImage.color = Color.clear;
         yield return new WaitForSeconds(0.2f);
     }
 
@@ -241,7 +241,7 @@ public class BattleSceneUIManager : MonoBehaviour
     private IEnumerator AnimatePokemonEscaped(Pokemon pokemon)
     {
         Destroy(pokeball);
-        enemyPokemonImage.color = Color.white;
+        _enemyPokemonImage.color = Color.white;
         yield return null;
     }
 

@@ -4,28 +4,28 @@ using UnityEngine;
 
 public static class PokemonsDB
 {
-    private static Dictionary<int, ScriptablePokemon> pokemons;
+    private static Dictionary<int, ScriptablePokemon> _pokemons;
 
     public static void Init()
     {
-        pokemons = new Dictionary<int, ScriptablePokemon>();
+        _pokemons = new Dictionary<int, ScriptablePokemon>();
 
         string basePath = "Pokemons";
         ScriptablePokemon[] scriptablePokemons = Resources.LoadAll<ScriptablePokemon>(basePath);
         foreach (ScriptablePokemon scriptablePokemon in scriptablePokemons)
         {
-            pokemons.Add(scriptablePokemon.Id, scriptablePokemon);
+            _pokemons.Add(scriptablePokemon.Id, scriptablePokemon);
         }
     }
 
     public static ScriptablePokemon GetPokemonById(int id)
     {
-        if (!pokemons.ContainsKey(id))
+        if (!_pokemons.ContainsKey(id))
         {
             Debug.LogError($"Didn't find pokemon {id} in resources, or error while loading.");
         }
 
-        ScriptablePokemon scriptablePokemon = pokemons[id];
+        ScriptablePokemon scriptablePokemon = _pokemons[id];
         return scriptablePokemon;
     }
 }

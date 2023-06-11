@@ -3,22 +3,22 @@ using UnityEngine;
 
 public class PokemonPartyManager : MonoBehaviour
 {
-    [SerializeField] private List<PokemonBuilder> pokemonBuilders;
+    [SerializeField] private List<PokemonBuilder> _pokemonBuilders;
 
-    private PokemonParty pokemonParty;
+    private PokemonParty _pokemonParty;
     
-    public PokemonParty PokemonParty { get => pokemonParty; }
+    public PokemonParty PokemonParty { get => _pokemonParty; }
 
     private void Awake()
     {
-        pokemonParty = new PokemonParty();
+        _pokemonParty = new PokemonParty();
     }
 
     private void Start()
     {
-        foreach (PokemonBuilder pokemonBuilder in pokemonBuilders)
+        foreach (PokemonBuilder pokemonBuilder in _pokemonBuilders)
         {
-            pokemonParty.Pokemons.Add(pokemonBuilder.BuildPokemon());
+            _pokemonParty.Pokemons.Add(pokemonBuilder.BuildPokemon());
         }
     }
 }

@@ -1,11 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-
 [System.Serializable]
-public class EVYield
+public struct EVYield
 {
-    public Stat stat;
-    public int value;
+    public Stat Stat;
+    public int Value;
 }

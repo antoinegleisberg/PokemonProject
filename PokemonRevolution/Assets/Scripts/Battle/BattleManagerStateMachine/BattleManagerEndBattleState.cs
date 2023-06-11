@@ -5,12 +5,12 @@ public class BattleManagerEndBattleState : BattleManagerBaseState
 {
     public override void InitState(BattleManager battleManager)
     {
-        this.battleManager = battleManager;
+        _battleManager = battleManager;
     }
 
     public override void EnterState()
     {
-        battleManager.StartCoroutine(EndBattleCoroutine());
+        _battleManager.StartCoroutine(EndBattleCoroutine());
     }
     
     public override void UpdateState()
@@ -30,20 +30,20 @@ public class BattleManagerEndBattleState : BattleManagerBaseState
 
     private IEnumerator EndBattleCoroutine()
     {
-        battleManager.PlayerPokemon.OnExitBattle();
-        battleManager.EnemyPokemon.OnExitBattle();
+        _battleManager.PlayerPokemon.OnExitBattle();
+        _battleManager.EnemyPokemon.OnExitBattle();
 
-        if (battleManager.IsTrainerBattle)
+        if (_battleManager.IsTrainerBattle)
         {
-            Pokemon enemyPokemon = battleManager.EnemyParty.GetFirstPokemon();
+            Pokemon enemyPokemon = _battleManager.EnemyParty.GetFirstPokemon();
             bool enemyLost = enemyPokemon == null;
 
-            battleManager.EnemyTrainer.CanBattle = !enemyLost;
+            _battleManager.EnemyTrainer.CanBattle = !enemyLost;
         }
 
         yield return BattleUIManager.Instance.WaitWhileBusy();
         
-        battleManager.SwitchState(battleManager.OutOfBattleState);
+        _battleManager.SwitchState(_battleManager.OutOfBattleState);
         GameManager.Instance.SwitchState(GameManager.Instance.FreeRoamState);
     }
 }

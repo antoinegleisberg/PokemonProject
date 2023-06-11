@@ -7,21 +7,25 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     
     
-    private GameManagerBaseState currentState;
+    private GameManagerBaseState _currentState;
     public GameManagerFreeRoamState FreeRoamState;
     public GameManagerBattleState BattleState;
     public GameManagerDialogueState DialogueState;
     public GameManagerCutsceneState CutsceneState;
     public GameManagerUINavigationState UINavigationState;
 
-    [SerializeField] private BattleManager battleManager;
-    [SerializeField] private PokemonPartyManager playerPartyManager;
-    [SerializeField] private Transform player;
+    [SerializeField] private BattleManager _battleManager;
+    [SerializeField] private PokemonPartyManager _playerPartyManager;
+    [SerializeField] private Transform _player;
 
-    public BattleManager BattleManager { get => battleManager; }
-    public Transform PlayerTransform { get => player; }
+    public BattleManager BattleManager { get => _battleManager; }
+
+    public Transform PlayerTransform { get => _player; }
     public PlayerController PlayerController { get; private set; }
+    public PokemonPartyManager PlayerPartyManager { get => _playerPartyManager; }
+
     public MapArea CurrentArea { get; private set; }
+    
     public SceneDetails PreviousScene { get; private set; }
     public SceneDetails CurrentScene { get; private set; }
 
@@ -36,7 +40,7 @@ public class GameManager : MonoBehaviour
         CutsceneState = new GameManagerCutsceneState();
         UINavigationState = new GameManagerUINavigationState();
 
-        PlayerController = player.GetComponentInChildren<PlayerController>();
+        PlayerController = _player.GetComponentInChildren<PlayerController>();
 
         PokemonsDB.Init();
         MovesDB.Init();
@@ -53,13 +57,13 @@ public class GameManager : MonoBehaviour
 
         SceneEvents.Instance.OnCurrentSceneLoaded += UpdateMapArea;
 
-        currentState = FreeRoamState;
-        currentState.EnterState();
+        _currentState = FreeRoamState;
+        _currentState.EnterState();
     }
 
     private void Update()
     {
-        currentState.UpdateState();
+        _currentState.UpdateState();
     }
 
     private void OnDestroy()
@@ -75,9 +79,9 @@ public class GameManager : MonoBehaviour
 
     public void SwitchState(GameManagerBaseState newState)
     {
-        currentState.ExitState();
-        currentState = newState;
-        currentState.EnterState();
+        _currentState.ExitState();
+        _currentState = newState;
+        _currentState.EnterState();
     }
     
     public void CheckForNPCs()
@@ -91,14 +95,12 @@ public class GameManager : MonoBehaviour
 
     public void StartBattle(PokemonParty enemyParty, Trainer enemyTrainer)
     {
-        battleManager.EnemyTrainer = enemyTrainer;
-        battleManager.IsTrainerBattle = enemyTrainer != null;
+        _battleManager.EnemyTrainer = enemyTrainer;
+        _battleManager.IsTrainerBattle = enemyTrainer != null;
 
         SwitchState(BattleState);
-        battleManager.StartBattle(playerPartyManager.PokemonParty, enemyParty);
+        _battleManager.StartBattle(_playerPartyManager.PokemonParty, enemyParty);
     }
-
-
 
     public void SetCurrentScene(SceneDetails currentScene)
     {
@@ -109,7 +111,7 @@ public class GameManager : MonoBehaviour
 
     public void OpenMenu()
     {
-        if (currentState == FreeRoamState)
+        if (_currentState == FreeRoamState)
         {
             SwitchState(UINavigationState);
             UIManager.Instance.OpenMenu();
@@ -118,7 +120,7 @@ public class GameManager : MonoBehaviour
 
     public void CloseMenu()
     {
-        if (currentState == UINavigationState)
+        if (_currentState == UINavigationState)
         {
             SwitchState(FreeRoamState);
             UIManager.Instance.CloseMenu();
@@ -127,11 +129,11 @@ public class GameManager : MonoBehaviour
 
     public void HandleUINavigation(Vector2Int input)
     {
-        if (currentState == BattleState)
+        if (_currentState == BattleState)
         {
             BattleManager.BattleActionSelectorsUIManager.HandleUINavigation(input);
         }
-        else if (currentState == UINavigationState)
+        else if (_currentState == UINavigationState)
         {
             UIManager.Instance.HandleUINavigation(input);
         }
@@ -139,15 +141,15 @@ public class GameManager : MonoBehaviour
 
     public void HandleUISubmit()
     {
-        if (currentState == BattleState)
+        if (_currentState == BattleState)
         {
             BattleManager.BattleActionSelectorsUIManager.HandleUISubmit();
         }
-        else if (currentState == DialogueState)
+        else if (_currentState == DialogueState)
         {
             DialogueManager.Instance.HandleUISubmit();
         }
-        else if (currentState == UINavigationState)
+        else if (_currentState == UINavigationState)
         {
             UIManager.Instance.HandleUISubmit();
         }
@@ -155,15 +157,15 @@ public class GameManager : MonoBehaviour
 
     public void HandleUICancel()
     {
-        if (currentState == BattleState)
+        if (_currentState == BattleState)
         {
             BattleManager.BattleActionSelectorsUIManager.HandleUICancel();
         }
-        else if (currentState == DialogueState)
+        else if (_currentState == DialogueState)
         {
             DialogueManager.Instance.HandleUICancel();
         }
-        else if (currentState == UINavigationState)
+        else if (_currentState == UINavigationState)
         {
             UIManager.Instance.HandleUICancel();
         }
@@ -176,7 +178,6 @@ public class GameManager : MonoBehaviour
         {
             if (mapArea.gameObject.scene.name == CurrentScene.gameObject.name)
             {
-                Debug.Log($"Setting current map area to {CurrentScene.gameObject.name}");
                 CurrentArea = mapArea;
                 break;
             }

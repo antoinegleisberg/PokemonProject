@@ -1,14 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using UnityEditor.SearchService;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 
 public class SceneDetails : MonoBehaviour
 {
-    [SerializeField] private List<SceneDetails> connectedScenes;
+    [SerializeField] private List<SceneDetails> _connectedScenes;
 
     public bool IsLoaded { get; private set; }
 
@@ -48,7 +45,7 @@ public class SceneDetails : MonoBehaviour
     private IEnumerator LoadConnectedScenes()
     {
         List<Coroutine> loadingCoroutines = new List<Coroutine>();
-        foreach (SceneDetails connectedScene in connectedScenes)
+        foreach (SceneDetails connectedScene in _connectedScenes)
         {
             loadingCoroutines.Add(StartCoroutine(connectedScene.LoadScene()));
         }
@@ -56,7 +53,7 @@ public class SceneDetails : MonoBehaviour
         {
             yield return coroutine;
         }
-        SceneEvents.Instance.LoadedConnectedScenes(connectedScenes);
+        SceneEvents.Instance.LoadedConnectedScenes(_connectedScenes);
     }
     
     private IEnumerator UnloadScene()
@@ -77,16 +74,16 @@ public class SceneDetails : MonoBehaviour
         }
 
         SceneDetails previousScene = GameManager.Instance.PreviousScene;
-        List<SceneDetails> previouslyLoadedScenes = previousScene.connectedScenes;
+        List<SceneDetails> previouslyLoadedScenes = previousScene._connectedScenes;
         List<Coroutine> unloadingCoroutines = new List<Coroutine>();
         foreach (SceneDetails scene in previouslyLoadedScenes)
         {
-            if (scene != this && !connectedScenes.Contains(scene))
+            if (scene != this && !_connectedScenes.Contains(scene))
             {
                 unloadingCoroutines.Add(StartCoroutine(scene.UnloadScene()));
             }
         }
-        if (previousScene != this && !connectedScenes.Contains(previousScene))
+        if (previousScene != this && !_connectedScenes.Contains(previousScene))
         {
             unloadingCoroutines.Add(StartCoroutine(previousScene.UnloadScene()));
         }

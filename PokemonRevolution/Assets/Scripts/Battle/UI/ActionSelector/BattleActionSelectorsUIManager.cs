@@ -5,52 +5,48 @@ using UnityEngine;
 
 public class BattleActionSelectorsUIManager : MonoBehaviour
 {
-    [SerializeField] private UISelectorNavigationManager actionSelector;
-    [SerializeField] private UISelectorNavigationManager moveSelector;
-    [SerializeField] private UISelectorNavigationManager switchPokemonSelector;
-    [SerializeField] private UISelectorNavigationManager replacePokemonSelector;
-    [SerializeField] private UISelectorNavigationManager bagSelector;
-    [SerializeField] private UISelectorNavigationManager pokeballSelector;
-    [SerializeField] private UISelectorNavigationManager medicineSelector;
-    [SerializeField] private UISelectorNavigationManager statusHealerSelector;
-    [SerializeField] private UISelectorNavigationManager battleItemSelector;
-    [SerializeField] private UISelectorNavigationManager forgetMoveSelector;
-    private List<UISelectorNavigationManager> selectors;
+    [SerializeField] private UISelectorNavigationManager _actionSelector;
+    [SerializeField] private UISelectorNavigationManager _moveSelector;
+    [SerializeField] private UISelectorNavigationManager _switchPokemonSelector;
+    [SerializeField] private UISelectorNavigationManager _replacePokemonSelector;
+    [SerializeField] private UISelectorNavigationManager _bagSelector;
+    [SerializeField] private UISelectorNavigationManager _pokeballSelector;
+    [SerializeField] private UISelectorNavigationManager _medicineSelector;
+    [SerializeField] private UISelectorNavigationManager _statusHealerSelector;
+    [SerializeField] private UISelectorNavigationManager _battleItemSelector;
+    [SerializeField] private UISelectorNavigationManager _forgetMoveSelector;
+    private List<UISelectorNavigationManager> _selectors;
 
-    private UISelectorNavigationManager currentSelector;
+    private UISelectorNavigationManager _currentSelector;
 
-    [SerializeField] private RectTransform selectionIndicator;
+    [SerializeField] private RectTransform _selectionIndicator;
 
     // Specific selectors for UI content updates
-    [SerializeField] private MoveSelectorUIManager moveSelectorUIManager;
-    [SerializeField] private PokemonSelectorUIManager pokemonSelectorUIManager;
-    [SerializeField] private PokemonSelectorUIManager pokemonReplacementUIManager;
-    [SerializeField] private ForgetMoveSelectorUIManager forgetMoveSelectorUIManager;
-
-    private PokemonParty playerPokemonParty;
-
-    private Action<int> onFaintedPokemonReplacementSelected;
+    [SerializeField] private MoveSelectorUIManager _moveSelectorUIManager;
+    [SerializeField] private PokemonSelectorUIManager _pokemonSelectorUIManager;
+    [SerializeField] private PokemonSelectorUIManager _pokemonReplacementUIManager;
+    [SerializeField] private ForgetMoveSelectorUIManager _forgetMoveSelectorUIManager;
     
     private void Start()
     {
-        selectors = new List<UISelectorNavigationManager> { 
-            actionSelector,
-            moveSelector,
-            switchPokemonSelector,
-            replacePokemonSelector,
-            bagSelector,
-            pokeballSelector,
-            medicineSelector,
-            statusHealerSelector,
-            battleItemSelector,
-            forgetMoveSelector
+        _selectors = new List<UISelectorNavigationManager> { 
+            _actionSelector,
+            _moveSelector,
+            _switchPokemonSelector,
+            _replacePokemonSelector,
+            _bagSelector,
+            _pokeballSelector,
+            _medicineSelector,
+            _statusHealerSelector,
+            _battleItemSelector,
+            _forgetMoveSelector
         };
 
         SubscribeToEvents();
 
-        foreach (UISelectorNavigationManager navManager in selectors)
+        foreach (UISelectorNavigationManager navManager in _selectors)
         {
-            navManager.SetSelectionIndicator(selectionIndicator);
+            navManager.SetSelectionIndicator(_selectionIndicator);
         }
     }
 
@@ -61,9 +57,9 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
     private void SubscribeToEvents()
     {
-        BattleUIEvents.Instance.OnAttackButtonPressed += () => SetActiveSelector(moveSelector);
+        BattleUIEvents.Instance.OnAttackButtonPressed += () => SetActiveSelector(_moveSelector);
         BattleUIEvents.Instance.OnSwitchPokemonButtonPressed += OnSwitchPokemonButtonPressed;
-        BattleUIEvents.Instance.OnBagButtonPressed += () => SetActiveSelector(bagSelector);
+        BattleUIEvents.Instance.OnBagButtonPressed += () => SetActiveSelector(_bagSelector);
         
         BattleUIEvents.Instance.OnCancelMoveSelection += SetActiveSelectorToActionSelector;
         BattleUIEvents.Instance.OnCancelSwitchPokemonSelection += SetActiveSelectorToActionSelector;
@@ -71,20 +67,19 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
         BattleEvents.Instance.OnPokemonAttack += OnPokemonAttack;
         BattleEvents.Instance.OnPokemonSwitchedIn += OnPokemonSwitchedIn;
-        BattleUIEvents.Instance.OnReplacePokemonSelected += OnFaintedPokemonReplacementSelected;
 
-        BattleUIEvents.Instance.OnPokeballsButtonPressed += () => SetActiveSelector(pokeballSelector);
-        BattleUIEvents.Instance.OnMedicinesButtonPressed += () => SetActiveSelector(medicineSelector);
-        BattleUIEvents.Instance.OnStatusHealersButtonPressed += () => SetActiveSelector(statusHealerSelector);
-        BattleUIEvents.Instance.OnBattleItemsButtonPressed += () => SetActiveSelector(battleItemSelector);
-        BattleUIEvents.Instance.OnCancelBagSubMenuSelection += () => SetActiveSelector(bagSelector);
+        BattleUIEvents.Instance.OnPokeballsButtonPressed += () => SetActiveSelector(_pokeballSelector);
+        BattleUIEvents.Instance.OnMedicinesButtonPressed += () => SetActiveSelector(_medicineSelector);
+        BattleUIEvents.Instance.OnStatusHealersButtonPressed += () => SetActiveSelector(_statusHealerSelector);
+        BattleUIEvents.Instance.OnBattleItemsButtonPressed += () => SetActiveSelector(_battleItemSelector);
+        BattleUIEvents.Instance.OnCancelBagSubMenuSelection += () => SetActiveSelector(_bagSelector);
     }
 
     private void UnsubscribeToEvents()
     {
-        BattleUIEvents.Instance.OnAttackButtonPressed -= () => SetActiveSelector(moveSelector);
+        BattleUIEvents.Instance.OnAttackButtonPressed -= () => SetActiveSelector(_moveSelector);
         BattleUIEvents.Instance.OnSwitchPokemonButtonPressed -= OnSwitchPokemonButtonPressed;
-        BattleUIEvents.Instance.OnBagButtonPressed -= () => SetActiveSelector(bagSelector);
+        BattleUIEvents.Instance.OnBagButtonPressed -= () => SetActiveSelector(_bagSelector);
         
         BattleUIEvents.Instance.OnCancelMoveSelection -= SetActiveSelectorToActionSelector;
         BattleUIEvents.Instance.OnCancelSwitchPokemonSelection -= SetActiveSelectorToActionSelector;
@@ -92,59 +87,46 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
         BattleEvents.Instance.OnPokemonAttack -= OnPokemonAttack;
         BattleEvents.Instance.OnPokemonSwitchedIn -= OnPokemonSwitchedIn;
-        BattleUIEvents.Instance.OnReplacePokemonSelected -= OnFaintedPokemonReplacementSelected;
         
-        BattleUIEvents.Instance.OnPokeballsButtonPressed -= () => SetActiveSelector(pokeballSelector);
-        BattleUIEvents.Instance.OnMedicinesButtonPressed -= () => SetActiveSelector(medicineSelector);
-        BattleUIEvents.Instance.OnStatusHealersButtonPressed -= () => SetActiveSelector(statusHealerSelector);
-        BattleUIEvents.Instance.OnBattleItemsButtonPressed -= () => SetActiveSelector(battleItemSelector);
-        BattleUIEvents.Instance.OnCancelBagSubMenuSelection -= () => SetActiveSelector(bagSelector);
+        BattleUIEvents.Instance.OnPokeballsButtonPressed -= () => SetActiveSelector(_pokeballSelector);
+        BattleUIEvents.Instance.OnMedicinesButtonPressed -= () => SetActiveSelector(_medicineSelector);
+        BattleUIEvents.Instance.OnStatusHealersButtonPressed -= () => SetActiveSelector(_statusHealerSelector);
+        BattleUIEvents.Instance.OnBattleItemsButtonPressed -= () => SetActiveSelector(_battleItemSelector);
+        BattleUIEvents.Instance.OnCancelBagSubMenuSelection -= () => SetActiveSelector(_bagSelector);
     }
 
-    public void OpenFaintedPokemonReplacementMenu(Action<int> OnReplacementSelected = null)
+    public void OpenFaintedPokemonReplacementMenu()
     {
-        onFaintedPokemonReplacementSelected = OnReplacementSelected;
-        pokemonReplacementUIManager.UpdatePokemonButtons(playerPokemonParty);
-        SetActiveSelector(replacePokemonSelector);
+        PokemonParty playerParty = GameManager.Instance.PlayerPartyManager.PokemonParty;
+        _pokemonReplacementUIManager.UpdatePokemonButtons(playerParty);
+        SetActiveSelector(_replacePokemonSelector);
     }
 
     public void HandleUINavigation(Vector2Int input)
     {
-        currentSelector?.HandleUINavigation(input);
+        _currentSelector?.HandleUINavigation(input);
     }
 
     public void HandleUISubmit()
     {
-        currentSelector?.HandleUISubmit();
+        _currentSelector?.HandleUISubmit();
     }
 
     public void HandleUICancel()
     {
-        currentSelector?.HandleUICancel();
-    }
-
-    private void OnFaintedPokemonReplacementSelected(int pokemonIdx)
-    {
-        onFaintedPokemonReplacementSelected?.Invoke(pokemonIdx);
-        onFaintedPokemonReplacementSelected = null;
+        _currentSelector?.HandleUICancel();
     }
 
     private void SetActiveSelector(UISelectorNavigationManager selector)
     {
-        if (currentSelector == selector)
+        if (_currentSelector == selector)
         {
             return;
         }
 
-        currentSelector?.gameObject.SetActive(false);
-        currentSelector = selector;
-        currentSelector?.gameObject.SetActive(true);
-
-        //foreach (UISelectorNavigationManager s in selectors)
-        //{
-        //    s.gameObject.SetActive(false);
-        //}
-        //selector?.gameObject.SetActive(true);
+        _currentSelector?.gameObject.SetActive(false);
+        _currentSelector = selector;
+        _currentSelector?.gameObject.SetActive(true);
     }
 
     private IEnumerator SetActiveSelectorCoroutine(UISelectorNavigationManager selector)
@@ -157,35 +139,35 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
     public void SetActiveSelectorToActionSelector()
     {
-         StartCoroutine(SetActiveSelectorCoroutine(actionSelector));
+         StartCoroutine(SetActiveSelectorCoroutine(_actionSelector));
     }
 
     public void OnBattleStart(PokemonParty playerParty)
     {
-        playerPokemonParty = playerParty;
-        moveSelectorUIManager.UpdateMovesUI(playerPokemonParty.GetFirstPokemon());
+        _moveSelectorUIManager.UpdateMovesUI(playerParty.GetFirstPokemon());
         SetActiveSelector(null);
     }
 
     private void OnSwitchPokemonButtonPressed()
     {
-        pokemonSelectorUIManager.UpdatePokemonButtons(playerPokemonParty);
-        SetActiveSelector(switchPokemonSelector);
+        PokemonParty playerParty = GameManager.Instance.PlayerPartyManager.PokemonParty;
+        _pokemonSelectorUIManager.UpdatePokemonButtons(playerParty);
+        SetActiveSelector(_switchPokemonSelector);
     }
 
     private void OnPokemonAttack(Pokemon attacker, Pokemon defender, Move move, AttackInfo attackInfo)
     {
-        moveSelectorUIManager.UpdateMovesUI(attacker);
+        _moveSelectorUIManager.UpdateMovesUI(attacker);
     }
 
     private void OnPokemonSwitchedIn(Pokemon newPokemon)
     {
-        moveSelectorUIManager.UpdateMovesUI(newPokemon);
+        _moveSelectorUIManager.UpdateMovesUI(newPokemon);
     }
     
     public void OnChooseMoveToForget(Pokemon pokemon, ScriptableMove newMove)
     {
-        forgetMoveSelectorUIManager.UpdateUI(pokemon, newMove);
-        SetActiveSelector(forgetMoveSelector);
+        _forgetMoveSelectorUIManager.UpdateUI(pokemon, newMove);
+        SetActiveSelector(_forgetMoveSelector);
     }
 }

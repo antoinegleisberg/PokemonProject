@@ -4,57 +4,56 @@ using UnityEngine;
 
 public class NPCController : MonoBehaviour, IInteractable, ISaveable
 {
-    [SerializeField] private Direction defaultFacingDirection;
+    [SerializeField] private Direction _defaultFacingDirection;
+    [SerializeField] private List<Dialogue> _dialogues;
+    [SerializeField] private Character _character;
+    [SerializeField] private List<NPCMovementPattern> _movementPatterns;
+    [SerializeField] private Fov _fov;
 
-    [SerializeField] private List<Dialogue> dialogues;
-    [SerializeField] private Character character;
-    [SerializeField] private List<NPCMovementPattern> movementPatterns;
+    private bool _isInDialogue;
+    private int _dialogueIdx;
 
-    private bool isInDialogue;
-    private int dialogueIdx;
-
-    private Coroutine movementPatternCoroutine;
+    private Coroutine _movementPatternCoroutine;
 
     private void Start()
     {
-        isInDialogue = false;
-        dialogueIdx = 0;
+        _isInDialogue = false;
+        _dialogueIdx = 0;
         
-        character.FaceTowards(defaultFacingDirection);
-        if (movementPatterns != null && movementPatterns.Count > 0)
-            movementPatternCoroutine = StartCoroutine(MovementPatternCoroutine());
+        _character.FaceTowards(_defaultFacingDirection);
+        if (_movementPatterns != null && _movementPatterns.Count > 0)
+            _movementPatternCoroutine = StartCoroutine(MovementPatternCoroutine());
     }
 
     public void Interact(Transform source)
     {
-        if (character.IsMoving)
+        if (_character.IsMoving)
             return;
 
         DeactivateFov();
 
-        isInDialogue = true;
+        _isInDialogue = true;
         
         Vector3 faceDirection = source.position - transform.position;
-        character.FaceTowards(faceDirection);
+        _character.FaceTowards(faceDirection);
         source.GetComponentInChildren<Character>()?.FaceTowards(-faceDirection);
         
-        DialogueManager.Instance.ShowDialogue(dialogues[dialogueIdx], OnAfterDialogueExited);
-        if (dialogueIdx < dialogues.Count - 1)
-            dialogueIdx++;
+        DialogueManager.Instance.ShowDialogue(_dialogues[_dialogueIdx], OnAfterDialogueExited);
+        if (_dialogueIdx < _dialogues.Count - 1)
+            _dialogueIdx++;
     }
 
     public void StopMoving()
     {
-        if (movementPatternCoroutine != null)
+        if (_movementPatternCoroutine != null)
         {
             StopAllCoroutines();
-            character.StopMoving();
+            _character.StopMoving();
         }
     }
 
     public void SaveData(ref GameData data)
     {
-        Fov FOV = transform.parent.GetComponentInChildren<Fov>();
         GuidHolder guidHolder = GetComponent<GuidHolder>();
         string sceneName = gameObject.scene.name;
 
@@ -62,7 +61,7 @@ public class NPCController : MonoBehaviour, IInteractable, ISaveable
         {
             return;
         }
-        if ((dialogues == null || dialogues.Count <= 1) && FOV == null)
+        if ((_dialogues == null || _dialogues.Count <= 1) && _fov == null)
         {
             return;
         }
@@ -70,7 +69,7 @@ public class NPCController : MonoBehaviour, IInteractable, ISaveable
 
         string uid = guidHolder.UniqueId;
         bool fovIsEnabled = false;
-        if (FOV != null && FOV.isActiveAndEnabled)
+        if (_fov != null && _fov.isActiveAndEnabled)
         {
             fovIsEnabled = true;
         }
@@ -84,7 +83,7 @@ public class NPCController : MonoBehaviour, IInteractable, ISaveable
             data.ScenesData[sceneName].NPCsSaveData.Remove(uid);
         }
         
-        data.ScenesData[sceneName].NPCsSaveData[uid] = new NPCSaveData(fovIsEnabled, dialogueIdx);
+        data.ScenesData[sceneName].NPCsSaveData[uid] = new NPCSaveData(fovIsEnabled, _dialogueIdx);
     }
 
     public void LoadData(GameData data)
@@ -93,8 +92,6 @@ public class NPCController : MonoBehaviour, IInteractable, ISaveable
         {
             return;
         }
-
-        Fov FOV = transform.parent.GetComponentInChildren<Fov>();
 
         string uid = GetComponent<GuidHolder>().UniqueId;
         string sceneName = gameObject.scene.name;
@@ -110,19 +107,18 @@ public class NPCController : MonoBehaviour, IInteractable, ISaveable
 
         NPCSaveData npcData = data.ScenesData[sceneName].NPCsSaveData[uid];
 
-        if (FOV != null)
+        if (_fov != null)
         {
-            FOV.enabled = npcData.FovIsEnabled;
+            _fov.enabled = npcData.FovIsEnabled;
         }
-        dialogueIdx = npcData.DialogueIndex;
+        _dialogueIdx = npcData.DialogueIndex;
     }
 
     private void DeactivateFov()
     {
-        Fov FOV = transform.parent.GetComponentInChildren<Fov>();
-        if (FOV != null)
+        if (_fov != null)
         {
-            FOV.enabled = false;
+            _fov.enabled = false;
         }
     }
 
@@ -131,34 +127,34 @@ public class NPCController : MonoBehaviour, IInteractable, ISaveable
         int currentPatternIdx = 0;
         while (true)
         {
-            NPCMovementPattern currentPattern = movementPatterns[currentPatternIdx];
-            if (currentPattern.movement != Vector2Int.zero)
+            NPCMovementPattern currentPattern = _movementPatterns[currentPatternIdx];
+            if (currentPattern.Movement != Vector2Int.zero)
             {
                 yield return Move(currentPattern);
             }
             else
             {
-                character.FaceTowards(currentPattern.lookTowards);
+                _character.FaceTowards(currentPattern.LookTowards);
             }
-            yield return new WaitForSeconds(currentPattern.waitTime);
-            currentPatternIdx = (currentPatternIdx + 1) % movementPatterns.Count;
+            yield return new WaitForSeconds(currentPattern.WaitTime);
+            currentPatternIdx = (currentPatternIdx + 1) % _movementPatterns.Count;
         }
     }
     
     private IEnumerator Move(NPCMovementPattern currentPattern)
     {
-        Vector3 targetPosition = transform.position + new Vector3(currentPattern.movement.x, currentPattern.movement.y);
+        Vector3 targetPosition = transform.position + new Vector3(currentPattern.Movement.x, currentPattern.Movement.y);
         while ((transform.position - targetPosition).sqrMagnitude > Mathf.Epsilon)
         {
             Vector3 movementVector = targetPosition - transform.position;
-            yield return new WaitUntil(() => !isInDialogue);
-            yield return character.MoveAndStop(new Vector2(movementVector.x, movementVector.y), currentPattern.run, () => GameManager.Instance.CheckForNPCs());
+            yield return new WaitUntil(() => !_isInDialogue);
+            yield return _character.MoveAndStop(new Vector2(movementVector.x, movementVector.y), currentPattern.Run, () => GameManager.Instance.CheckForNPCs());
             yield return new WaitForEndOfFrame();
         }
     }
 
     private void OnAfterDialogueExited() {
-        isInDialogue = false;
+        _isInDialogue = false;
 
         Trainer trainer = GetComponent<Trainer>();
         bool isTrainer = trainer != null;

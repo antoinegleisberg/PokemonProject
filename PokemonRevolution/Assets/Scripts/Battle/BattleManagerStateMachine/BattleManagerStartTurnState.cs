@@ -2,12 +2,12 @@ public class BattleManagerStartTurnState : BattleManagerBaseState
 {
     public override void InitState(BattleManager battleManager)
     {
-        this.battleManager = battleManager;
+        _battleManager = battleManager;
     }
 
     public override void EnterState()
     {
-        battleManager.SwitchState(battleManager.ActionSelectionState);
+        _battleManager.SwitchState(_battleManager.ActionSelectionState);
     }
 
     public override void UpdateState()

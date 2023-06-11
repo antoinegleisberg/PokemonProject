@@ -25,8 +25,8 @@ MonoBehaviour:
   makesContact: 0
   moveTargets: 03000000
   moveEffects:
-    statBoosts: []
-    conditionEffects:
-    - probability: 10
-      statusCondition: 1
-      statusEffectTargets: 03000000
+    _statBoosts: []
+    _conditionEffects:
+    - Probability: 10
+      StatusCondition: 1
+      StatusEffectTargets: 03000000

@@ -6,7 +6,7 @@ public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
 
-    [SerializeField] private MenuSelector menuSelector;
+    [SerializeField] private MenuSelector _menuSelector;
 
     private void Awake()
     {
@@ -16,26 +16,26 @@ public class UIManager : MonoBehaviour
 
     public void OpenMenu()
     {
-        menuSelector.gameObject.SetActive(true);
+        _menuSelector.gameObject.SetActive(true);
     }
 
     public void CloseMenu()
     {
-        menuSelector.gameObject.SetActive(false);
+        _menuSelector.gameObject.SetActive(false);
     }
 
     public void HandleUINavigation(Vector2Int input)
     {
-        menuSelector.HandleUINavigate(input);
+        _menuSelector.HandleUINavigate(input);
     }
 
     public void HandleUISubmit()
     {
-        menuSelector.HandleUISubmit();
+        _menuSelector.HandleUISubmit();
     }
 
     public void HandleUICancel()
     {
-        menuSelector.HandleUICancel();
+        _menuSelector.HandleUICancel();
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 
 public class Pokemon
 {
-    private readonly static Dictionary<int, float> baseStatsBoostValues = new Dictionary<int, float>() {
+    private readonly static Dictionary<int, float> _baseStatsBoostValues = new Dictionary<int, float>() {
         {-6, 2f/8f},
         {-5, 2f/7f},
         {-4, 2f/6f},
@@ -22,7 +22,7 @@ public class Pokemon
         {6, 8f/2f},
     };
 
-    private readonly static Dictionary<int, float> combatStatsBoostValues = new Dictionary<int, float>() {
+    private readonly static Dictionary<int, float> _combatStatsBoostValues = new Dictionary<int, float>() {
         {-6, 3f/9f},
         {-5, 3f/8f},
         {-4, 3f/7f},
@@ -162,7 +162,7 @@ public class Pokemon
     }
 
 
-    public ConditionAttackModifier OnBeforeMove(Move move)
+    public ConditionAttackModifier GetStatusAttackModifier(Move move)
     {
         ConditionAttackModifier modifier = new ConditionAttackModifier(true, 1);
 
@@ -235,9 +235,9 @@ public class Pokemon
         int availableEVs = MaxEVs - EVs.Values.Sum();
         foreach (EVYield evYield in defeatedPokemon.EvYield)
         {
-            int availableEVforStat = MaxEVsPerStat - EVs[evYield.stat];
-            int EVsGained = Mathf.Min(availableEVs, evYield.value, availableEVforStat);
-            EVs[evYield.stat] += EVsGained;
+            int availableEVforStat = MaxEVsPerStat - EVs[evYield.Stat];
+            int EVsGained = Mathf.Min(availableEVs, evYield.Value, availableEVforStat);
+            EVs[evYield.Stat] += EVsGained;
             availableEVs -= EVsGained;
         }
     }
@@ -317,8 +317,8 @@ public class Pokemon
 
     public void ApplyBoost(StatBoost statBoost)
     {
-        Stat stat = statBoost.stat;
-        int boostValue = statBoost.boostValue;
+        Stat stat = statBoost.Stat;
+        int boostValue = statBoost.BoostValue;
         int oldBoostValue = StatBoosts[stat];
         StatBoosts[stat] = Mathf.Clamp(StatBoosts[stat] + boostValue, -6, 6);
         int newBoostValue = StatBoosts[stat];
@@ -479,7 +479,7 @@ public class Pokemon
         {
             int boost = StatBoosts[stat];
             bool isCombatStat = (stat == Stat.Accuracy || stat == Stat.Evasion);
-            Dictionary<int, float> boostValues = (isCombatStat) ? combatStatsBoostValues : baseStatsBoostValues;
+            Dictionary<int, float> boostValues = (isCombatStat) ? _combatStatsBoostValues : _baseStatsBoostValues;
             statValue = statValue * boostValues[boost];
         }
         if (ConditionsDB.GetCondition(StatusCondition).OnGetStat != null)
