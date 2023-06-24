@@ -97,24 +97,24 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
     public void OpenFaintedPokemonReplacementMenu()
     {
-        PokemonParty playerParty = GameManager.Instance.PlayerPartyManager.PokemonParty;
+        PokemonParty playerParty = GameManager.Instance.PlayerController.PokemonPartyManager.PokemonParty;
         _pokemonReplacementUIManager.UpdatePokemonButtons(playerParty);
         SetActiveSelector(_replacePokemonSelector);
     }
 
     public void HandleUINavigation(Vector2Int input)
     {
-        _currentSelector?.HandleUINavigation(input);
+        _currentSelector?.OnNavigate(input);
     }
 
     public void HandleUISubmit()
     {
-        _currentSelector?.HandleUISubmit();
+        _currentSelector?.OnSubmit();
     }
 
     public void HandleUICancel()
     {
-        _currentSelector?.HandleUICancel();
+        _currentSelector?.OnCancel();
     }
 
     private void SetActiveSelector(UISelectorNavigationManager selector)
@@ -150,7 +150,7 @@ public class BattleActionSelectorsUIManager : MonoBehaviour
 
     private void OnSwitchPokemonButtonPressed()
     {
-        PokemonParty playerParty = GameManager.Instance.PlayerPartyManager.PokemonParty;
+        PokemonParty playerParty = GameManager.Instance.PlayerController.PokemonPartyManager.PokemonParty;
         _pokemonSelectorUIManager.UpdatePokemonButtons(playerParty);
         SetActiveSelector(_switchPokemonSelector);
     }

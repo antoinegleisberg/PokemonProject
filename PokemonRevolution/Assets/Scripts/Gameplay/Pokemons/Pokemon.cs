@@ -223,6 +223,11 @@ public class Pokemon
         if (CurrentHP < 0) CurrentHP = 0;
     }
     
+    public void HealHP(int amount)
+    {
+        CurrentHP = Mathf.Min(MaxHP, CurrentHP + amount);
+    }
+
     public void GainExp(int exp)
     {
         TotalExperiencePoints += exp;
@@ -311,7 +316,7 @@ public class Pokemon
         ResetStatBoosts();
         foreach (Move move in Moves)
         {
-            move.CurrentPP = move.ScriptableMove.PP;
+            move.RecoverPP(move.ScriptableMove.PP);
         }
     }
 

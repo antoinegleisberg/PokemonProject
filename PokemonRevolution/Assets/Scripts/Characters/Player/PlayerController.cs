@@ -3,11 +3,12 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour, ISaveable
 {
-    [SerializeField] private Transform _playerTransform;
     [SerializeField] private Character _character;
-    
-    [SerializeField] private PokemonPartyManager _playerPartyManager;
-    
+
+    [field: SerializeField] public Inventory Inventory { get; private set; }
+    [field: SerializeField] public Transform PlayerTransform { get; private set; }
+    [field: SerializeField] public PokemonPartyManager PokemonPartyManager { get; private set; }
+
     private Direction _facing;
 
     private void Start()
@@ -22,22 +23,22 @@ public class PlayerController : MonoBehaviour, ISaveable
 
     public void CheckForInteraction()
     {
-        Vector2 interactPos = new Vector2(_playerTransform.position.x, _playerTransform.position.y) + DirectionUtils.ToVec2(_facing);
+        Vector2 interactPos = new Vector2(PlayerTransform.position.x, PlayerTransform.position.y) + DirectionUtils.ToVec2(_facing);
 
         Collider2D collider = Physics2D.OverlapCircle(interactPos, 0.2f, GameLayers.Instance.InteractableLayer);
         if (collider != null)
         {
             IInteractable interactable = collider.GetComponentInParent<Transform>().GetComponentInChildren<IInteractable>();
-            interactable.Interact(_playerTransform);
+            interactable.Interact(PlayerTransform);
         }
     }
 
     public void SaveData(ref GameData data)
     {
-        data.PlayerData.PlayerPosition = _playerTransform.position;
+        data.PlayerData.PlayerPosition = PlayerTransform.position;
 
         data.PlayerData.PokemonsSaveData = new List<PokemonSaveData>();
-        foreach (Pokemon pokemon in _playerPartyManager.PokemonParty.Pokemons)
+        foreach (Pokemon pokemon in PokemonPartyManager.PokemonParty.Pokemons)
         {
             data.PlayerData.PokemonsSaveData.Add(pokemon.GetSaveData());
         }
@@ -45,13 +46,13 @@ public class PlayerController : MonoBehaviour, ISaveable
 
     public void LoadData(GameData data)
     {
-        _playerTransform.position = data.PlayerData.PlayerPosition;
+        PlayerTransform.position = data.PlayerData.PlayerPosition;
 
-        _playerPartyManager.PokemonParty.Pokemons.Clear();
+        PokemonPartyManager.PokemonParty.Pokemons.Clear();
         foreach (PokemonSaveData pokemonSaveData in data.PlayerData.PokemonsSaveData)
         {
             Pokemon pokemon = new Pokemon(pokemonSaveData);
-            _playerPartyManager.PokemonParty.Pokemons.Add(pokemon);
+            PokemonPartyManager.PokemonParty.Pokemons.Add(pokemon);
         }
     }
 
@@ -67,7 +68,7 @@ public class PlayerController : MonoBehaviour, ISaveable
     
     private void OnMoveOver()
     {
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(_playerTransform.position, 0.2f, GameLayers.Instance.TriggerableLayers);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(PlayerTransform.position, 0.2f, GameLayers.Instance.TriggerableLayers);
 
         foreach (Collider2D collider in colliders)
         {

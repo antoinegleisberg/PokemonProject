@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da7634d9f5859ac45ab732de2d1f6d02, type: 3}
+  m_Name: Revive
+  m_EditorClassIdentifier: 
+  name: Revive
+  description: Revives a fainted Pokemon. Restores 50% of its HP
+  icon: {fileID: 21300000, guid: 1ad63fd66b8ae41479b8290db19079a2, type: 3}
+  bagCategory: 1
+  healthRecovered: 0
+  maxHealthRecovered: 0
+  ppRecovered: 0
+  maxPPRecovered: 0
+  recoversAllMovesPP: 0
+  statusHealed: 0
+  recoversAllStatus: 0
+  isRevive: 1
+  isMaxRevive: 0

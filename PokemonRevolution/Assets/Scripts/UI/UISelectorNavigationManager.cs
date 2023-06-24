@@ -50,7 +50,12 @@ public class UISelectorNavigationManager : MonoBehaviour
         _selectionIndicator = selectionIndicator;
     }
 
-    public void HandleUINavigation(Vector2Int input)
+    public void OnFirstSelected()
+    {
+        
+    }
+
+    public void OnNavigate(Vector2Int input)
     {
         if (_currentSelection == -1)
         {
@@ -71,7 +76,7 @@ public class UISelectorNavigationManager : MonoBehaviour
         UpdateSelection(_currentSelection + offset);
     }
 
-    public void HandleUISubmit()
+    public void OnSubmit()
     {
         if (_currentSelection == -1)
         {
@@ -83,7 +88,7 @@ public class UISelectorNavigationManager : MonoBehaviour
         }
     }
 
-    public void HandleUICancel()
+    public void OnCancel()
     {
         if (_canCancel)
         {

@@ -22,4 +22,9 @@ public class Move
     {
         return new MoveSaveData(ScriptableMove.Name, CurrentPP);
     }
+
+    public void RecoverPP(int amount)
+    {
+        CurrentPP = Mathf.Min(ScriptableMove.PP, CurrentPP + amount);
+    }
 }

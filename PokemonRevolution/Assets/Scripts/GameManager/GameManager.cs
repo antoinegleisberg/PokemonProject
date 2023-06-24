@@ -5,8 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    
-    
+
     private GameManagerBaseState _currentState;
     public GameManagerFreeRoamState FreeRoamState;
     public GameManagerBattleState BattleState;
@@ -14,18 +13,11 @@ public class GameManager : MonoBehaviour
     public GameManagerCutsceneState CutsceneState;
     public GameManagerUINavigationState UINavigationState;
 
-    [SerializeField] private BattleManager _battleManager;
-    [SerializeField] private PokemonPartyManager _playerPartyManager;
-    [SerializeField] private Transform _player;
-
-    public BattleManager BattleManager { get => _battleManager; }
-
-    public Transform PlayerTransform { get => _player; }
-    public PlayerController PlayerController { get; private set; }
-    public PokemonPartyManager PlayerPartyManager { get => _playerPartyManager; }
+    [field: SerializeField] public BattleManager BattleManager { get; private set; }
+    
+    [field: SerializeField] public PlayerController PlayerController { get; private set; }
 
     public MapArea CurrentArea { get; private set; }
-    
     public SceneDetails PreviousScene { get; private set; }
     public SceneDetails CurrentScene { get; private set; }
 
@@ -39,8 +31,6 @@ public class GameManager : MonoBehaviour
         DialogueState = new GameManagerDialogueState();
         CutsceneState = new GameManagerCutsceneState();
         UINavigationState = new GameManagerUINavigationState();
-
-        PlayerController = _player.GetComponentInChildren<PlayerController>();
 
         PokemonsDB.Init();
         MovesDB.Init();
@@ -86,20 +76,22 @@ public class GameManager : MonoBehaviour
     
     public void CheckForNPCs()
     {
-        if (Physics2D.OverlapCircle(PlayerTransform.position, 0.2f, GameLayers.Instance.FovLayer) != null)
+        Transform playerTransform = PlayerController.PlayerTransform;
+
+        if (Physics2D.OverlapCircle(playerTransform.position, 0.2f, GameLayers.Instance.FovLayer) != null)
         {
-            Fov fov = Physics2D.OverlapCircle(PlayerTransform.position, 0.2f, GameLayers.Instance.FovLayer).GetComponent<Fov>();
-            fov.OnEnterFOV(PlayerTransform);
+            Fov fov = Physics2D.OverlapCircle(playerTransform.position, 0.2f, GameLayers.Instance.FovLayer).GetComponent<Fov>();
+            fov.OnEnterFOV(playerTransform);
         }
     }
 
     public void StartBattle(PokemonParty enemyParty, Trainer enemyTrainer)
     {
-        _battleManager.EnemyTrainer = enemyTrainer;
-        _battleManager.IsTrainerBattle = enemyTrainer != null;
+        BattleManager.EnemyTrainer = enemyTrainer;
+        BattleManager.IsTrainerBattle = enemyTrainer != null;
 
         SwitchState(BattleState);
-        _battleManager.StartBattle(_playerPartyManager.PokemonParty, enemyParty);
+        BattleManager.StartBattle(PlayerController.PokemonPartyManager.PokemonParty, enemyParty);
     }
 
     public void SetCurrentScene(SceneDetails currentScene)
@@ -114,7 +106,7 @@ public class GameManager : MonoBehaviour
         if (_currentState == FreeRoamState)
         {
             SwitchState(UINavigationState);
-            UIManager.Instance.OpenMenu();
+            UIManager.Instance.OpenPauseMenu();
         }
     }
 
@@ -123,7 +115,7 @@ public class GameManager : MonoBehaviour
         if (_currentState == UINavigationState)
         {
             SwitchState(FreeRoamState);
-            UIManager.Instance.CloseMenu();
+            UIManager.Instance.ClosePauseMenu();
         }
     }
 
