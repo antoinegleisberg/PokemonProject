@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -10,9 +7,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private UINavigator _pauseMenu;
     [SerializeField] private UINavigator _partyMenu;
-    [SerializeField] private UINavigator _partyMenuPokemonSelector;
     [SerializeField] private UINavigator _bagMenu;
-    [SerializeField] private UINavigator _partyActionSelectionMenu;
+    [SerializeField] private UINavigator _settingsMenu;
 
     private UINavigator _currentMenu;
 
@@ -27,7 +23,6 @@ public class UIManager : MonoBehaviour
         CloseAllMenus();
         _pauseMenu.gameObject.SetActive(true);
         _currentMenu = _pauseMenu;
-        _currentMenu.UpdateUI();
     }
 
     public void ClosePauseMenu()
@@ -37,10 +32,15 @@ public class UIManager : MonoBehaviour
 
     public void OpenPartyMenu()
     {
+        OpenPartyMenu(null, null);
+    }
+
+    public void OpenPartyMenu(Action<int> onSelected = null, Action onCancelled = null)
+    {
         CloseAllMenus();
         _partyMenu.gameObject.SetActive(true);
         _currentMenu = _partyMenu;
-        _currentMenu.UpdateUI();
+        _partyMenu.GetComponent<PartyMenu>().OverrideCallbacks(onSelected, onCancelled);
     }
 
     public void OpenBagMenu()
@@ -48,24 +48,13 @@ public class UIManager : MonoBehaviour
         CloseAllMenus();
         _bagMenu.gameObject.SetActive(true);
         _currentMenu = _bagMenu;
-        _currentMenu.UpdateUI();
     }
 
-    public void OpenPartyMenuPokemonSelector()
+    public void OpenSettingsMenu()
     {
         CloseAllMenus();
-        _partyMenu.gameObject.SetActive(true);
-        _currentMenu = _partyMenuPokemonSelector;
-        _currentMenu.UpdateUI();
-    }
-
-    public void OpenPartyMenuActionSelector(Action<int> onSelected, Action onCancelled)
-    {
-        CloseAllMenus();
-        _partyActionSelectionMenu.gameObject.SetActive(true);
-        _currentMenu = _partyActionSelectionMenu;
-        _currentMenu.GetComponent<PartyActionSelectionUI>().SetCallbacks(onSelected, onCancelled);
-        _currentMenu.UpdateUI();
+        _settingsMenu.gameObject.SetActive(true);
+        _currentMenu = _settingsMenu;
     }
 
     public void HandleUINavigation(Vector2Int input)
@@ -88,6 +77,6 @@ public class UIManager : MonoBehaviour
         _pauseMenu.gameObject.SetActive(false);
         _partyMenu.gameObject.SetActive(false);
         _bagMenu.gameObject.SetActive(false);
-        _partyActionSelectionMenu.gameObject.SetActive(false);
+        _settingsMenu.gameObject.SetActive(false);
     }
 }

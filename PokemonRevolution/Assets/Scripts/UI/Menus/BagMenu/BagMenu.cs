@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Windows;
 
 public class BagMenu : MonoBehaviour
 {
@@ -18,9 +15,12 @@ public class BagMenu : MonoBehaviour
 
     private Inventory _playerInventory { get => GameManager.Instance.PlayerController.Inventory; }
 
-    private void Awake()
+    private void OnEnable()
     {
-        _bagMenuNavigator.OnStarted += UpdateDescription;
+        UpdateItemSlots();
+        UpdateNavigationArrows();
+        _bagMenuNavigator.UpdateUI();
+        UpdateDescription();
     }
 
     private void Start()
@@ -36,14 +36,7 @@ public class BagMenu : MonoBehaviour
         _bagMenuNavigator.OnCancelled -= UIManager.Instance.OpenPauseMenu;
         _bagMenuNavigator.OnNavigated -= OnNavigated;
         _bagMenuNavigator.OnNavigationInput -= OnNavigated;
-        _bagMenuNavigator.OnStarted -= UpdateDescription;
         _bagMenuNavigator.OnSubmitted -= OnSelected;
-    }
-
-    private void OnEnable()
-    {
-        UpdateItemSlots();
-        UpdateNavigationArrows();
     }
 
     private void OnNavigated(Vector2Int input)
@@ -70,7 +63,7 @@ public class BagMenu : MonoBehaviour
             UIManager.Instance.OpenBagMenu();
         };
 
-        UIManager.Instance.OpenPartyMenuActionSelector(onSelected, onCancelled);
+        UIManager.Instance.OpenPartyMenu(onSelected, onCancelled);
     }
 
     private void HandleScrolling(Vector2Int input)
@@ -79,11 +72,7 @@ public class BagMenu : MonoBehaviour
         const int numberOfItemsBeforeScrolling = 5;
         if (_playerInventory.Slots.Count < minInventoryItemsBeforeScroll)
         {
-            return;
-        }
-        if (_bagMenuNavigator.CurrentSelection < numberOfItemsBeforeScrolling ||
-            _numberOfItems - _bagMenuNavigator.CurrentSelection < numberOfItemsBeforeScrolling)
-        {
+            // Not enough items for scrolling
             return;
         }
 
@@ -98,13 +87,24 @@ public class BagMenu : MonoBehaviour
 
         float minYOffset = 0;
         float maxYOffset = containerHeight - displayHeight;
-        
-        float containerTargetY = _itemsContainer.localPosition.y + input.x * itemSlotUIHeight;
+
+        float containerTargetY = _itemsContainer.localPosition.y - input.y * itemSlotUIHeight;
         containerTargetY = Mathf.Clamp(containerTargetY, minYOffset, maxYOffset);
         Vector2 containerTargetPosition = new Vector2(_itemsContainer.localPosition.x, containerTargetY);
-        _itemsContainer.localPosition = containerTargetPosition;
 
-        _bagMenuNavigator.UpdateUI();
+        if (_bagMenuNavigator.CurrentSelection < numberOfItemsBeforeScrolling)
+        {
+            // Reached the top
+            containerTargetPosition.y = minYOffset;
+        }
+        
+        if (_numberOfItems - _bagMenuNavigator.CurrentSelection < numberOfItemsBeforeScrolling)
+        {
+            // Reached the bottom
+            containerTargetPosition.y = maxYOffset;
+        }
+        
+        _itemsContainer.localPosition = containerTargetPosition;
     }
 
     private void UpdateDescription()
