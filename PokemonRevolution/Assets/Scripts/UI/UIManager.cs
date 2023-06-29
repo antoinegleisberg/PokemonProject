@@ -40,7 +40,7 @@ public class UIManager : MonoBehaviour
         CloseAllMenus();
         _partyMenu.gameObject.SetActive(true);
         _currentMenu = _partyMenu;
-        _partyMenu.GetComponent<PartyMenu>().OverrideCallbacks(onSelected, onCancelled);
+        _partyMenu.GetComponent<PartyMenuManager>().OverridePartyScreenCallbacks(onSelected, onCancelled);
     }
 
     public void OpenBagMenu()

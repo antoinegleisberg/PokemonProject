@@ -15,13 +15,8 @@ public class PartyMenuSummaryScreen : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _heldItemName;
     [SerializeField] private TextMeshProUGUI _heldItemDescription;
     
-    private PokemonParty PlayerParty {
-        get
-        {
-            return GameManager.Instance.PlayerController.PokemonPartyManager.PokemonParty;            
-        }
-    }
-
+    private PokemonParty PlayerParty => GameManager.Instance.PlayerController.PokemonPartyManager.PokemonParty;
+    
     public void UpdateUI(int pokemonIdx)
     {
         Pokemon pokemon = PlayerParty.Pokemons[pokemonIdx];

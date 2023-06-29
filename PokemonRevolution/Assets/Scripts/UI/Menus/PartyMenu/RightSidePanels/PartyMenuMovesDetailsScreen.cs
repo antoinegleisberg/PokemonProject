@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,6 +5,8 @@ using UnityEngine.UI;
 
 public class PartyMenuMovesDetailsScreen : MonoBehaviour
 {
+    [SerializeField] private UINavigationSelector _moveSelector;
+
     [SerializeField] private TextMeshProUGUI _name;
     [SerializeField] private Image _category;
     [SerializeField] private Image _type;
@@ -14,8 +15,6 @@ public class PartyMenuMovesDetailsScreen : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _description;
 
     private int _displayedMove = 0;
-
-    public int DisplayedMove => _displayedMove;
 
     public void UpdateUI(Vector2Int input, List<Move> moves)
     {

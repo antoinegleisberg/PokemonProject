@@ -1,12 +1,12 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PartyMenuPartyScreen : MonoBehaviour
+public class PartyMenuUI : MonoBehaviour
 {
+    [SerializeField] private UINavigationSelector _partyNavigationSelector;
+
     [SerializeField] private List<Image> _pokemonUIContainers;
 
     private List<Image> _icons;
@@ -22,20 +22,39 @@ public class PartyMenuPartyScreen : MonoBehaviour
             return GameManager.Instance.PlayerController.PokemonPartyManager.PokemonParty;
         }
     }
-    
-    public void UpdateSelection(int selection)
+
+    private void OnEnable()
     {
-        UpdateUI();
+        _partyNavigationSelector.OnSelectionChanged += UpdateSelection;
 
-        Pokemon pokemon = PlayerParty.Pokemons[selection];
-
-        _pokemonUIContainers[selection].color = Color.black;
-        _names[selection].color = Color.white;
-        _hpTexts[selection].color = Color.white;
-        _levelTexts[selection].color = Color.white;
+        UpdateUI(_partyNavigationSelector.CurrentSelection);
     }
 
-    private void UpdateUI()
+    private void OnDisable()
+    {
+        _partyNavigationSelector.OnSelectionChanged -= UpdateSelection;
+    }
+
+    public void UpdateUI(int selection)
+    {
+        UpdatePokemonButtons();
+        UpdateSelection(selection, selection);
+    }
+
+    private void UpdateSelection(int oldSelection, int newSelection)
+    {
+        _pokemonUIContainers[oldSelection].color = Color.white;
+        _names[oldSelection].color = Color.black;
+        _hpTexts[oldSelection].color = Color.black;
+        _levelTexts[oldSelection].color = Color.black;
+
+        _pokemonUIContainers[newSelection].color = Color.black;
+        _names[newSelection].color = Color.white;
+        _hpTexts[newSelection].color = Color.white;
+        _levelTexts[newSelection].color = Color.white;
+    }
+
+    private void UpdatePokemonButtons()
     {
         if (_icons == null)
         {

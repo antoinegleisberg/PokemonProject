@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class BagMenu : MonoBehaviour
 {
     [SerializeField] private UINavigator _bagMenuNavigator;
+    [SerializeField] private UINavigationSelector _bagMenuNavigationSelector;
     [SerializeField] private BagItem _itemUIPrefab;
     [SerializeField] private RectTransform _itemsContainer;
     [SerializeField] private BagItemDescriptionUI _bagItemDescriptionUI;
@@ -19,24 +20,24 @@ public class BagMenu : MonoBehaviour
     {
         UpdateItemSlots();
         UpdateNavigationArrows();
-        _bagMenuNavigator.UpdateUI();
+        _bagMenuNavigationSelector.UpdateUI();
         UpdateDescription();
     }
 
     private void Start()
     {
         _bagMenuNavigator.OnCancelled += UIManager.Instance.OpenPauseMenu;
-        _bagMenuNavigator.OnNavigated += OnNavigated;
+        _bagMenuNavigationSelector.OnSelectionChanged += OnNavigated;
         _bagMenuNavigator.OnNavigationInput += OnNavigated;
-        _bagMenuNavigator.OnSubmitted += OnSelected;
+        _bagMenuNavigationSelector.OnSubmitted += OnSelected;
     }
 
     private void OnDestroy()
     {
         _bagMenuNavigator.OnCancelled -= UIManager.Instance.OpenPauseMenu;
-        _bagMenuNavigator.OnNavigated -= OnNavigated;
+        _bagMenuNavigationSelector.OnSelectionChanged -= OnNavigated;
         _bagMenuNavigator.OnNavigationInput -= OnNavigated;
-        _bagMenuNavigator.OnSubmitted -= OnSelected;
+        _bagMenuNavigationSelector.OnSubmitted -= OnSelected;
     }
 
     private void OnNavigated(Vector2Int input)
@@ -45,7 +46,7 @@ public class BagMenu : MonoBehaviour
         UpdateNavigationArrows();
     }
 
-    private void OnNavigated(int selection)
+    private void OnNavigated(int oldSelection, int newSelection)
     {
         UpdateDescription();
     }
@@ -92,13 +93,13 @@ public class BagMenu : MonoBehaviour
         containerTargetY = Mathf.Clamp(containerTargetY, minYOffset, maxYOffset);
         Vector2 containerTargetPosition = new Vector2(_itemsContainer.localPosition.x, containerTargetY);
 
-        if (_bagMenuNavigator.CurrentSelection < numberOfItemsBeforeScrolling)
+        if (_bagMenuNavigationSelector.CurrentSelection < numberOfItemsBeforeScrolling)
         {
             // Reached the top
             containerTargetPosition.y = minYOffset;
         }
         
-        if (_numberOfItems - _bagMenuNavigator.CurrentSelection < numberOfItemsBeforeScrolling)
+        if (_numberOfItems - _bagMenuNavigationSelector.CurrentSelection < numberOfItemsBeforeScrolling)
         {
             // Reached the bottom
             containerTargetPosition.y = maxYOffset;
@@ -109,7 +110,7 @@ public class BagMenu : MonoBehaviour
 
     private void UpdateDescription()
     {
-        ItemBase selectedItem = _playerInventory.Slots[_bagMenuNavigator.CurrentSelection].Item;
+        ItemBase selectedItem = _playerInventory.Slots[_bagMenuNavigationSelector.CurrentSelection].Item;
         _bagItemDescriptionUI.UpdateUI(selectedItem);
     }
     
@@ -119,13 +120,13 @@ public class BagMenu : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        _bagMenuNavigator.NavigationItems.Clear();
+        _bagMenuNavigationSelector.NavigationItems.Clear();
 
         foreach (ItemSlot itemSlot in _playerInventory.Slots)
         {
             BagItem itemUI = Instantiate(_itemUIPrefab, _itemsContainer);
             itemUI.UpdateUI(itemSlot);
-            _bagMenuNavigator.NavigationItems.Add(itemUI.GetComponent<NavigationItem>());
+            _bagMenuNavigationSelector.NavigationItems.Add(itemUI.GetComponent<NavigationItem>());
         }
     }
 

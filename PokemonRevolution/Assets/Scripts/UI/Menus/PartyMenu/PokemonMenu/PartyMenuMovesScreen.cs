@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -6,22 +5,34 @@ using UnityEngine.UI;
 
 public class PartyMenuMovesScreen : MonoBehaviour
 {
+    [SerializeField] private UINavigationSelector _moveSelector;
+
     [SerializeField] private List<Image> _moveImages;
     private List<TextMeshProUGUI> _moveNames;
     private List<Image> _moveTypeIcons;
     private List<TextMeshProUGUI> _movePPTexts;
 
-    private PokemonParty _playerParty;
+    private PokemonParty PlayerParty => GameManager.Instance.PlayerController.PokemonPartyManager.PokemonParty;
 
-    private PokemonParty PlayerParty {
-        get
-        {
-            if (_playerParty == null)
-            {
-                _playerParty = GameManager.Instance.PlayerController.PokemonPartyManager.PokemonParty;
-            }
-            return _playerParty;
-        }
+
+    private void OnEnable()
+    {
+        _moveSelector.OnSelectionChanged += UpdateMovesUI;
+    }
+
+    private void OnDisable()
+    {
+        _moveSelector.OnSelectionChanged -= UpdateMovesUI;
+    }
+
+    public void EnableMoveSelection()
+    {
+        SelectMoveUI(_moveSelector.CurrentSelection);
+    }
+
+    public void DisableMoveSelection()
+    {
+        UnselectMoveUI(_moveSelector.CurrentSelection);
     }
 
     public void UpdateUI(int pokemonIdx)
@@ -41,24 +52,36 @@ public class PartyMenuMovesScreen : MonoBehaviour
                 _moveNames[i].text = "";
                 _movePPTexts[i].text = "";
                 _moveTypeIcons[i].sprite = null;
+                _moveImages[i].GetComponent<NavigationItem>().IsSelectable = false;
                 continue;
             }
             
             Move move = moves[i];
-            // _moveImages[i].color = TypeUtils.TypeInfo(move.ScriptableMove.Type).TypeColor;
             _moveNames[i].text = move.ScriptableMove.Name;
             _movePPTexts[i].text = $"{move.CurrentPP} / {move.ScriptableMove.PP}";
             _moveTypeIcons[i].sprite = TypeUtils.TypeInfo(move.ScriptableMove.Type).TypeIcon;
+            _moveImages[i].GetComponent<NavigationItem>().IsSelectable = true;
         }
     }
     
-    public void SelectMoveUI(int moveIdx)
+    private void UpdateMovesUI(int oldSelection, int newSelection)
+    {
+        if (oldSelection == newSelection)
+        {
+            return;
+        }
+
+        UnselectMoveUI(oldSelection);
+        SelectMoveUI(newSelection);
+    }
+
+    private void SelectMoveUI(int moveIdx)
     {
         _moveImages[moveIdx].color = Color.black;
         _moveNames[moveIdx].color = Color.white;
     }
 
-    public void UnselectMoveUI(int moveIdx)
+    private void UnselectMoveUI(int moveIdx)
     {
         _moveImages[moveIdx].color = Color.white;
         _moveNames[moveIdx].color = Color.black;

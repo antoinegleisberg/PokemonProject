@@ -4,12 +4,21 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PartyMenuOverview : MonoBehaviour
+public class PartyMenuPokemonOverview : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _name;
     [SerializeField] private TextMeshProUGUI _level;
     [SerializeField] private Image _genderIcon;
     [SerializeField] private Image _pokemonIcon;
+
+    [SerializeField] private GameObject _upArrow;
+    [SerializeField] private GameObject _downArrow;
+
+    public void ShowPokemonNavigationArrows(bool show)
+    {
+        _upArrow.SetActive(show);
+        _downArrow.SetActive(show);
+    }
 
     public void UpdateUI(int pokemonIdx)
     {
