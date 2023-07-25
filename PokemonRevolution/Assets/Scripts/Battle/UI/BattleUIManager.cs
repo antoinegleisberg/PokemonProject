@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class BattleUIManager : MonoBehaviour
 {
+    [SerializeField] private GameObject _dialogueBox;
+
     public static BattleUIManager Instance { get; private set; }
 
     [SerializeField] private int _textSpeed;
@@ -87,6 +89,7 @@ public class BattleUIManager : MonoBehaviour
             while (_messagesQueue.Count > 0)
             {
                 _isWriting = true;
+                _dialogueBox.SetActive(true);
 
                 string nextMessage = _messagesQueue.Dequeue();
                 _battleSystemDialogue.text = "";
@@ -102,6 +105,7 @@ public class BattleUIManager : MonoBehaviour
             }
 
             _isWriting = false;
+            _dialogueBox.SetActive(false);
 
             yield return null;
         }

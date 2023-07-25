@@ -43,11 +43,44 @@ public class UIManager : MonoBehaviour
         _partyMenu.GetComponent<PartyMenuManager>().OverridePartyScreenCallbacks(onSelected, onCancelled);
     }
 
+    public void ClosePartyMenu()
+    {
+        CloseAllMenus();
+        _partyMenu.gameObject.SetActive(false);
+        _partyMenu.GetComponent<PartyMenuManager>().OverridePartyScreenCallbacks(null, null);
+    }
+
+    public void OpenMoveSelectionMenu(Action<int> onSelected = null, Action onCancelled = null)
+    {
+        CloseAllMenus();
+        _partyMenu.gameObject.SetActive(true);
+        _currentMenu = _partyMenu;
+    }
+
+    public void CloseMoveSelectionMenu()
+    {
+        CloseAllMenus();
+        _partyMenu.gameObject.SetActive(false);
+    }
+
     public void OpenBagMenu()
+    {
+        OpenBagMenu(null, null);
+    }
+
+    public void OpenBagMenu(Action<BagCategory, int> onSelected = null, Action onCancelled = null)
     {
         CloseAllMenus();
         _bagMenu.gameObject.SetActive(true);
         _currentMenu = _bagMenu;
+        _bagMenu.GetComponent<BagMenu>().OverrideCallbacks(onSelected, onCancelled);
+    }
+    
+    public void CloseBagMenu()
+    {
+        CloseAllMenus();
+        _bagMenu.gameObject.SetActive(false);
+        _bagMenu.GetComponent<BagMenu>().OverrideCallbacks(null, null);
     }
 
     public void OpenSettingsMenu()

@@ -215,11 +215,9 @@ public class Pokemon
         OnPokemonSwitchedOut();
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(int damage)
     {
-        int roundedDamage = Mathf.Max(1, Mathf.RoundToInt(damage));
-
-        CurrentHP -= roundedDamage;
+        CurrentHP -= damage;
         if (CurrentHP < 0) CurrentHP = 0;
     }
     

@@ -20,11 +20,15 @@ public abstract class ItemBase : ScriptableObject
 
 public enum BagCategory
 {
-    Item,
+    HeldItem,
     Medicine,
     Pokeball,
     TM,
+    // Other,
     Berries,
-    Battle,
+    // EvolutionItems,
+    // MegaStones,
+    BattleItems,
+    // Treasures,
     KeyItems,
 }

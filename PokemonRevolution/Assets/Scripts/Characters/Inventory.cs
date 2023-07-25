@@ -1,14 +1,55 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    [field: SerializeField] public List<ItemSlot> Slots { get; private set; }
+    // Only for initialisation
+    [SerializeField] private List<ItemSlot> _initialSlots;
 
-    public void UseItem(int itemIndex, Pokemon target)
+    private Dictionary<BagCategory, List<ItemSlot>> _slots;
+
+    private void Awake()
     {
-        ItemBase item = Slots[itemIndex].Item;
+        _slots = new Dictionary<BagCategory, List<ItemSlot>>();
+
+        foreach (ItemSlot slot in _initialSlots)
+        {
+            AddItem(slot.Item, slot.Count);
+        }
+    }
+
+    public void AddItem(ItemBase item, int count = 1)
+    {
+        BagCategory category = item.BagCategory;
+        if (!_slots.ContainsKey(category))
+        {
+            _slots.Add(category, new List<ItemSlot>());
+        }
+        for (int i=0; i < _slots[category].Count; i++)
+        {
+            ItemSlot slot = _slots[category][i];
+            if (slot.Item == item)
+            {
+                slot.Count += count;
+                _slots[category][i] = slot;
+                return;
+            }
+        }
+        _slots[category].Add(new ItemSlot(item, count));
+    }
+
+    public List<ItemSlot> GetSlots(BagCategory category)
+    {
+        if (_slots.ContainsKey(category))
+        {
+            return _slots[category];
+        }
+        return new List<ItemSlot>();
+    }
+
+    public void UseItem(BagCategory category, int itemIndex, Pokemon target)
+    {
+        ItemBase item = _slots[category][itemIndex].Item;
         
         if (!item.CanUse(target))
         {
@@ -16,24 +57,37 @@ public class Inventory : MonoBehaviour
         }
 
         item.Use(target);
-        RemoveItem(item);
+        RemoveItem(category, item);
     }
 
-    public void RemoveItem(ItemBase item, int count = 1)
+    public void RemoveItemAt(BagCategory category, int itemIndex, int count = 1)
     {
-       for (int i = 0; i < Slots.Count; i++)
+        ItemSlot slot = _slots[category][itemIndex];
+        slot.Count -= count;
+        if (slot.Count <= 0)
+        {
+            _slots[category].RemoveAt(itemIndex);
+        }
+        else
+        {
+            // Because a struct is passed as value, not as reference,
+            // we have to reassign the slot in the list
+            _slots[category][itemIndex] = slot;
+        }
+    }
+
+    public void RemoveItem(BagCategory category, ItemBase item, int count = 1)
+    {
+       for (int i = 0; i < _slots[category].Count; i++)
        {
-            ItemSlot slot = Slots[i];
-            if (item == slot.Item)
+            ItemSlot slot = _slots[category][i];
+            if (item != slot.Item)
             {
-                slot.Count -= count;
-                Slots[i] = slot;  // Because a struct is passed as value, not as reference
-                if (slot.Count <= 0)
-                {
-                    Slots.RemoveAt(i);
-                    break;
-                }
+                continue;
             }
+
+            RemoveItemAt(category, i, count);
+            break;
        }
     }
 }

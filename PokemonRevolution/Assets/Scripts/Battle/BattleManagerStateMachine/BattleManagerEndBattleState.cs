@@ -44,6 +44,6 @@ public class BattleManagerEndBattleState : BattleManagerBaseState
         yield return BattleUIManager.Instance.WaitWhileBusy();
         
         _battleManager.SwitchState(_battleManager.OutOfBattleState);
-        GameManager.Instance.SwitchState(GameManager.Instance.FreeRoamState);
+        GameManager.Instance.PopState();
     }
 }

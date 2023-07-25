@@ -10,9 +10,7 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
         BattleUIEvents.Instance.OnRunButtonPressed += OnRunSelected;
         BattleUIEvents.Instance.OnMoveSelected += OnMoveSelected;
         BattleUIEvents.Instance.OnSwitchPokemonSelected += OnSwitchPokemonSelected;
-        BattleUIEvents.Instance.OnPokeballButtonPressed += OnPokeballSelected;
-        BattleUIEvents.Instance.OnMedicineButtonPressed += OnMedicineSelected;
-        BattleUIEvents.Instance.OnStatusHealerButtonPressed += OnStatusHealerSelected;
+        BattleUIEvents.Instance.OnItemSelected += OnItemSelected;
 
     }
 
@@ -39,9 +37,7 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
         BattleUIEvents.Instance.OnRunButtonPressed -= OnRunSelected;
         BattleUIEvents.Instance.OnMoveSelected -= OnMoveSelected;
         BattleUIEvents.Instance.OnSwitchPokemonSelected -= OnSwitchPokemonSelected;
-        BattleUIEvents.Instance.OnPokeballButtonPressed -= OnPokeballSelected;
-        BattleUIEvents.Instance.OnMedicineButtonPressed -= OnMedicineSelected;
-        BattleUIEvents.Instance.OnStatusHealerButtonPressed -= OnStatusHealerSelected;
+        BattleUIEvents.Instance.OnItemSelected += OnItemSelected;
     }
 
     private BattleActionInfo GetEnemyAction()
@@ -61,7 +57,9 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
     {
         List<int> enemyMovesIndexes = new List<int>();
         for (int i = 0; i < _battleManager.EnemyPokemon.Moves.Count; i++)
+        {
             enemyMovesIndexes.Add(i);
+        }
 
         int randomEnemyMove = -1;
         while (enemyMovesIndexes.Count > 0)
@@ -98,6 +96,22 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
         _battleManager.SwitchState(_battleManager.PerformMovesState);
     }
 
+    private void OnItemSelected(BagCategory category, int itemIdx)
+    {
+        switch (category)
+        {
+            case BagCategory.Pokeball:
+                OnPokeballSelected(itemIdx);
+                break;
+            case BagCategory.Medicine:
+                OnMedicineSelected(itemIdx);
+                break;
+            default:
+                Debug.LogWarning("Only medicine and pokeball implemented");
+                break;
+        }
+    }
+
     private void OnPokeballSelected(int pokeballIndex)
     {
         _battleManager.NextPlayerAction = new BattleActionInfo(BattleAction.UsePokeball, pokeballIndex, _battleManager.EnemyPokemon);
@@ -107,12 +121,6 @@ public class BattleManagerActionSelectionState : BattleManagerBaseState
     private void OnMedicineSelected(int medicineIndex)
     {
         _battleManager.NextPlayerAction = new BattleActionInfo(BattleAction.UseMedicine, medicineIndex, _battleManager.PlayerPokemon);
-        _battleManager.SwitchState(_battleManager.PerformMovesState);
-    }
-
-    private void OnStatusHealerSelected(int statusHealerIndex)
-    {
-        _battleManager.NextPlayerAction = new BattleActionInfo(BattleAction.UseStatusHealer, statusHealerIndex, _battleManager.PlayerPokemon);
         _battleManager.SwitchState(_battleManager.PerformMovesState);
     }
 }

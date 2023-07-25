@@ -142,9 +142,10 @@ public class UINavigationSelector : MonoBehaviour
 
     private void UpdateUI(int newSelection)
     {
-        _currentNavigationItem.Unselect();
-        _currentSelection = newSelection;
-        _currentNavigationItem.Select();
+        _currentSelection = Mathf.Clamp(_currentSelection, 0, NavigationItems.Count - 1);
+        _currentNavigationItem?.Unselect();
+        _currentSelection = Mathf.Clamp(newSelection, 0, NavigationItems.Count - 1);
+        _currentNavigationItem?.Select();
     }
 }
 

@@ -34,7 +34,7 @@ public class BagItem : MonoBehaviour
         _countText.text = $"x {itemSlot.Count}";
     }
 
-    public void OnSelected()
+    private void OnSelected()
     {
         _backgroundMask.showMaskGraphic = true;
         _background.gameObject.SetActive(true);
@@ -42,7 +42,7 @@ public class BagItem : MonoBehaviour
         _countText.color = Color.white;
     }
 
-    public void OnUnselected()
+    private void OnUnselected()
     {
         _backgroundMask.showMaskGraphic = false;
         _background.gameObject.SetActive(false);

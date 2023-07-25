@@ -42,7 +42,7 @@ public class DialogueManager : MonoBehaviour
         _currentDialogue = dialogue;
         _currentLine = 0;
         IsBusy = true;
-        GameManager.Instance.SwitchState(GameManager.Instance.DialogueState);
+        GameManager.Instance.PushState(GameManager.Instance.DialogueState);
         StartCoroutine(TypeDialogue(_currentDialogue.Lines[_currentLine]));
     }
 
@@ -70,7 +70,7 @@ public class DialogueManager : MonoBehaviour
         _dialogueBox.SetActive(false);
         IsBusy = false;
         _currentDialogue = null;
-        GameManager.Instance.SwitchState(GameManager.Instance.FreeRoamState);
+        GameManager.Instance.PopState();
         _onDialogueExited?.Invoke();
     }
 

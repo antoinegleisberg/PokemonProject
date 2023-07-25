@@ -19,14 +19,8 @@ public class BattleUIEvents : MonoBehaviour
     public event Action<int> OnTargetSelected; // TODO
     public event Action<int> OnSelectMoveToForget;
 
-    // Bag button events
-    public event Action OnPokeballsButtonPressed;
-    public event Action OnBattleItemsButtonPressed;
-    public event Action OnMedicinesButtonPressed;
-    public event Action OnStatusHealersButtonPressed;
-    public event Action OnCancelBagSelection;
-
     // Bag SubMenu events : TODO
+    public event Action<BagCategory, int> OnItemSelected;
     public event Action<int> OnPokeballButtonPressed;
     public event Action<int> OnBattleItemButtonPressed;
     public event Action<int> OnMedicineButtonPressed;
@@ -48,12 +42,7 @@ public class BattleUIEvents : MonoBehaviour
     public void TargetSelected(int targetIndex) => OnTargetSelected?.Invoke(targetIndex);
     public void SelectMoveToForget(int moveIndex) => OnSelectMoveToForget?.Invoke(moveIndex);
 
-    public void PokeballsButtonPressed() => OnPokeballsButtonPressed?.Invoke();
-    public void BattleItemsButtonPressed() => OnBattleItemsButtonPressed?.Invoke();
-    public void MedicinesButtonPressed() => OnMedicinesButtonPressed?.Invoke();
-    public void StatusHealersButtonPressed() => OnStatusHealersButtonPressed?.Invoke();
-    public void CancelBagSelection() => OnCancelBagSelection?.Invoke();
-
+    public void ItemSelected(BagCategory bagCategory, int itemIndex) => OnItemSelected?.Invoke(bagCategory, itemIndex);
     public void PokeballButtonPressed(int pokeballIndex) => OnPokeballButtonPressed?.Invoke(pokeballIndex);
     public void BattleItemButtonPressed(int battleItemIndex) => OnBattleItemButtonPressed?.Invoke(battleItemIndex);
     public void MedicineButtonPressed(int medicineIndex) => OnMedicineButtonPressed?.Invoke(medicineIndex);

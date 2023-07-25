@@ -85,7 +85,7 @@ public class InputManager : MonoBehaviour
     {
         if (context.performed)
         {
-            GameManager.Instance.OpenMenu();
+            GameManager.Instance.OpenPauseMenu();
         }
     }
 

@@ -12,8 +12,18 @@ public class BagItemDescriptionUI : MonoBehaviour
 
     public void UpdateUI(ItemBase item)
     {
-        _nameText.text = item.Name;
-        _description.text = item.Description;
-        _icon.sprite = item.Icon;
+        if (item == null)
+        {
+            _nameText.text = "";
+            _description.text = "";
+            _icon.color = new Color(1, 1, 1, 0);
+        }
+        else
+        {
+            _nameText.text = item.Name;
+            _description.text = item.Description;
+            _icon.sprite = item.Icon;
+            _icon.color = Color.white;
+        }
     }
 }

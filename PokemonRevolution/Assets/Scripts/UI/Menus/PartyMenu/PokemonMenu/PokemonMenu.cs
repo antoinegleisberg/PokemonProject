@@ -69,8 +69,7 @@ public class PokemonMenu : MonoBehaviour
             _moveSelectionNavigator.OnNavigate(input);
             
             _movesDetailsScreen.UpdateUI(input, GameManager.Instance.PlayerController.PokemonPartyManager.PokemonParty.Pokemons[_currentPokemon].Moves);
-        }
-        
+        }   
     }
 
     private void OnSubmitted()

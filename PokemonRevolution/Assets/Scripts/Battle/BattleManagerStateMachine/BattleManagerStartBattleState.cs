@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public class BattleManagerStartBattleState : BattleManagerBaseState
 {
     public override void InitState(BattleManager battleManager)

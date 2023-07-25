@@ -1,49 +1,51 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class BagMenu : MonoBehaviour
 {
     [SerializeField] private UINavigator _bagMenuNavigator;
-    [SerializeField] private UINavigationSelector _bagMenuNavigationSelector;
+    [SerializeField] private UINavigationSelector _bagItemSelector;
+    [SerializeField] private UINavigationSelector _bagCategorySelector;
+    
     [SerializeField] private BagItem _itemUIPrefab;
     [SerializeField] private RectTransform _itemsContainer;
     [SerializeField] private BagItemDescriptionUI _bagItemDescriptionUI;
-    [SerializeField] private RectTransform _upArrow;
-    [SerializeField] private RectTransform _downArrow;
 
-    private int _numberOfItems { get => _playerInventory.Slots.Count; }
+    private Action<BagCategory, int> _onItemSelectedOverride;
+    private Action _onCancelledOverride;
+
+    private BagCategory _currentCategory => (BagCategory)_bagCategorySelector.CurrentSelection;
 
     private Inventory _playerInventory { get => GameManager.Instance.PlayerController.Inventory; }
 
     private void OnEnable()
     {
         UpdateItemSlots();
-        UpdateNavigationArrows();
-        _bagMenuNavigationSelector.UpdateUI();
+        _bagItemSelector.UpdateUI();
         UpdateDescription();
     }
 
     private void Start()
     {
-        _bagMenuNavigator.OnCancelled += UIManager.Instance.OpenPauseMenu;
-        _bagMenuNavigationSelector.OnSelectionChanged += OnNavigated;
-        _bagMenuNavigator.OnNavigationInput += OnNavigated;
-        _bagMenuNavigationSelector.OnSubmitted += OnSelected;
+        _bagMenuNavigator.OnCancelled += OnCancelled;
+        _bagItemSelector.OnSelectionChanged += OnNavigated;
+        _bagItemSelector.OnSubmitted += OnSelected;
+        _bagCategorySelector.OnSelectionChanged += OnCategoryChanged;
     }
 
     private void OnDestroy()
     {
-        _bagMenuNavigator.OnCancelled -= UIManager.Instance.OpenPauseMenu;
-        _bagMenuNavigationSelector.OnSelectionChanged -= OnNavigated;
-        _bagMenuNavigator.OnNavigationInput -= OnNavigated;
-        _bagMenuNavigationSelector.OnSubmitted -= OnSelected;
+        _bagMenuNavigator.OnCancelled -= OnCancelled;
+        _bagItemSelector.OnSelectionChanged -= OnNavigated;
+        _bagItemSelector.OnSubmitted -= OnSelected;
+        _bagCategorySelector.OnSelectionChanged -= OnCategoryChanged;
     }
 
-    private void OnNavigated(Vector2Int input)
+    public void OverrideCallbacks(Action<BagCategory, int> onSubmitted, Action onCancelled)
     {
-        HandleScrolling(input);
-        UpdateNavigationArrows();
+        _onItemSelectedOverride = onSubmitted;
+        _onCancelledOverride = onCancelled;
     }
 
     private void OnNavigated(int oldSelection, int newSelection)
@@ -53,10 +55,16 @@ public class BagMenu : MonoBehaviour
 
     private void OnSelected(int itemIdx)
     {
+        if (_onItemSelectedOverride != null)
+        {
+            _onItemSelectedOverride.Invoke((BagCategory)_bagCategorySelector.CurrentSelection, itemIdx);
+            return;
+        }
+
         Action<int> onSelected = (int pokemonIdx) =>
         {
             Pokemon targetPokemon = GameManager.Instance.PlayerController.PokemonPartyManager.PokemonParty.Pokemons[pokemonIdx];
-            _playerInventory.UseItem(itemIdx, targetPokemon);
+            _playerInventory.UseItem(_currentCategory, itemIdx, targetPokemon);
         };
 
         Action onCancelled = () =>
@@ -67,50 +75,32 @@ public class BagMenu : MonoBehaviour
         UIManager.Instance.OpenPartyMenu(onSelected, onCancelled);
     }
 
-    private void HandleScrolling(Vector2Int input)
+    private void OnCancelled()
     {
-        const int minInventoryItemsBeforeScroll = 6;
-        const int numberOfItemsBeforeScrolling = 5;
-        if (_playerInventory.Slots.Count < minInventoryItemsBeforeScroll)
+        if (_onCancelledOverride != null)
         {
-            // Not enough items for scrolling
+            _onCancelledOverride.Invoke();
             return;
         }
 
-        float itemSlotUIHeight = _itemsContainer.GetComponentInChildren<BagItem>().GetComponent<RectTransform>().rect.height;
+        UIManager.Instance.OpenPauseMenu();
+    }
 
-        float containerHeight =
-            _itemsContainer.GetComponent<VerticalLayoutGroup>().padding.top +
-            _itemsContainer.GetComponent<VerticalLayoutGroup>().padding.bottom +
-            _numberOfItems * itemSlotUIHeight;
-
-        float displayHeight = _itemsContainer.parent.GetComponent<RectTransform>().rect.height;
-
-        float minYOffset = 0;
-        float maxYOffset = containerHeight - displayHeight;
-
-        float containerTargetY = _itemsContainer.localPosition.y - input.y * itemSlotUIHeight;
-        containerTargetY = Mathf.Clamp(containerTargetY, minYOffset, maxYOffset);
-        Vector2 containerTargetPosition = new Vector2(_itemsContainer.localPosition.x, containerTargetY);
-
-        if (_bagMenuNavigationSelector.CurrentSelection < numberOfItemsBeforeScrolling)
-        {
-            // Reached the top
-            containerTargetPosition.y = minYOffset;
-        }
-        
-        if (_numberOfItems - _bagMenuNavigationSelector.CurrentSelection < numberOfItemsBeforeScrolling)
-        {
-            // Reached the bottom
-            containerTargetPosition.y = maxYOffset;
-        }
-        
-        _itemsContainer.localPosition = containerTargetPosition;
+    private void OnCategoryChanged(int oldCategory, int newCategory)
+    {
+        UpdateItemSlots();
+        _bagItemSelector.UpdateUI();
+        UpdateDescription();
     }
 
     private void UpdateDescription()
     {
-        ItemBase selectedItem = _playerInventory.Slots[_bagMenuNavigationSelector.CurrentSelection].Item;
+        List<ItemSlot> slots = _playerInventory.GetSlots(_currentCategory);
+        ItemBase selectedItem = null;
+        if (slots.Count > 0)
+        {
+            selectedItem = slots[_bagItemSelector.CurrentSelection].Item;
+        }
         _bagItemDescriptionUI.UpdateUI(selectedItem);
     }
     
@@ -120,41 +110,13 @@ public class BagMenu : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        _bagMenuNavigationSelector.NavigationItems.Clear();
+        _bagItemSelector.NavigationItems.Clear();
 
-        foreach (ItemSlot itemSlot in _playerInventory.Slots)
+        foreach (ItemSlot itemSlot in _playerInventory.GetSlots(_currentCategory))
         {
             BagItem itemUI = Instantiate(_itemUIPrefab, _itemsContainer);
             itemUI.UpdateUI(itemSlot);
-            _bagMenuNavigationSelector.NavigationItems.Add(itemUI.GetComponent<NavigationItem>());
-        }
-    }
-
-    private void UpdateNavigationArrows()
-    {
-        float itemSlotUIHeight = _itemsContainer.GetComponentInChildren<BagItem>().GetComponent<RectTransform>().rect.height;
-
-        float containerHeight =
-            _itemsContainer.GetComponent<VerticalLayoutGroup>().padding.top +
-            _itemsContainer.GetComponent<VerticalLayoutGroup>().padding.bottom +
-            _numberOfItems * itemSlotUIHeight;
-
-        float displayHeight = _itemsContainer.parent.GetComponent<RectTransform>().rect.height;
-
-        float minYOffset = 0;
-        float maxYOffset = containerHeight - displayHeight;
-
-        float containerYPosition = _itemsContainer.localPosition.y;
-
-        _upArrow.gameObject.SetActive(true);
-        _downArrow.gameObject.SetActive(true);
-        if (containerYPosition < minYOffset + 1)
-        {
-            _upArrow.gameObject.SetActive(false);
-        }
-        if (containerYPosition > maxYOffset - 1)
-        {
-            _downArrow.gameObject.SetActive(false);
+            _bagItemSelector.NavigationItems.Add(itemUI.GetComponent<NavigationItem>());
         }
     }
 }

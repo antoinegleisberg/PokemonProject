@@ -1,6 +1,6 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
@@ -28,15 +28,11 @@ public class BattleManager : MonoBehaviour
     public BattleManagerEndTurnState EndTurnState;
     public BattleManagerEndBattleState EndBattleState;
 
-    [SerializeField] private BattleSceneUIManager _battleSceneUIManager;
-    [SerializeField] private BattleDialogueUIManager _battleDialogueUIManager;
-    [SerializeField] private BattleActionSelectorsUIManager _battleActionSelectorsUIManager;
+    [field: SerializeField] public BattleSceneUIManager BattleSceneUIManager { get; private set; }
+    [field: SerializeField] public BattleDialogueUIManager BattleDialogueUIManager { get; private set; }
+    [field: SerializeField] public BattleActionSelectorsUIManager BattleActionSelectorsUIManager { get; private set; }
 
-    public BattleSceneUIManager BattleSceneUIManager { get => _battleSceneUIManager; }
-    public BattleDialogueUIManager BattleDialogueUIManager { get => _battleDialogueUIManager; }
-    public BattleActionSelectorsUIManager BattleActionSelectorsUIManager { get => _battleActionSelectorsUIManager; }
 
-    
     private ScriptableMove _moveToLearn;
 
 
@@ -65,6 +61,8 @@ public class BattleManager : MonoBehaviour
 
         BattleEvents.Instance.OnPokemonFainted += OnPokemonFainted;
         BattleUIEvents.Instance.OnSelectMoveToForget += SelectedMoveToForget;
+        BattleUIEvents.Instance.OnBagButtonPressed += SelectItemToUse;
+        BattleUIEvents.Instance.OnSwitchPokemonButtonPressed += SelectPokemonToSwitchIn;
     }
 
     private void Update()
@@ -84,6 +82,8 @@ public class BattleManager : MonoBehaviour
 
         BattleEvents.Instance.OnPokemonFainted -= OnPokemonFainted;
         BattleUIEvents.Instance.OnSelectMoveToForget -= SelectedMoveToForget;
+        BattleUIEvents.Instance.OnBagButtonPressed += SelectItemToUse;
+        BattleUIEvents.Instance.OnSwitchPokemonButtonPressed -= SelectPokemonToSwitchIn;
     }
 
     public void StartBattle(PokemonParty playerParty, PokemonParty enemyParty)
@@ -172,7 +172,7 @@ public class BattleManager : MonoBehaviour
         }
 
         int odds = (Mathf.FloorToInt(PlayerPokemon.Speed * 128 / EnemyPokemon.Speed) + 30) % 256;
-        if (Random.Range(0, 256) < odds)
+        if (UnityEngine.Random.Range(0, 256) < odds)
         {
             BattleDialogueUIManager.OnRunAwaySuccess();
             return true;
@@ -193,7 +193,7 @@ public class BattleManager : MonoBehaviour
         float statusBonus = ConditionsDB.GetCondition(EnemyPokemon.StatusCondition).CatchRateModifier;
         float baseCatchRate = 1 - 2.0f * EnemyPokemon.CurrentHP / (3.0f * EnemyPokemon.MaxHP);
         int catchRate = Mathf.FloorToInt(baseCatchRate * EnemyPokemon.ScriptablePokemon.CatchRate * ballBonus * statusBonus);
-        bool caught = Random.Range(0, 256) <= catchRate;
+        bool caught = UnityEngine.Random.Range(0, 256) <= catchRate;
         StartCoroutine(CanCatchPokemonCoroutine(caught));
         if (caught)
         {
@@ -206,6 +206,40 @@ public class BattleManager : MonoBehaviour
                 Debug.Log("Party is full ! TODO : add it to the box");
         }
         return caught;
+    }
+
+    public void SelectItemToUse()
+    {
+        Action<BagCategory, int> onSelected = (BagCategory category, int itemIdx) =>
+        {
+            Debug.Log("Used item " + itemIdx);
+            GameManager.Instance.CloseBagMenu();
+            BattleUIEvents.Instance.ItemSelected(category, itemIdx);
+        };
+
+        Action onCancelled = () =>
+        {
+            Debug.Log("Cancelled item selection");
+            GameManager.Instance.CloseBagMenu();
+        };
+
+        GameManager.Instance.OpenBagMenu(onSelected, onCancelled);
+    }
+
+    public void SelectPokemonToSwitchIn()
+    {
+        Action<int> onSelected = (int pokemonIdx) =>
+        {
+            GameManager.Instance.ClosePartyMenu();
+            BattleUIEvents.Instance.SwitchPokemonSelected(pokemonIdx);
+        };
+
+        Action onCancelled = () =>
+        {
+            GameManager.Instance.ClosePartyMenu();
+        };
+
+        GameManager.Instance.OpenPartyMenu(onSelected, onCancelled);
     }
 
     private IEnumerator SwitchStateCoroutine(BattleManagerBaseState newState)
@@ -232,7 +266,7 @@ public class BattleManager : MonoBehaviour
 
     private IEnumerator GainExpCoroutine(Pokemon pokemon, int exp)
     {
-        _battleDialogueUIManager.OnExpGained(pokemon, exp);
+        BattleDialogueUIManager.OnExpGained(pokemon, exp);
 
         while (exp > 0 && pokemon.Level < Pokemon.MaxLevel)
         {
@@ -243,7 +277,7 @@ public class BattleManager : MonoBehaviour
 
                 pokemon.GainExp(expBeforeLvUp);
                 
-                _battleSceneUIManager.OnExpGained(pokemon, expBeforeLvUp);
+                BattleSceneUIManager.OnExpGained(pokemon, expBeforeLvUp);
 
                 yield return BattleUIManager.Instance.WaitWhileBusy();
 
@@ -255,13 +289,13 @@ public class BattleManager : MonoBehaviour
             else
             {
                 pokemon.GainExp(exp);
-                _battleSceneUIManager.OnExpGained(pokemon, exp);
+                BattleSceneUIManager.OnExpGained(pokemon, exp);
                 exp = 0;
             }
         }
     }
 
-    public IEnumerator LevelUpCoroutine(Pokemon pokemon)
+    private IEnumerator LevelUpCoroutine(Pokemon pokemon)
     {
         pokemon.LevelUp();
 
@@ -275,7 +309,7 @@ public class BattleManager : MonoBehaviour
         // Check for evolution
     }
 
-    public IEnumerator CheckForNewMovesCoroutine(Pokemon pokemon)
+    private IEnumerator CheckForNewMovesCoroutine(Pokemon pokemon)
     {
         foreach (ScriptableMove scriptableMove in pokemon.GetNewMovesAtCurrentLevel())
         {
@@ -288,7 +322,7 @@ public class BattleManager : MonoBehaviour
             {
                 _moveToLearn = scriptableMove;
                 BattleDialogueUIManager.OnChooseMoveToForget(pokemon, _moveToLearn);
-                BattleActionSelectorsUIManager.OnChooseMoveToForget(pokemon, _moveToLearn);
+                BattleActionSelectorsUIManager.OnChooseMoveToForget(pokemon, _moveToLearn);  // TODO
                 BattleUIManager.Instance.Pause();
             }
             
@@ -338,7 +372,7 @@ public class BattleManager : MonoBehaviour
         float accuracy = move.ScriptableMove.Accuracy * attackingPokemon.Accuracy / defendingPokemon.Evasion;
         int roundedAccuracy = Mathf.RoundToInt(accuracy);
 
-        return Random.Range(0, 100) < roundedAccuracy;
+        return UnityEngine.Random.Range(0, 100) < roundedAccuracy;
     }
     
     private AttackInfo CalculateMoveDamage(Pokemon attackingPokemon, Pokemon targetPokemon, Move move, ConditionAttackModifier attackModifier)
@@ -351,13 +385,13 @@ public class BattleManager : MonoBehaviour
         int defense = (move.ScriptableMove.Category == MoveCategory.Special) ? targetPokemon.SpecialDefense : targetPokemon.Defense;
         
         int power = move.ScriptableMove.Power;
-        bool criticalHit = Random.Range(1, 16) == 1;
+        bool criticalHit = UnityEngine.Random.Range(1, 16) == 1;
         float criticalHitModifier = criticalHit ? 1.5f : 1;
         bool stab = attackingPokemon.ScriptablePokemon.Type1 == move.ScriptableMove.Type || 
             attackingPokemon.ScriptablePokemon.Type2 == move.ScriptableMove.Type;
         float stabModifier = stab ? 1.5f : 1.0f;
         float typeModifier = TypeUtils.TypeModifier(move.ScriptableMove, targetPokemon.ScriptablePokemon);
-        float randomModifier = Random.Range(0.85f, 1.0f);
+        float randomModifier = UnityEngine.Random.Range(0.85f, 1.0f);
 
         float baseDamage = (((2 * (float)level / 5 + 2) * attack * power / defense / 50) + 2);
         float damage = baseDamage * criticalHitModifier * stabModifier * typeModifier * randomModifier;

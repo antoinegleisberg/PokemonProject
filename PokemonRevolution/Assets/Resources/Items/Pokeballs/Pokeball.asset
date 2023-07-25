@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83d6e5f4e73d4ff4395b27ccaf6efdc7, type: 3}
+  m_Name: Pokeball
+  m_EditorClassIdentifier: 
+  name: Pokeball
+  description: You can catch Pokemon with this Pokeball !
+  icon: {fileID: 21300000, guid: 0846c0289cd3f774daea1b67c61f69cc, type: 3}
+  bagCategory: 2
+  catchRateModifier: 1

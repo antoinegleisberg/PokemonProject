@@ -11,7 +11,7 @@ public class PauseMenu : MonoBehaviour
         UpdateUI();
 
         _pauseMenuNavigationSelector.OnSelectionChanged += UpdateUI;
-        _pauseMenuNavigator.OnCancelled += GameManager.Instance.CloseMenu;
+        _pauseMenuNavigator.OnCancelled += GameManager.Instance.ClosePauseMenu;
     }
 
     private void OnDisable()
@@ -19,7 +19,7 @@ public class PauseMenu : MonoBehaviour
         _selectionIndicator.gameObject.SetActive(false);
         
         _pauseMenuNavigationSelector.OnSelectionChanged -= UpdateUI;
-        _pauseMenuNavigator.OnCancelled -= GameManager.Instance.CloseMenu;
+        _pauseMenuNavigator.OnCancelled -= GameManager.Instance.ClosePauseMenu;
     }
 
     private void UpdateUI(int oldSelection, int newSelection)

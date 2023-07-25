@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,6 +13,8 @@ public class GameManager : MonoBehaviour
     public GameManagerDialogueState DialogueState;
     public GameManagerCutsceneState CutsceneState;
     public GameManagerUINavigationState UINavigationState;
+
+    private Stack<GameManagerBaseState> _stateStack { get; set; }
 
     [field: SerializeField] public BattleManager BattleManager { get; private set; }
     
@@ -35,6 +38,8 @@ public class GameManager : MonoBehaviour
         PokemonsDB.Init();
         MovesDB.Init();
         ConditionsDB.Init();
+
+        _stateStack = new Stack<GameManagerBaseState>();
     }
 
     private void Start()
@@ -47,13 +52,19 @@ public class GameManager : MonoBehaviour
 
         SceneEvents.Instance.OnCurrentSceneLoaded += UpdateMapArea;
 
-        _currentState = FreeRoamState;
-        _currentState.EnterState();
+        PushState(FreeRoamState);
     }
 
     private void Update()
     {
         _currentState.UpdateState();
+
+        DebugCanvas.Instance.Clear();
+        DebugCanvas.Instance.WriteText("GM State Stack");
+        foreach (GameManagerBaseState state in _stateStack)
+        {
+            DebugCanvas.Instance.WriteText(state.GetType().ToString());
+        }
     }
 
     private void OnDestroy()
@@ -67,10 +78,19 @@ public class GameManager : MonoBehaviour
         SceneEvents.Instance.OnCurrentSceneLoaded -= UpdateMapArea;
     }
 
-    public void SwitchState(GameManagerBaseState newState)
+    public void PushState(GameManagerBaseState newState)
+    {
+        _currentState?.ExitState();
+        _currentState = newState;
+        _stateStack.Push(_currentState);
+        _currentState.EnterState();
+    }
+
+    public void PopState()
     {
         _currentState.ExitState();
-        _currentState = newState;
+        _stateStack.Pop();
+        _currentState = _stateStack.Peek();
         _currentState.EnterState();
     }
     
@@ -90,7 +110,7 @@ public class GameManager : MonoBehaviour
         BattleManager.EnemyTrainer = enemyTrainer;
         BattleManager.IsTrainerBattle = enemyTrainer != null;
 
-        SwitchState(BattleState);
+        PushState(BattleState);
         BattleManager.StartBattle(PlayerController.PokemonPartyManager.PokemonParty, enemyParty);
     }
 
@@ -101,24 +121,60 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Setting current scene to {CurrentScene.gameObject.name}");
     }
 
-    public void OpenMenu()
+    public void OpenPauseMenu()
     {
         if (_currentState == FreeRoamState)
         {
-            SwitchState(UINavigationState);
+            PushState(UINavigationState);
             UIManager.Instance.OpenPauseMenu();
         }
     }
 
-    public void CloseMenu()
+    public void ClosePauseMenu()
     {
         if (_currentState == UINavigationState)
         {
-            SwitchState(FreeRoamState);
+            PopState();
             UIManager.Instance.ClosePauseMenu();
         }
     }
 
+    public void OpenBagMenu(Action<BagCategory, int> onSelected, Action onCancelled)
+    {
+        if (_currentState == BattleState)
+        {
+            PushState(UINavigationState);
+            UIManager.Instance.OpenBagMenu(onSelected, onCancelled);
+        }
+    }
+    
+    public void CloseBagMenu()
+    {
+        if (_currentState == UINavigationState)
+        {
+            PopState();
+            UIManager.Instance.CloseBagMenu();
+        }
+    }
+
+    public void OpenPartyMenu(Action<int> onSelected, Action onCancelled)
+    {
+        if (_currentState == BattleState)
+        {
+            PushState(UINavigationState);
+            UIManager.Instance.OpenPartyMenu(onSelected, onCancelled);
+        }
+    }
+
+    public void ClosePartyMenu()
+    {
+        if (_currentState == UINavigationState)
+        {
+            PopState();
+            UIManager.Instance.ClosePartyMenu();
+        }
+    }
+    
     public void HandleUINavigation(Vector2Int input)
     {
         if (_currentState == BattleState)
